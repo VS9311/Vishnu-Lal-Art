@@ -1,0 +1,188 @@
+/* Entry Encounter */
+.encounter-entry {
+  /* Controlled viewing area accounting for header */
+  min-height: 90vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15vh 5vw 10vh 5vw;
+}
+
+.entry-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 75vw;
+  max-height: 75vh;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1200ms var(--ease-reveal), transform 1200ms var(--ease-reveal);
+}
+
+.entry-image-container.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.entry-image {
+  max-width: 100%;
+  max-height: 70vh; /* Scale aligned with the individual artwork page */
+  object-fit: contain;
+}
+
+/* Record Encounter */
+.encounter-record {
+  padding: var(--space-xl) 5vw;
+  display: flex;
+  justify-content: center;
+}
+
+.record-metadata {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Silence Encounter */
+.encounter-silence {
+  height: 60vh; /* Deliberate pacing breathing room */
+}
+
+/* Selected Work Encounter */
+.encounter-selected {
+  padding: var(--space-xl) 5vw;
+  display: flex;
+  justify-content: flex-end; /* Asymmetrical positioning */
+}
+
+.selected-container {
+  max-width: 35vw;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.selected-image {
+  width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+}
+
+/* Archival Interruption */
+.encounter-interruption {
+  padding: var(--space-xxl) 5vw;
+  display: flex;
+  justify-content: flex-start; /* Asymmetrical positioning */
+}
+
+.interruption-content {
+  max-width: 550px;
+  color: var(--charcoal);
+  margin-left: 10vw;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.homepage-interruption-marker {
+  padding: 0 !important;
+}
+
+.homepage-interruption-marker .malayalam-marker-text {
+  font-size: clamp(2rem, 3.5vw, 3.8rem);
+  opacity: 0.85;
+}
+
+.archival-interruption-text {
+  color: var(--dust);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Multiple Works Encounter */
+.encounter-multiple {
+  padding: var(--space-xl) 5vw;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxl);
+}
+
+.multiple-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+/* Specific positioning for variation */
+.multiple-pos-0 {
+  align-self: flex-start;
+  max-width: 30vw;
+  margin-left: 10vw;
+}
+
+.multiple-pos-1 {
+  align-self: flex-end;
+  max-width: 25vw;
+  margin-right: 15vw;
+  margin-top: -10vw; /* Slight overlap feeling conceptually */
+}
+
+.multiple-image {
+  width: 100%;
+  max-height: 55vh;
+  object-fit: contain;
+}
+
+/* Artist Encounter */
+.encounter-artist {
+  padding: var(--space-xxl) 5vw;
+  display: flex;
+  justify-content: center;
+}
+
+/* Exit Encounter */
+.encounter-exit {
+  padding: var(--space-xxl) 5vw;
+  padding-bottom: 20vh;
+  display: flex;
+  justify-content: center;
+}
+
+.hover-link {
+  transition: opacity 0.3s ease;
+}
+.hover-link:hover {
+  opacity: 0.5;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .entry-image-container {
+    max-width: 100%;
+  }
+  .entry-image {
+    max-height: 60vh; /* Return to portrait-dominant presence on mobile */
+  }
+  .selected-container {
+    max-width: 100%;
+  }
+  .encounter-selected {
+    justify-content: center;
+  }
+  .interruption-content {
+    margin-left: 0;
+    max-width: 100%;
+  }
+  .multiple-pos-0, .multiple-pos-1 {
+    max-width: 100%;
+    margin: 0;
+    align-self: center;
+  }
+  .encounter-silence {
+    height: 20vh;
+  }
+}

@@ -1,0 +1,81 @@
+.malayalam-filter-def {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.malayalam-marker-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-s) 0;
+  user-select: none;
+  max-width: 100%;
+}
+
+.malayalam-marker-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: fit-content;
+}
+
+.malayalam-marker-text {
+  font-family: 'Noto Serif Malayalam', 'Gayathri', serif;
+  font-size: clamp(2.4rem, 4.4vw, 5.4rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: #1C1B18;
+  letter-spacing: 0.02em;
+  
+  /* Graphite / Charcoal Tactility */
+  filter: url(#graphite-grain);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  
+  /* Charcoal pigment depth & paper integration */
+  text-shadow: 0 0 1.2px rgba(28, 27, 24, 0.35), 0 0 0.5px rgba(28, 27, 24, 0.5);
+  opacity: 0.90;
+  mix-blend-mode: multiply;
+  transition: opacity 0.4s var(--ease-reveal);
+}
+
+.malayalam-marker-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dust);
+  opacity: 0.8;
+}
+
+/* Alignments */
+.align-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.align-center {
+  align-items: center;
+  text-align: center;
+}
+
+.align-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.align-asymmetric {
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .malayalam-marker-text {
+    filter: none;
+  }
+}
+

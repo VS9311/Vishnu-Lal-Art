@@ -1,0 +1,10 @@
+[
+  { "type": "ENTRY", "artworkId": "VL-B-001" },
+  { "type": "RECORD", "artworkId": "VL-B-001" },
+  { "type": "SILENCE" },
+  { "type": "SELECTED_WORK", "artworkId": "VL-B-002", "allowPending": true },
+  { "type": "ARCHIVAL_INTERRUPTION", "text": "Series II — Selected Corpus" },
+  { "type": "MULTIPLE_WORKS", "artworkIds": ["VL-B-006", "VL-B-012"], "allowPending": true },
+  { "type": "ARTIST", "text": "Vishnu Lal" },
+  { "type": "EXIT" }
+]

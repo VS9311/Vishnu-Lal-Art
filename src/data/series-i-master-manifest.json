@@ -1,0 +1,22 @@
+{
+  "seriesId": "series-i",
+  "mastersRoot": "archive-masters/Series 1",
+  "artworks": [
+    { "id": "VL-A-001", "source": "01.jpg" },
+    { "id": "VL-A-002", "source": "02.jpg" },
+    { "id": "VL-A-003", "source": "03.jpg" },
+    { "id": "VL-A-004", "source": "04.jpg" },
+    { "id": "VL-A-005", "source": "05.jpg" },
+    { "id": "VL-A-006", "source": "06.jpg" },
+    { "id": "VL-A-007", "source": "07.JPG" },
+    { "id": "VL-A-008", "source": "08.jpg" },
+    { "id": "VL-A-009", "source": "09.jpg" },
+    { "id": "VL-A-010", "source": "10.jpg" },
+    { "id": "VL-A-011", "source": "11.JPG" },
+    { "id": "VL-A-012", "source": "12.JPG" },
+    { "id": "VL-A-013", "source": "13.jpg" },
+    { "id": "VL-A-014", "source": "14.jpg" },
+    { "id": "VL-A-015", "source": "15.jpg" },
+    { "id": "VL-A-016", "source": "16.jpg" }
+  ]
+}

@@ -1,0 +1,168 @@
+.archive-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: var(--header-height);
+  padding: var(--space-s) 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  background-color: var(--paper);
+  color: var(--charcoal);
+  border-bottom: 1px solid rgba(201, 197, 188, 0.4);
+}
+
+.wordmark {
+  font-family: var(--font-neutral);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: inherit;
+}
+
+/* =========================================================
+   DESKTOP NAVIGATION
+   ========================================================= */
+.desktop-nav {
+  display: none;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex;
+  }
+}
+
+.nav-separator {
+  color: var(--rule);
+  font-size: 11px;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dust);
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--archive-black);
+}
+
+.nav-link.series-link {
+  font-family: 'Noto Serif Malayalam', var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.nav-link.series-link .sub-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   MOBILE INDEX TOGGLE & DRAWER
+   ========================================================= */
+.mobile-index-toggle {
+  display: block;
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--archive-black);
+  cursor: pointer;
+  padding: var(--space-xs) 0;
+}
+
+@media (min-width: 768px) {
+  .mobile-index-toggle {
+    display: none;
+  }
+}
+
+.mobile-index-overlay {
+  position: fixed;
+  inset: 0;
+  top: var(--header-height);
+  background-color: rgba(11, 11, 10, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-index-drawer {
+  background-color: var(--paper);
+  padding: var(--space-l) 20px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.drawer-section-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dust);
+}
+
+.drawer-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.drawer-link {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--charcoal);
+  text-decoration: none;
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid rgba(201, 197, 188, 0.3);
+}
+
+.drawer-link.active {
+  color: var(--archive-black);
+  font-weight: 500;
+}
+
+.drawer-malayalam {
+  font-family: 'Noto Serif Malayalam', var(--font-serif);
+  font-size: 18px;
+  color: var(--archive-black);
+}
+
+.drawer-series-meta {
+  font-size: 11px;
+  color: var(--dust);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+

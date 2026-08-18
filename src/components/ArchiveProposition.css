@@ -1,0 +1,12 @@
+.archive-proposition {
+  padding: var(--space-xxl) 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.proposition-content {
+  max-width: 600px;
+  text-align: center;
+  color: var(--charcoal);
+}

@@ -1,0 +1,21 @@
+{
+  "series": [
+    {
+      "id": "series-i",
+      "label": "Series I",
+      "malayalamName": "അനാമം",
+      "romanizedName": "Anamam",
+      "workCount": 16,
+      "slug": "series-i"
+    },
+    {
+      "id": "series-ii",
+      "label": "Series II",
+      "malayalamName": "അന്തരാളം",
+      "romanizedName": "Antharalam",
+      "workCount": 12,
+      "slug": "series-ii"
+    }
+  ]
+}
+

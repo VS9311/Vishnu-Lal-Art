@@ -1,0 +1,261 @@
+.series-page {
+  padding-top: calc(var(--header-height) + var(--space-m));
+  padding-bottom: var(--space-xl);
+  padding-left: 5vw;
+  padding-right: 5vw;
+  background-color: var(--paper);
+  color: var(--archive-black);
+  min-height: 100vh;
+}
+
+.series-nav-back {
+  margin-bottom: var(--space-l);
+}
+
+.back-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dust);
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-link:hover {
+  color: var(--archive-black);
+}
+
+.series-header {
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-l);
+  border-bottom: 1px solid var(--rule);
+}
+
+.series-header-identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.series-header-malayalam {
+  padding: 0;
+}
+
+.series-header-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.series-romanized-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--archive-black);
+  line-height: 1.1;
+}
+
+.series-header-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dust);
+}
+
+.series-badge {
+  color: var(--charcoal);
+  font-weight: 500;
+}
+
+.series-dot {
+  color: var(--rule);
+}
+
+/* =========================================================
+   GRID / CURATED EXHIBITION HANGING
+   ========================================================= */
+.series-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-m);
+  row-gap: var(--space-xl);
+  align-items: start;
+}
+
+.series-artwork-item {
+  position: relative;
+}
+
+.artwork-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+.artwork-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--space-xs);
+}
+
+.artwork-link:hover .artwork-image {
+  opacity: 0.94;
+}
+
+.artwork-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.4s var(--ease-reveal);
+  background-color: #E8E5DF;
+}
+
+.artwork-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.artwork-meta .id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--archive-black);
+  text-decoration: none;
+  transition: text-decoration-color 0.3s;
+  text-underline-offset: 4px;
+}
+
+.artwork-link:hover .id {
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+}
+
+/* =========================================================
+   DESKTOP (min-width: 1024px) - 12 Column Asymmetry
+   ========================================================= */
+@media (min-width: 1024px) {
+  .series-grid {
+    row-gap: calc(var(--space-xl) + var(--space-m));
+  }
+
+  .item-variant-1 {
+    grid-column: 1 / span 6;
+  }
+
+  .item-variant-2 {
+    grid-column: 8 / span 5;
+    align-self: center;
+  }
+
+  .item-variant-3 {
+    grid-column: 2 / span 5;
+  }
+
+  .item-variant-4 {
+    grid-column: 7 / span 6;
+    align-self: flex-end;
+  }
+}
+
+/* =========================================================
+   TABLET (768px - 1023px) - 8 Column Ledger
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .series-grid {
+    grid-template-columns: repeat(8, 1fr);
+    row-gap: var(--space-l);
+  }
+
+  .item-variant-1 { grid-column: 1 / span 5; }
+  .item-variant-2 { grid-column: 5 / span 4; }
+  .item-variant-3 { grid-column: 1 / span 4; }
+  .item-variant-4 { grid-column: 4 / span 5; }
+}
+
+/* =========================================================
+   MOBILE (< 768px) - Vertical Flow
+   ========================================================= */
+@media (max-width: 767px) {
+  .series-page {
+    padding-top: calc(var(--header-height) + var(--space-s));
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .series-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .series-artwork-item {
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Subtle alternating lateral offset */
+  .item-variant-2 { margin-left: 5%; width: 95%; }
+  .item-variant-4 { margin-right: 5%; width: 95%; }
+}
+
+/* =========================================================
+   FOOTER NAVIGATION
+   ========================================================= */
+.series-footer {
+  margin-top: var(--space-xxl);
+  padding-top: var(--space-l);
+  border-top: 1px solid var(--rule);
+}
+
+.series-footer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+@media (min-width: 768px) {
+  .series-footer-nav {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.footer-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--archive-black);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.next-series-link {
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artwork-image {
+    transition: none;
+  }
+  .artwork-link:hover .artwork-image {
+    opacity: 1;
+  }
+}
