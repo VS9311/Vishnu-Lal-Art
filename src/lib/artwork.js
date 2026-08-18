@@ -56,6 +56,7 @@ export function getSeriesNavigation(artworkId) {
   const nextWork = currentIndex < seriesWorks.length - 1 ? seriesWorks[currentIndex + 1] : null;
 
   return {
+    currentId: artworkId,
     prevId: prevWork ? prevWork.id : null,
     nextId: nextWork ? nextWork.id : null,
     series,

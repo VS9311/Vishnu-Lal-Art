@@ -5,6 +5,7 @@ import './ArchiveHeader.css';
 export default function ArchiveHeader() {
   const { pathname } = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isChamberRoute = /^\/archive\/series-(i|ii)$/.test(pathname);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function ArchiveHeader() {
 
   return (
     <>
-      <header className="archive-header">
+      <header className={`archive-header${isChamberRoute ? ' archive-header--chamber' : ''}`}>
         <Link to="/" className="wordmark" aria-label="Vishnu Lal Home">
           Vishnu Lal
         </Link>

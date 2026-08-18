@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './ArtworkComponents.css';
 
 export default function ArtworkFooter({ seriesNav }) {
-  const { prevId, nextId, series } = seriesNav || {};
+  const { currentId, prevId, nextId, series } = seriesNav || {};
   const seriesUrl = series ? `/archive/${series.slug || series.id}` : '/archive';
   const seriesLabel = series ? `${series.label} (${series.romanizedName})` : 'Series';
 
@@ -21,7 +21,12 @@ export default function ArtworkFooter({ seriesNav }) {
         </div>
 
         <div className="series-nav-col center-col">
-          <Link to={seriesUrl} className="series-return-link" aria-label={`Return to ${seriesLabel}`}>
+          <Link
+            to={seriesUrl}
+            state={{ restoreSeriesPosition: true, artworkId: currentId }}
+            className="series-return-link"
+            aria-label={`Return to ${seriesLabel}`}
+          >
             RETURN TO {seriesLabel.toUpperCase()}
           </Link>
         </div>

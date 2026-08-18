@@ -1,8 +1,32 @@
 /* Artwork Detail Page Layout */
 .artwork-detail-page {
+  position: relative;
+  isolation: isolate;
   width: 100%;
   min-height: 100vh;
   padding-bottom: 20vh;
+  background: var(--paper);
+  animation: study-view-resolve 720ms var(--ease-reveal) both;
+}
+
+.artwork-detail-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  background: #090806;
+  animation: chamber-recede 720ms var(--ease-reveal) both;
+}
+
+@keyframes chamber-recede {
+  0% { opacity: 0.92; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes study-view-resolve {
+  from { opacity: 0.82; }
+  to { opacity: 1; }
 }
 
 .page-state {
@@ -65,5 +89,15 @@
   .study-right-column {
     padding: 15vh 5vw 0 0; /* Align start with the sticky artwork */
     max-width: 900px; /* Keep reading width constrained */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artwork-detail-page {
+    animation: none;
+  }
+
+  .artwork-detail-page::before {
+    display: none;
   }
 }

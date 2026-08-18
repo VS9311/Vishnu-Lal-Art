@@ -14,6 +14,27 @@
   border-bottom: 1px solid rgba(201, 197, 188, 0.4);
 }
 
+.archive-header--chamber {
+  background-color: rgba(9, 8, 6, 0.78);
+  color: var(--paper);
+  border-bottom-color: rgba(238, 233, 223, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.archive-header--chamber .nav-link,
+.archive-header--chamber .nav-separator {
+  color: rgba(238, 233, 223, 0.56);
+}
+
+.archive-header--chamber .nav-link:hover,
+.archive-header--chamber .nav-link.active {
+  color: var(--paper);
+}
+
+.archive-header--chamber .mobile-index-toggle {
+  color: var(--paper);
+}
+
 .wordmark {
   font-family: var(--font-neutral);
   font-size: 16px;

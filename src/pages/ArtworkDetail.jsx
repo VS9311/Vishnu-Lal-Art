@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ArtworkDisplay from '../components/artwork/ArtworkDisplay';
 import ArtworkRecordIdentity from '../components/artwork/ArtworkRecordIdentity';
@@ -17,6 +17,10 @@ export default function ArtworkDetail() {
   const publicArtwork = isPublicArtwork(id);
   const [artworkData, setArtworkData] = useState(null);
   const [loadError, setLoadError] = useState(false);
+
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, [id]);
 
   useEffect(() => {
     setArtworkData(null);
