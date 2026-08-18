@@ -80,7 +80,7 @@ export default function ArtworkDetail() {
           <AcquisitionStatus status={artworkData.acquisitionStatus} artworkId={artwork.id} />
         </div>
       </div>
-      <ArtworkFooter seriesNav={seriesNav} />
+      <ArtworkFooter seriesNav={seriesNav} currentId={id} />
     </main>
   );
 }

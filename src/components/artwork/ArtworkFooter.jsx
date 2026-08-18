@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './ArtworkComponents.css';
 
-export default function ArtworkFooter({ seriesNav }) {
+export default function ArtworkFooter({ seriesNav, currentId }) {
   const { prevId, nextId, series } = seriesNav || {};
-  const seriesUrl = series ? `/archive/${series.slug || series.id}` : '/archive';
+  const seriesBaseUrl = series ? `/archive/${series.slug || series.id}` : '/archive';
+  const seriesUrl = currentId ? `${seriesBaseUrl}?work=${currentId}` : seriesBaseUrl;
   const seriesLabel = series ? `${series.label} (${series.romanizedName})` : 'Series';
 
   return (

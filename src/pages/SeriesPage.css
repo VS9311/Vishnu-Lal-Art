@@ -1,261 +1,665 @@
-.series-page {
-  padding-top: calc(var(--header-height) + var(--space-m));
-  padding-bottom: var(--space-xl);
-  padding-left: 5vw;
-  padding-right: 5vw;
-  background-color: var(--paper);
-  color: var(--archive-black);
+/* =========================================================
+   MINERAL CAVE CHAMBER & ARCHEOLOGICAL WALL EXPERIENCE
+   ========================================================= */
+
+.mineral-cave-chamber {
+  position: relative;
+  width: 100vw;
   min-height: 100vh;
+  background-color: #ECE8E1;
+  color: var(--archive-black);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  user-select: none;
+  font-family: var(--font-sans);
 }
 
-.series-nav-back {
-  margin-bottom: var(--space-l);
+/* =========================================================
+   PROCEDURAL TEXTURE & STRATA OVERLAYS
+   ========================================================= */
+
+.mineral-wall-texture-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.back-link {
+.mineral-grain-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  filter: url(#mineral-grain-filter);
+  mix-blend-mode: multiply;
+}
+
+.mineral-vignette-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(236, 232, 225, 0.1) 50%,
+    rgba(202, 196, 185, 0.45) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+.mineral-seams-layer {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(90deg, rgba(160, 154, 143, 0.03) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(160, 154, 143, 0.03) 1px, transparent 1px);
+  background-size: 320px 320px;
+}
+
+/* =========================================================
+   CHAMBER HEADER & RESTRAINED IDENTITY
+   ========================================================= */
+
+.chamber-header {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 40px;
+  pointer-events: none;
+}
+
+.chamber-header-left,
+.chamber-header-right {
+  pointer-events: auto;
+}
+
+.chamber-back-link {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--dust);
-  transition: color 0.3s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  margin-bottom: 8px;
+  transition: color 0.25s ease;
 }
 
-.back-link:hover {
+.chamber-back-link:hover {
   color: var(--archive-black);
 }
 
-.series-header {
-  margin-bottom: var(--space-xl);
-  padding-bottom: var(--space-l);
-  border-bottom: 1px solid var(--rule);
-}
-
-.series-header-identity {
+.chamber-series-identity {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 2px;
 }
 
-.series-header-malayalam {
+.chamber-malayalam {
   padding: 0;
+  font-size: 16px;
+  opacity: 0.75;
 }
 
-.series-header-title-group {
+.chamber-title-row {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: baseline;
+  gap: 12px;
 }
 
-.series-romanized-title {
+.chamber-romanized-title {
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 4vw, 4.5rem);
+  font-size: clamp(1.4rem, 2.2vw, 2.2rem);
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--archive-black);
+  margin: 0;
   line-height: 1.1;
 }
 
-.series-header-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
+.chamber-series-badge {
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   color: var(--dust);
+  text-transform: uppercase;
 }
 
-.series-badge {
+.chamber-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.chamber-view-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 242, 236, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(190, 183, 169, 0.4);
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--charcoal);
+}
+
+.is-focused-mode .indicator-dot {
+  background-color: #191817;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.indicator-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--charcoal);
+  text-transform: uppercase;
+}
+
+.chamber-overview-btn {
+  background: rgba(245, 242, 236, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(190, 183, 169, 0.5);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--archive-black);
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.chamber-overview-btn:hover {
+  background: #FFFFFF;
+  border-color: var(--archive-black);
+}
+
+/* =========================================================
+   DESKTOP ARCHEOLOGICAL EXCAVATION WALL CANVAS
+   ========================================================= */
+
+.chamber-wall-viewport {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.chamber-wall-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* Geological Strata Guideline Rules */
+.chamber-strata-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.chamber-stratum-line {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transform: translateY(-50%);
+}
+
+.stratum-marker {
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(119, 116, 109, 0.6);
+  white-space: nowrap;
+}
+
+.stratum-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(190, 183, 169, 0.4) 0%,
+    rgba(190, 183, 169, 0.15) 50%,
+    rgba(190, 183, 169, 0.4) 100%
+  );
+}
+
+/* Serpentine Travel Trace Chalk Line */
+.chamber-serpentine-trace {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.serpentine-path-line {
+  fill: none;
+  stroke: rgba(160, 154, 143, 0.22);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4px 8px;
+}
+
+/* =========================================================
+   EMBEDDED ARTWORK ON MINERAL WALL
+   ========================================================= */
+
+.chamber-artwork-node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.4s ease;
+}
+
+.embedded-paper-mount {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #F6F4EE;
+  padding: 24px;
+  box-shadow: 
+    0 12px 36px rgba(35, 33, 30, 0.08),
+    0 2px 8px rgba(35, 33, 30, 0.04),
+    inset 0 0 0 1px rgba(210, 205, 195, 0.6);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.chamber-artwork-node:hover .embedded-paper-mount {
+  box-shadow: 
+    0 20px 48px rgba(30, 28, 25, 0.14),
+    0 4px 12px rgba(30, 28, 25, 0.06),
+    inset 0 0 0 1px rgba(160, 154, 143, 0.8);
+}
+
+.is-active-work .embedded-paper-mount {
+  box-shadow: 
+    0 28px 64px rgba(20, 18, 15, 0.2),
+    0 6px 16px rgba(20, 18, 15, 0.08),
+    inset 0 0 0 1.5px var(--archive-black);
+}
+
+/* Archeological Registration Corner Crosshairs */
+.registration-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+}
+
+.chamber-artwork-node:hover .registration-corner,
+.is-active-work .registration-corner {
+  opacity: 0.9;
+}
+
+.registration-corner.top-left {
+  top: 8px;
+  left: 8px;
+  border-top: 1px solid var(--charcoal);
+  border-left: 1px solid var(--charcoal);
+}
+
+.registration-corner.top-right {
+  top: 8px;
+  right: 8px;
+  border-top: 1px solid var(--charcoal);
+  border-right: 1px solid var(--charcoal);
+}
+
+.registration-corner.bottom-left {
+  bottom: 8px;
+  left: 8px;
+  border-bottom: 1px solid var(--charcoal);
+  border-left: 1px solid var(--charcoal);
+}
+
+.registration-corner.bottom-right {
+  bottom: 8px;
+  right: 8px;
+  border-bottom: 1px solid var(--charcoal);
+  border-right: 1px solid var(--charcoal);
+}
+
+.artwork-image-container {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.artwork-embedded-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: contrast(1.02);
+}
+
+.artwork-inscription-meta {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--dust);
+  border-top: 1px solid rgba(210, 205, 195, 0.4);
+  padding-top: 8px;
+}
+
+.artwork-plate-id {
+  color: var(--charcoal);
+}
+
+.is-active-work .artwork-plate-id {
+  color: var(--archive-black);
+  font-weight: 500;
+}
+
+/* =========================================================
+   FLOATING CHAMBER HUD
+   ========================================================= */
+
+.chamber-hud {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  width: auto;
+  max-width: 90vw;
+  pointer-events: auto;
+}
+
+.chamber-hud-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(246, 244, 238, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(190, 183, 169, 0.6);
+  box-shadow: 0 16px 36px rgba(25, 23, 20, 0.12);
+  border-radius: 6px;
+  padding: 10px 20px;
+}
+
+.chamber-hud-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dust);
+  text-transform: uppercase;
+}
+
+.chamber-hud-badge {
   color: var(--charcoal);
   font-weight: 500;
 }
 
-.series-dot {
-  color: var(--rule);
-}
-
-/* =========================================================
-   GRID / CURATED EXHIBITION HANGING
-   ========================================================= */
-.series-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-m);
-  row-gap: var(--space-xl);
-  align-items: start;
-}
-
-.series-artwork-item {
-  position: relative;
-}
-
-.artwork-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  position: relative;
-}
-
-.artwork-image-wrapper {
-  position: relative;
-  overflow: hidden;
-  margin-bottom: var(--space-xs);
-}
-
-.artwork-link:hover .artwork-image {
-  opacity: 0.94;
-}
-
-.artwork-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  transition: opacity 0.4s var(--ease-reveal);
-  background-color: #E8E5DF;
-}
-
-.artwork-meta {
+.chamber-hud-work-info {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 14px;
+  border-left: 1px solid rgba(190, 183, 169, 0.5);
+  border-right: 1px solid rgba(190, 183, 169, 0.5);
+  padding: 0 16px;
 }
 
-.artwork-meta .id {
+.chamber-hud-work-id {
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--archive-black);
-  text-decoration: none;
-  transition: text-decoration-color 0.3s;
-  text-underline-offset: 4px;
 }
 
-.artwork-link:hover .id {
-  text-decoration: underline;
-  text-decoration-color: var(--rule);
+.chamber-hud-study-btn {
+  background: var(--archive-black);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
 }
 
-/* =========================================================
-   DESKTOP (min-width: 1024px) - 12 Column Asymmetry
-   ========================================================= */
-@media (min-width: 1024px) {
-  .series-grid {
-    row-gap: calc(var(--space-xl) + var(--space-m));
-  }
-
-  .item-variant-1 {
-    grid-column: 1 / span 6;
-  }
-
-  .item-variant-2 {
-    grid-column: 8 / span 5;
-    align-self: center;
-  }
-
-  .item-variant-3 {
-    grid-column: 2 / span 5;
-  }
-
-  .item-variant-4 {
-    grid-column: 7 / span 6;
-    align-self: flex-end;
-  }
+.chamber-hud-study-btn:hover {
+  background: #32302D;
+  transform: translateY(-1px);
 }
 
-/* =========================================================
-   TABLET (768px - 1023px) - 8 Column Ledger
-   ========================================================= */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .series-grid {
-    grid-template-columns: repeat(8, 1fr);
-    row-gap: var(--space-l);
-  }
-
-  .item-variant-1 { grid-column: 1 / span 5; }
-  .item-variant-2 { grid-column: 5 / span 4; }
-  .item-variant-3 { grid-column: 1 / span 4; }
-  .item-variant-4 { grid-column: 4 / span 5; }
+.chamber-hud-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* =========================================================
-   MOBILE (< 768px) - Vertical Flow
-   ========================================================= */
-@media (max-width: 767px) {
-  .series-page {
-    padding-top: calc(var(--header-height) + var(--space-s));
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.chamber-hud-hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dust);
+}
 
-  .series-grid {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-  }
+.chamber-btn {
+  background: transparent;
+  border: 1px solid rgba(190, 183, 169, 0.6);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--charcoal);
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-  .series-artwork-item {
-    width: 100%;
-    margin: 0;
-  }
+.chamber-btn:hover:not(:disabled) {
+  background: #FFFFFF;
+  border-color: var(--archive-black);
+  color: var(--archive-black);
+}
 
-  /* Subtle alternating lateral offset */
-  .item-variant-2 { margin-left: 5%; width: 95%; }
-  .item-variant-4 { margin-right: 5%; width: 95%; }
+.chamber-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.overview-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* =========================================================
    FOOTER NAVIGATION
    ========================================================= */
-.series-footer {
-  margin-top: var(--space-xxl);
-  padding-top: var(--space-l);
-  border-top: 1px solid var(--rule);
-}
 
-.series-footer-nav {
+.chamber-footer-nav {
+  position: fixed;
+  bottom: 8px;
+  left: 40px;
+  right: 40px;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-m);
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
 }
 
-@media (min-width: 768px) {
-  .series-footer-nav {
-    flex-direction: row;
+.footer-return-link,
+.footer-next-series-link {
+  pointer-events: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dust);
+  transition: color 0.25s ease;
+  background: rgba(236, 232, 225, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
+.footer-return-link:hover,
+.footer-next-series-link:hover {
+  color: var(--archive-black);
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE FLOW (< 768px)
+   ========================================================= */
+
+.mobile-chamber-flow {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .chamber-wall-viewport {
+    display: none;
+  }
+
+  .chamber-header {
+    position: relative;
+    top: 0;
+    padding: calc(var(--header-height) + 20px) 20px 20px 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chamber-header-right {
+    display: none;
+  }
+
+  .chamber-hud {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    max-width: 100%;
+  }
+
+  .chamber-hud-inner {
+    justify-content: space-between;
+    padding: 8px 14px;
+  }
+
+  .chamber-hud-work-info,
+  .chamber-hud-actions {
+    display: none;
+  }
+
+  .mobile-chamber-flow {
+    display: block;
+    position: relative;
+    z-index: 5;
+    padding: 0 20px 100px 20px;
+  }
+
+  .mobile-flow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .mobile-chamber-card {
+    position: relative;
+  }
+
+  .mobile-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .mobile-paper-mount {
+    background: #F6F4EE;
+    padding: 16px;
+    box-shadow: 
+      0 8px 24px rgba(35, 33, 30, 0.08),
+      inset 0 0 0 1px rgba(210, 205, 195, 0.6);
+    border-radius: 2px;
+  }
+
+  .mobile-card-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .mobile-card-meta {
+    margin-top: 10px;
+    display: flex;
     justify-content: space-between;
     align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--dust);
   }
-}
 
-.footer-link {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--charcoal);
-  transition: color 0.3s ease;
-}
-
-.footer-link:hover {
-  color: var(--archive-black);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.next-series-link {
-  font-weight: 500;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .artwork-image {
-    transition: none;
+  .mobile-work-id {
+    color: var(--archive-black);
+    font-weight: 500;
   }
-  .artwork-link:hover .artwork-image {
-    opacity: 1;
+
+  .mobile-view-link {
+    color: var(--charcoal);
+  }
+
+  .chamber-footer-nav {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
   }
 }
