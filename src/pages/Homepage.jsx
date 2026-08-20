@@ -5,21 +5,21 @@ import './Homepage.css';
 
 const CAVE_STATE_KEY = 'vishnu-lal-cave-state-v2';
 const SELECTED_WORKS = [
-  { id: 'VL-A-004', x: 29, y: 38, size: 10.2, rotate: -2 },
-  { id: 'VL-B-003', x: 43, y: 29, size: 9.2, rotate: 1 },
-  { id: 'VL-A-016', x: 58, y: 32, size: 15.5, rotate: -1 },
-  { id: 'VL-B-006', x: 76, y: 36, size: 14.2, rotate: 1 },
-  { id: 'VL-A-007', x: 37, y: 60, size: 9.5, rotate: 1 },
-  { id: 'VL-A-012', x: 55, y: 59, size: 9.4, rotate: -1 },
-  { id: 'VL-B-010', x: 74, y: 59, size: 15.2, rotate: 0 },
+  { id: 'VL-A-004', hierarchy: 'secondary', x: 28, y: 40, size: 9.4, rotate: -2, paperBrightness: 0.92, paperWarmth: 0.025, localLight: 0.3 },
+  { id: 'VL-B-003', hierarchy: 'distant', x: 43, y: 29, size: 7.5, rotate: 1, paperBrightness: 0.87, paperWarmth: 0.045, localLight: 0.12 },
+  { id: 'VL-A-016', hierarchy: 'primary', x: 59, y: 33, size: 16.8, rotate: -1, paperBrightness: 0.98, paperWarmth: 0.018, localLight: 0.62 },
+  { id: 'VL-B-006', hierarchy: 'primary', x: 78, y: 36, size: 13.6, rotate: 1, paperBrightness: 0.95, paperWarmth: 0.032, localLight: 0.52 },
+  { id: 'VL-A-007', hierarchy: 'secondary', x: 39, y: 62, size: 8.7, rotate: 1, paperBrightness: 0.91, paperWarmth: 0.04, localLight: 0.26 },
+  { id: 'VL-A-012', hierarchy: 'distant', x: 57, y: 60, size: 7.4, rotate: -1, paperBrightness: 0.86, paperWarmth: 0.05, localLight: 0.1 },
+  { id: 'VL-B-010', hierarchy: 'secondary', x: 75, y: 61, size: 13, rotate: 0, paperBrightness: 0.92, paperWarmth: 0.03, localLight: 0.24 },
 ];
 const CAMERA_ROUTE = [
   { at: 0, x: 0, y: 0, scale: 1 },
-  { at: 0.18, x: 3, y: 0, scale: 1.08 },
-  { at: 0.38, x: -7, y: -3, scale: 1.11 },
-  { at: 0.56, x: -3, y: -8, scale: 1.12 },
-  { at: 0.76, x: 7, y: -6, scale: 1.1 },
-  { at: 1, x: -4, y: -1, scale: 1.08 },
+  { at: 0.2, x: 2.5, y: 0, scale: 1.045 },
+  { at: 0.4, x: -5, y: -2.5, scale: 1.065 },
+  { at: 0.58, x: -2, y: -5.5, scale: 1.075 },
+  { at: 0.78, x: 5.5, y: -4, scale: 1.065 },
+  { at: 1, x: -3, y: -1, scale: 1.045 },
 ];
 const VERIFIED_OBSERVATIONS = {
   'VL-B-006': 'Large enclosing boundary. Strong vertical axis on the left.',
@@ -86,10 +86,13 @@ export default function Homepage() {
   const focusWork = useCallback((id, openDrawer = false) => {
     const work = works.find((candidate) => candidate.id === id);
     if (!work) return;
+    const focusScale = 1.29;
+    const focusX = Math.min(14.5, Math.max(-13.5, 59.08 - (focusScale * work.x)));
+    const focusY = Math.min(13.5, Math.max(-14.5, 60.92 - (focusScale * work.y)));
     setFocusedId(id);
     setDrawerOpen(openDrawer);
     setActiveSeries(work.artwork.seriesId);
-    applyCamera({ x: 62.72 - (1.36 * work.x), y: 67.28 - (1.36 * work.y), scale: 1.36 });
+    applyCamera({ x: focusX, y: focusY, scale: focusScale });
     persistState(id, openDrawer);
   }, [applyCamera, persistState, works]);
 
@@ -176,8 +179,8 @@ export default function Homepage() {
             <img className="cave-environment" src="/home-cave/cave-environment-v2.webp" alt="A deep limestone chamber with broad illuminated stone slabs" width="1536" height="1024" fetchPriority="high" />
             <div className="cave-artwork-field" aria-label="Selected Vishnu Lal works presented as artifact plates">
               {works.map((work, index) => (
-                <button key={work.id} type="button" className={`cave-mark${focusedId === work.id ? ' is-focused' : ''}`}
-                  style={{ '--mark-x': `${work.x}%`, '--mark-y': `${work.y}%`, '--mark-size': `${work.size}vw`, '--mark-rotate': `${work.rotate}deg`, '--mark-delay': `${index * 70}ms` }}
+                <button key={work.id} type="button" className={`cave-mark is-${work.hierarchy}${focusedId === work.id ? ' is-focused' : ''}`}
+                  style={{ '--mark-x': `${work.x}%`, '--mark-y': `${work.y}%`, '--mark-size': `${work.size}vw`, '--mark-rotate': `${work.rotate}deg`, '--mark-delay': `${index * 70}ms`, '--paper-brightness': work.paperBrightness, '--paper-warmth': work.paperWarmth, '--mark-light': work.localLight }}
                   onClick={() => (focusedId === work.id ? openFieldNote() : focusWork(work.id))} aria-label={`Approach artwork ${work.id}`} aria-pressed={focusedId === work.id}>
                   <img src={`/artworks/${work.id}/900.webp`} srcSet={`/artworks/${work.id}/480.webp 480w, /artworks/${work.id}/900.webp 900w`} sizes="(max-width: 700px) 34vw, 12vw" width={work.artwork.width} height={work.artwork.height} alt="" loading="eager" decoding="sync" />
                   <span className="cave-mark-id">{work.id}</span>

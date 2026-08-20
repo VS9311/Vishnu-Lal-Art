@@ -5,19 +5,19 @@ body:has(.cave-home) .skip-link:focus { color: #f1eee7; background: #11100e; }
 
 .cave-home {
   --cave-ink: #ddd2bf;
-  --cave-muted: rgba(221, 210, 191, 0.62);
-  --cave-faint: rgba(221, 210, 191, 0.35);
+  --cave-muted: rgba(226, 216, 198, 0.68);
+  --cave-faint: rgba(226, 216, 198, 0.42);
   min-height: 100vh;
   background: #050504;
 }
-.cave-scroll-scene { position: relative; height: 650vh; }
+.cave-scroll-scene { position: relative; height: 720vh; }
 .cave-viewport { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: #030302; }
 .cave-world {
   --camera-x: 0vw; --camera-y: 0vh; --camera-scale: 1;
   position: absolute; inset: 0;
   transform-origin: 52% 48%;
   transform: translate3d(var(--camera-x), var(--camera-y), 0) scale(var(--camera-scale));
-  transition: transform 1100ms cubic-bezier(0.2, 0.82, 0.2, 1);
+  transition: transform 900ms cubic-bezier(0.22, 0.72, 0.22, 1);
   will-change: transform;
 }
 .cave-world.is-immediate { transition: none; }
@@ -25,43 +25,54 @@ body:has(.cave-home) .skip-link:focus { color: #f1eee7; background: #11100e; }
 .cave-artwork-field { position: absolute; inset: 0; }
 .cave-mark {
   position: absolute; left: var(--mark-x); top: var(--mark-y); width: var(--mark-size);
-  min-width: 82px; max-width: 248px; padding: 4px; border: 1px solid rgba(248, 241, 226, 0.68);
-  background: #e7e3da; color: var(--cave-ink); cursor: pointer; isolation: isolate;
-  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.68), 0 0 0 1px rgba(17, 14, 10, 0.32), inset 0 0 8px rgba(255, 252, 242, 0.42);
+  min-width: 76px; max-width: 248px; padding: 4px; border: 1px solid rgba(239, 229, 210, 0.46);
+  background: #ddd7cc; color: var(--cave-ink); cursor: pointer; isolation: isolate;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.54), 0 0 0 1px rgba(17, 14, 10, 0.28), inset 0 0 6px rgba(255, 248, 232, 0.28);
   transform: translate(-50%, -50%) rotate(var(--mark-rotate)); transform-origin: center;
   opacity: 0; animation: cave-mark-arrive 1500ms var(--ease-reveal) forwards;
   animation-delay: calc(420ms + var(--mark-delay));
-  transition: opacity 700ms ease, transform 700ms var(--ease-reveal), box-shadow 700ms ease;
+  transition: opacity 700ms ease, filter 650ms ease, transform 700ms var(--ease-reveal), box-shadow 700ms ease;
 }
 .cave-mark::before {
-  content: ''; position: absolute; z-index: -1; inset: -24%; border-radius: 42%;
-  background: rgba(218, 177, 112, 0.18); filter: blur(25px); opacity: 0.34; transition: opacity 700ms ease;
+  content: ''; position: absolute; z-index: -1; inset: -28%; border-radius: 46%;
+  background: rgba(211, 169, 104, 0.16); filter: blur(29px); opacity: var(--mark-light); transition: opacity 700ms ease;
 }
 .cave-mark img {
-  display: block; width: 100%; height: auto; opacity: 1; box-shadow: 0 0 0 1px rgba(25, 21, 17, 0.12); pointer-events: none;
+  display: block; width: 100%; height: auto; opacity: 1; border-radius: 0.5px;
+  box-shadow: 0 0 0 1px rgba(25, 21, 17, 0.1); pointer-events: none;
+  filter: brightness(var(--paper-brightness)) sepia(var(--paper-warmth)) contrast(0.99);
 }
+.cave-mark.is-primary { background: #e3ddd2; box-shadow: 0 13px 31px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(17, 14, 10, 0.28), inset 0 0 7px rgba(255, 248, 232, 0.3); }
+.cave-mark.is-secondary { background: #dcd6ca; }
+.cave-mark.is-distant { background: #d2cbbf; box-shadow: 0 8px 19px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(17, 14, 10, 0.25), inset 0 0 5px rgba(255, 248, 232, 0.2); }
 .cave-mark:hover, .cave-mark:focus-visible {
   transform: translate(-50%, -50%) rotate(var(--mark-rotate)) scale(1.025);
   box-shadow: 0 20px 44px rgba(0, 0, 0, 0.74), 0 0 0 1px rgba(242, 225, 195, 0.48);
 }
 .cave-mark.is-focused {
-  z-index: 2; animation: none; opacity: 1;
+  z-index: 2; opacity: 1;
+  filter: none;
   transform: translate(-50%, -50%) rotate(var(--mark-rotate)) scale(1.06);
   box-shadow: 0 24px 58px rgba(0, 0, 0, 0.78), 0 0 28px rgba(225, 183, 112, 0.18);
 }
-.cave-mark:hover::before, .cave-mark:focus-visible::before, .cave-mark.is-focused::before { opacity: 0.88; }
+.cave-mark:hover::before, .cave-mark:focus-visible::before { opacity: 0.7; }
+.cave-mark.is-focused::before { opacity: 0.82; }
+.cave-mark.is-focused img { filter: brightness(calc(var(--paper-brightness) + 0.035)) sepia(var(--paper-warmth)) contrast(1); }
 .cave-mark:focus-visible { outline: 1px solid rgba(236, 223, 199, 0.7); outline-offset: 8px; }
 .cave-mark-id {
   position: absolute; left: 50%; bottom: -18px; transform: translateX(-50%);
   font: 8px/1 var(--font-mono); letter-spacing: 0.13em; white-space: nowrap;
-  color: rgba(229, 219, 201, 0.76); opacity: 0.72; text-shadow: 0 1px 4px #000; transition: opacity 400ms ease;
+  color: rgba(229, 219, 201, 0.78); opacity: 0.62; text-shadow: 0 1px 4px #000; transition: opacity 400ms ease;
 }
+.cave-mark.is-primary .cave-mark-id { opacity: 0.76; }
+.cave-mark.is-distant .cave-mark-id { opacity: 0.46; }
 .cave-mark:hover .cave-mark-id, .cave-mark:focus-visible .cave-mark-id, .cave-mark.is-focused .cave-mark-id { opacity: 1; }
-.cave-home.has-focus .cave-mark:not(.is-focused) { opacity: 0.48; }
+.cave-home.has-focus .cave-mark:not(.is-focused) { opacity: 1; filter: brightness(0.48) saturate(0.78); }
+.cave-home.has-focus .cave-mark:not(.is-focused):hover { filter: brightness(0.6) saturate(0.84); }
 .cave-edge-darkness {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background: radial-gradient(ellipse at 56% 48%, transparent 42%, rgba(0, 0, 0, 0.03) 63%, rgba(0, 0, 0, 0.34) 100%);
-  box-shadow: inset 0 0 74px 10px rgba(0, 0, 0, 0.34);
+  background: radial-gradient(ellipse at 56% 48%, transparent 40%, rgba(0, 0, 0, 0.035) 62%, rgba(0, 0, 0, 0.38) 100%);
+  box-shadow: inset 0 0 78px 12px rgba(0, 0, 0, 0.38);
 }
 
 .cave-index {
@@ -71,7 +82,7 @@ body:has(.cave-home) .skip-link:focus { color: #f1eee7; background: #11100e; }
 }
 .cave-identity { display: grid; gap: 4px; margin-bottom: 8vh; }
 .cave-name { color: var(--cave-ink); font: 25px/1.05 var(--font-serif); letter-spacing: 0.12em; white-space: nowrap; }
-.cave-identity span:last-child { padding-left: 35px; color: var(--cave-faint); font-size: 8px; }
+.cave-identity span:last-child { padding-left: 35px; color: rgba(226, 216, 198, 0.48); font-size: 8px; }
 .cave-index button, .cave-archive-link {
   appearance: none; border: 0; padding: 0; background: transparent; color: inherit;
   font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer;
@@ -80,10 +91,10 @@ body:has(.cave-home) .skip-link:focus { color: #f1eee7; background: #11100e; }
 .cave-index-enter { display: flex; gap: 15px; align-items: center; color: var(--cave-ink) !important; text-decoration: underline; text-underline-offset: 5px; }
 .cave-index-enter span { font-size: 8px; }
 .cave-index button strong { color: rgba(221, 210, 191, 0.75); font: 13px/1.4 var(--font-sans); }
-.cave-index button em, .cave-archive-link em { color: var(--cave-faint); font-style: normal; font-size: 9px; }
+.cave-index button em, .cave-archive-link em { color: rgba(226, 216, 198, 0.47); font-style: normal; font-size: 9px; }
 .cave-index button.is-active, .cave-index button:hover, .cave-index button:focus-visible, .cave-archive-link:hover, .cave-archive-link:focus-visible { color: var(--cave-ink); }
 .cave-index button:focus-visible, .cave-archive-link:focus-visible, .cave-enter-series:focus-visible { outline: 1px solid rgba(221, 210, 191, 0.72); outline-offset: 6px; }
-.cave-index-placeholders { display: grid; gap: 15px; margin-top: 24px; color: rgba(221, 210, 191, 0.52); font-size: 8px; }
+.cave-index-placeholders { display: grid; gap: 15px; margin-top: 24px; color: rgba(226, 216, 198, 0.56); font-size: 8px; }
 .cave-enter-series {
   margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(221, 210, 191, 0.17);
   color: rgba(221, 210, 191, 0.72); font-size: 8px; white-space: nowrap;
@@ -146,7 +157,7 @@ body:has(.cave-home) .skip-link:focus { color: #f1eee7; background: #11100e; }
 @keyframes cave-mark-arrive { from { opacity: 0; } to { opacity: 1; } }
 
 @media (max-width: 900px) {
-  .cave-scroll-scene { height: 560vh; }
+  .cave-scroll-scene { height: 610vh; }
   .cave-index { width: 132px; }
   .cave-name { font-size: 21px; }
   .cave-field-note { width: min(390px, 44vw); }
