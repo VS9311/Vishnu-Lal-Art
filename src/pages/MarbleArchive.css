@@ -1,0 +1,78 @@
+.marble-archive { color: #34312c; background: #eeeae3; }
+.marble-archive a:focus-visible, .marble-archive button:focus-visible, .marble-archive summary:focus-visible { outline: 2px solid #625644; outline-offset: 5px; }
+.marble-navigation { position: fixed; inset: 0 auto 0 0; width: 220px; padding: 54px 24px 30px 46px; z-index: 15; display: flex; flex-direction: column; gap: 32px; background: linear-gradient(90deg,#eeeae3ed,#eeeae375 85%,transparent); font: 10px/1.6 var(--font-mono); letter-spacing: .09em; }
+.marble-brand { display: grid; gap: 7px; margin-bottom: 30px; }
+.marble-brand strong { font: 24px/1 var(--font-serif); letter-spacing: .13em; white-space: nowrap; }
+.marble-brand span { padding-left: 35px; font-size: 8px; color: #7b7469; }
+.marble-series-link { display: grid; gap: 7px; color: #716a60; }
+.marble-series-link strong { font: 18px/1.5 var(--font-sans); font-weight: 400; color: #34312c; }
+.marble-series-link > span:first-child { text-transform: uppercase; }
+.marble-series-link small { font: inherit; }
+.marble-series-link[aria-current] > span:first-child { text-decoration: underline; text-underline-offset: 6px; color: #34312c; }
+.marble-entrance { margin-top: auto; }
+.marble-collection-heading { position: absolute; z-index: 4; top: 26px; left: 27%; right: 32%; }
+.marble-collection-heading p, .marble-eyebrow { font: 10px/1.6 var(--font-mono); letter-spacing: .15em; text-transform: uppercase; }
+.marble-collection-heading h1 { font: 32px/1.2 var(--font-serif); margin: 6px 0; }
+.marble-collection-heading > span { font: 14px/1.5 var(--font-serif); color: #6d665c; }
+.marble-gallery-scene { width: 100%; aspect-ratio: 1672 / 941; position: relative; container-type: inline-size; }
+.marble-gallery-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; }
+.marble-gallery-work { position: absolute; transform: translate(-50%,-100%); z-index: 3; }
+.marble-gallery-work .landscape-artwork-sheet { padding: 3px; border-right-width: 2px; border-bottom-width: 2px; }
+.marble-gallery-work .landscape-artwork-image { width: auto; height: auto; max-width: 14cqw; max-height: 15cqw; }
+.marble-work-label { position: absolute; top: calc(100% + 9px); left: 0; right: 0; text-align: center; white-space: nowrap; font: 9px/1.5 var(--font-mono); letter-spacing: .08em; }
+.marble-gallery-work:hover .marble-work-label { text-decoration: underline; text-underline-offset: 4px; }
+.marble-room-number { position: absolute; bottom: 4%; left: 27%; right: 7%; display: flex; justify-content: space-between; font: 9px/1.5 var(--font-mono); letter-spacing: .14em; }
+.marble-record-layout { margin-left: 220px; min-height: 100svh; display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,1fr); }
+.marble-record-visual { position: sticky; top: 0; align-self: start; height: 100svh; min-height: 600px; overflow: hidden; container-type: inline-size; }
+.marble-record-backdrop { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+.marble-record-sheet { position: absolute; bottom: 44.6%; left: 50%; transform: translateX(-50%) perspective(1600px) rotateY(-2deg); }
+.marble-record-sheet .landscape-artwork-image { width: auto; height: auto; max-width: 70cqw; max-height: min(88cqw,43svh); }
+.marble-record-copy { padding: 55px clamp(24px,4vw,70px) 40px 28px; }
+.marble-back-link { font: 9px/1.6 var(--font-mono); letter-spacing: .08em; display: inline-block; margin-bottom: 75px; }
+.marble-record-copy h1 { font: clamp(28px,3.2vw,48px)/1.3 var(--font-serif); margin: 14px 0; letter-spacing: .03em; }
+.marble-record-series { font: 12px/1.7 var(--font-mono); color: #70685d; }
+.marble-record-series [lang] { font: 20px/1.6 var(--font-sans); }
+.marble-acquisition { display: grid; gap: 10px; margin-top: 32px; }
+.marble-acquisition button { min-height: 48px; background: transparent; border: 1px solid #9e9586; text-align: left; padding: 14px; cursor: pointer; font: 10px/1.6 var(--font-mono); letter-spacing: .08em; color: inherit; }
+.marble-acquisition button:first-child { background: #3e3b34; color: #f5f1e8; border-color: #3e3b34; }
+.marble-availability { margin: 14px 0 32px; color: #736b60; font: 14px/1.6 var(--font-serif); }
+.marble-public-record > p { font: 17px/1.6 var(--font-serif); }
+.marble-public-record .catalogue-record, .marble-public-record .formal-observation, .marble-public-record .curatorial-observation { padding-bottom: 24px; gap: 20px; }
+.marble-public-record .metadata-row, .marble-public-record .observation-block { grid-template-columns: 1fr; gap: 8px; }
+.marble-public-record .body-text, .marble-public-record .list-item { font-size: 17px; }
+.marble-public-record .section-title { font-size: 10px; }
+.marble-public-record details { border-top: 1px solid #cec6b9; padding: 18px 0; }
+.marble-public-record summary { font: 10px/1.6 var(--font-mono); letter-spacing: .06em; cursor: pointer; }
+.marble-public-record details > section { margin-top: 24px; }
+.marble-public-record details .section-title { display: none; }
+.marble-record-pagination { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 18px; margin-top: 40px; padding-top: 22px; border-top: 1px solid #cec6b9; font: 9px/1.6 var(--font-mono); }
+.marble-record-pagination > span { color: #867e72; }
+.marble-contact-dialog { position: fixed; margin: auto; width: min(540px,calc(100% - 32px)); max-height: calc(100svh - 32px); overflow: auto; border: 1px solid #b8afa0; padding: 32px; color: #34312c; background: #f0ede6; box-shadow: 0 20px 90px #30271930; }
+.marble-contact-dialog::backdrop { background: #25201666; backdrop-filter: blur(4px); }
+.marble-dialog-close { display: block; margin-left: auto; border: 0; background: none; min-height: 44px; font: 10px/1.5 var(--font-mono); cursor: pointer; }
+.marble-contact-dialog h2 { font: 32px/1.15 var(--font-serif); margin: 16px 0; }
+.marble-contact-dialog p { font: 16px/1.6 var(--font-serif); }
+.marble-contact-dialog .marble-eyebrow, .marble-contact-dialog label, .marble-contact-options h3 { font: 10px/1.6 var(--font-mono); letter-spacing: .08em; }
+.marble-contact-dialog label { display: block; margin-top: 24px; }
+.marble-contact-dialog textarea { width: 100%; margin-top: 8px; padding: 12px; border: 1px solid #b8afa0; background: #faf8f366; color: inherit; font: 16px/1.5 var(--font-serif); resize: vertical; }
+.marble-contact-options h3 { margin: 22px 0 4px; color: #756b5d; }
+.marble-contact-options a { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #d0c8ba; font: 12px/1.5 var(--font-mono); overflow-wrap: anywhere; }
+.marble-contact-dialog .marble-contact-note { font-size: 13px; color: #776d60; margin-top: 22px; }
+.marble-missing { padding: 15vh 10%; }
+@media (max-width: 1000px) and (min-width: 801px) { .marble-collection-heading > span { display: none; } }
+@media (max-width: 1000px) and (min-width: 801px) { .marble-navigation { width: 180px; padding-left: 28px; } .marble-brand strong { font-size: 20px; } .marble-collection-heading { top: 20px; } .marble-collection-heading h1 { font-size: 26px; } .marble-record-layout { margin-left: 180px; } .marble-record-copy { padding-inline: 16px; } }
+@media (max-width: 800px) {
+  .marble-navigation { position: relative; width: 100%; padding: 30px 7% 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .marble-brand { margin: 0; grid-column: 1 / -1; }
+  .marble-home-link, .marble-entrance { display: none; }
+  .marble-series-link { gap: 3px; }
+  .marble-series-link strong, .marble-series-link small { display: none; }
+  .marble-record-layout { margin-left: 0; display: block; }
+  .marble-record-visual { position: relative; height: 540px; min-height: 0; max-width: 480px; margin: auto; }
+  .marble-record-sheet .landscape-artwork-image { max-height: 245px; max-width: 65cqw; }
+  .marble-record-copy { padding: 0 7% 40px; max-width: 540px; margin: -65px auto 0; position: relative; }
+  .marble-back-link { margin-bottom: 28px; }
+  .marble-record-copy h1 { font-size: 38px; }
+  .marble-contact-dialog { padding: 22px; }
+  .marble-contact-dialog h2 { font-size: 29px; }
+}

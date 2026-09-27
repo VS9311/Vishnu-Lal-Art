@@ -93,7 +93,7 @@ export default function ArchiveHeader() {
                     className={pathname === '/archive/series-i' ? 'drawer-link active' : 'drawer-link'}
                   >
                     <span className="drawer-malayalam">അനാമം</span>
-                    <span className="drawer-series-meta">Series I · 16 works</span>
+                    <span className="drawer-series-meta">Series I · 17 works</span>
                   </Link>
                 </li>
                 <li>

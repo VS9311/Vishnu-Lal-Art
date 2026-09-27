@@ -4,7 +4,10 @@ import { join } from 'node:path';
 const root = process.cwd();
 const artworkIdPattern = /^VL-[A-Z]-\d{3}$/;
 const derivativeWidths = [480, 900, 1440, 2400];
-const expectedSeriesIIds = Array.from({ length: 16 }, (_, index) => `VL-A-${String(index + 1).padStart(3, '0')}`);
+const expectedSeriesIIds = [
+  ...Array.from({ length: 16 }, (_, index) => `VL-A-${String(index + 1).padStart(3, '0')}`),
+  'VL-A-018',
+];
 const expectedSeriesIIIds = Array.from({ length: 12 }, (_, index) => `VL-B-${String(index + 1).padStart(3, '0')}`);
 const expectedPublicIds = [...expectedSeriesIIds, ...expectedSeriesIIIds];
 const acquisitionStatuses = new Set(['AVAILABLE', 'ACQUIRED', 'NOT_CURRENTLY_AVAILABLE', null]);
@@ -91,7 +94,7 @@ if (manifestEntries.length !== expectedSeriesIIds.length) fail(`Series I master 
 
 for (const [index, entry] of manifestEntries.entries()) {
   const expectedId = expectedSeriesIIds[index];
-  const expectedSourceNumber = String(index + 1).padStart(2, '0');
+  const expectedSourceNumber = entry.id.slice(-3).slice(1);
   if (entry.id !== expectedId) fail(`Series I manifest position ${index + 1} must map to ${expectedId}`);
   if (!new RegExp(`^${expectedSourceNumber}\\.(jpe?g)$`, 'i').test(entry.source)) {
     fail(`Series I manifest ${entry.id} must map to numeric source ${expectedSourceNumber}`);
@@ -99,8 +102,9 @@ for (const [index, entry] of manifestEntries.entries()) {
 }
 
 const seriesIMasterDirectory = join(root, seriesIManifest.mastersRoot);
+const expectedSeriesISources = new Set(manifestEntries.map(({ source }) => source.toLowerCase()));
 const discoveredSeriesIMasters = readdirSync(seriesIMasterDirectory)
-  .filter((filename) => /^(?:0[1-9]|1[0-6])\.jpe?g$/i.test(filename));
+  .filter((filename) => expectedSeriesISources.has(filename.toLowerCase()));
 
 if (discoveredSeriesIMasters.length !== expectedSeriesIIds.length) {
   fail(`Expected exactly ${expectedSeriesIIds.length} numeric Series I masters, found ${discoveredSeriesIMasters.length}`);

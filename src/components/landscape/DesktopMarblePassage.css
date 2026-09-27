@@ -1,0 +1,284 @@
+@media (min-width: 801px) {
+  .marble-passage-page {
+    min-height: 100svh;
+    overflow: clip;
+    color: #34312c;
+    background: #ede9e1;
+  }
+
+  .marble-passage-scene {
+    position: relative;
+    min-height: 100svh;
+  }
+
+  .marble-passage-frame {
+    --passage-progress: 0;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+    background: #e8e3da;
+  }
+
+  .marble-passage-world {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: flex;
+    width: max-content;
+    padding-left: 250px;
+    padding-right: 70px;
+    height: 100%;
+    transform-origin: 0 0;
+    transition: transform 240ms cubic-bezier(0.22, 0.72, 0.22, 1);
+    will-change: transform;
+  }
+
+  .marble-passage-frame {
+    background: #e8e4dc;
+    background-image: url('/homepage-2/relief-mineral-grain.svg');
+    box-shadow: inset 0 60px 100px #fff8, inset 0 -60px 90px #b8b0a52b;
+  }
+
+  .collection-bay {
+    position: relative;
+    flex: 0 0 clamp(1000px, calc(100vw - 260px), 1320px);
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    padding-top: clamp(70px, 16vh, 185px);
+  }
+
+  .collection-bay-composition {
+    position: relative;
+    width: 100%;
+    height: 560px;
+    transform: translateY(var(--bay-shift));
+  }
+
+  .collection-bay-architecture { position: absolute; inset: 0; pointer-events: none; }
+  .collection-plane {
+    position: absolute;
+    background: #e5e1d8 url('/homepage-2/relief-mineral-grain.svg');
+  }
+  .collection-plane--recess {
+    border-top: var(--plane-depth) solid #d2ccc0;
+    border-left: var(--plane-depth) solid #d8d1c5;
+    border-right: 1px solid #fbf8f0;
+    box-shadow: inset 10px 15px 25px #665a4418, inset -10px 0 25px #fff6;
+    clip-path: polygon(0 0, 99% 0, 100% 38%, 99.6% 100%, 0 100%, .3% 58%);
+  }
+  .collection-plane--plane {
+    background-color: #ebe7de;
+    box-shadow: -8px 4px 15px #665a440b, inset var(--plane-depth) 0 0 #f8f4ec99;
+    border-bottom: 1px solid #cfc7b955;
+  }
+  .collection-plane--ledge {
+    z-index: 2;
+    transform: translateY(100%);
+    background-color: #e6e0d5;
+    border-top: 3px solid #f8f5ed;
+    border-bottom: 1px solid #c3bbae;
+    box-shadow: 0 7px 9px -5px #665a4445;
+    clip-path: polygon(var(--edge-inset) 0, 100% 0, 99.7% 60%, 99% 100%, 0 100%, .5% 45%);
+  }
+  .collection-bay--levels .collection-plane--recess { border-right: 0; }
+  .collection-bay--open .collection-plane--plane { opacity: .45; }
+  .marble-passage-work.collection-paper {
+    position: absolute;
+    width: var(--paper-width);
+    transform: translateX(-50%);
+  }
+  .collection-paper .landscape-artwork-sheet {
+    padding: 2px;
+    background: #efebe3;
+    border: 0;
+    box-shadow: 1px 1px 0 #bcb5a8, 0 2px 2px #554a3645, 4px 4px 9px #665a4420;
+  }
+  .collection-paper .landscape-artwork-image { display: block; width: 100%; height: auto; }
+  .collection-paper:hover .landscape-artwork-sheet { box-shadow: 1px 1px 0 #bcb5a8, 0 2px 3px #554a3655, 5px 5px 10px #665a4428; }
+  @media (max-height: 820px) {
+    .collection-bay { padding-top: 55px; }
+    .collection-bay-composition { height: 560px; zoom: .88; width: calc(100% / .88); }
+  }
+
+  .marble-passage-index {
+    position: fixed;
+    z-index: 20;
+    inset: 0 auto 0 0;
+    width: 220px;
+    padding: 54px 24px 34px 46px;
+    display: flex;
+    flex-direction: column;
+    color: rgba(52, 49, 44, 0.68);
+    background: rgba(238, 234, 227, 0.86);
+    border-right: 1px solid rgba(52, 49, 44, 0.08);
+    backdrop-filter: blur(12px);
+    font: 9px/1.55 var(--font-mono);
+    letter-spacing: 0.11em;
+  }
+
+  .marble-passage-brand {
+    display: grid;
+    gap: 7px;
+  }
+
+  .marble-passage-brand strong {
+    color: #34312c;
+    font: 24px/1 var(--font-serif);
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+  }
+
+  .marble-passage-brand span {
+    padding-left: 35px;
+    color: rgba(52, 49, 44, 0.46);
+    font-size: 8px;
+  }
+
+  .marble-passage-series {
+    margin-top: 19vh;
+    display: grid;
+    gap: 7px;
+  }
+
+  .marble-passage-series > span {
+    color: rgba(52, 49, 44, 0.58);
+  }
+
+  .marble-passage-series strong {
+    color: #34312c;
+    font: 20px/1.35 var(--font-sans);
+    font-weight: 400;
+  }
+
+  .marble-passage-series em {
+    color: rgba(52, 49, 44, 0.72);
+    font-style: normal;
+  }
+
+  .marble-passage-series small {
+    margin-top: 8px;
+    color: rgba(52, 49, 44, 0.52);
+    font: inherit;
+  }
+
+  .marble-passage-return {
+    margin-top: 42px;
+    padding-top: 18px;
+    color: rgba(52, 49, 44, 0.72);
+    border-top: 1px solid rgba(52, 49, 44, 0.14);
+  }
+
+  .marble-passage-index > p {
+    margin-top: auto;
+    color: rgba(52, 49, 44, 0.4);
+    line-height: 1.8;
+  }
+
+  .marble-passage-work {
+    position: relative;
+    z-index: 4;
+    width: min(100%, var(--paper-width));
+    color: #34312c;
+    transform-origin: center bottom;
+    transition: transform 420ms cubic-bezier(0.22, 0.72, 0.22, 1), filter 420ms ease;
+  }
+
+  .marble-passage-work .landscape-artwork-sheet {
+    display: block;
+    padding: 5px;
+    background: #e9e5dd;
+    box-shadow: 1px 0 0 #aaa396, 2px 1px 0 #c5beb1,
+      0 3px 2px #51493666, 5px 6px 9px #5f543733, 12px 7px 22px #5f543718;
+  }
+
+  .marble-passage-work .landscape-artwork-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .marble-passage-work-label {
+    position: absolute;
+    top: calc(100% + 29px);
+    left: 0;
+    width: max-content;
+    display: grid;
+    gap: 5px;
+    color: rgba(52, 49, 44, 0.5);
+    font: 9px/1.25 var(--font-mono);
+    letter-spacing: 0.09em;
+  }
+
+  .marble-passage-work-label strong {
+    color: rgba(52, 49, 44, 0.72);
+    font-weight: 400;
+  }
+
+  .marble-passage-work-label em {
+    opacity: 0;
+    font-style: normal;
+    transform: translateY(-3px);
+    transition: opacity 260ms ease, transform 260ms ease;
+  }
+
+  .marble-passage-work:hover,
+  .marble-passage-work:focus-visible {
+    z-index: 7;
+    filter: brightness(1.025) drop-shadow(2px 2px 3px #66583c20);
+  }
+
+  .marble-passage-work:hover .marble-passage-work-label em,
+  .marble-passage-work:focus-visible .marble-passage-work-label em {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .marble-passage-work:focus-visible {
+    outline: 1px solid rgba(52, 49, 44, 0.68);
+    outline-offset: 8px;
+  }
+
+  .marble-passage-progress {
+    position: absolute;
+    z-index: 12;
+    left: 270px;
+    right: 46px;
+    bottom: 29px;
+    display: grid;
+    grid-template-columns: auto minmax(120px, 320px) auto;
+    align-items: center;
+    gap: 18px;
+    color: rgba(52, 49, 44, 0.55);
+    font: 8px/1 var(--font-mono);
+    letter-spacing: 0.12em;
+    pointer-events: none;
+  }
+
+  .marble-passage-progress i {
+    height: 1px;
+    overflow: hidden;
+    background: rgba(52, 49, 44, 0.18);
+  }
+
+  .marble-passage-progress b {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: rgba(52, 49, 44, 0.62);
+    transform: scaleX(max(0.025, var(--passage-progress)));
+    transform-origin: left;
+  }
+
+  .marble-passage-progress em {
+    font-style: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (min-width: 801px) {
+  .marble-passage-work,
+  .marble-passage-work-label em,
+  .marble-passage-world {
+    transition: none;
+  }
+}

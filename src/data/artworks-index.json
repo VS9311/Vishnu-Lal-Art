@@ -1,6 +1,6 @@
 {
-  "knownArtworkIds": ["VL-A-001", "VL-A-002", "VL-A-003", "VL-A-004", "VL-A-005", "VL-A-006", "VL-A-007", "VL-A-008", "VL-A-009", "VL-A-010", "VL-A-011", "VL-A-012", "VL-A-013", "VL-A-014", "VL-A-015", "VL-A-016", "VL-B-001", "VL-B-002", "VL-B-003", "VL-B-004", "VL-B-005", "VL-B-006", "VL-B-007", "VL-B-008", "VL-B-009", "VL-B-010", "VL-B-011", "VL-B-012"],
-  "publicArtworkIds": ["VL-B-001", "VL-B-002", "VL-B-003", "VL-B-004", "VL-B-005", "VL-B-006", "VL-B-007", "VL-B-008", "VL-B-009", "VL-B-010", "VL-B-011", "VL-B-012", "VL-A-001", "VL-A-002", "VL-A-003", "VL-A-004", "VL-A-005", "VL-A-006", "VL-A-007", "VL-A-008", "VL-A-009", "VL-A-010", "VL-A-011", "VL-A-012", "VL-A-013", "VL-A-014", "VL-A-015", "VL-A-016"],
+  "knownArtworkIds": ["VL-A-001", "VL-A-002", "VL-A-003", "VL-A-004", "VL-A-005", "VL-A-006", "VL-A-007", "VL-A-008", "VL-A-009", "VL-A-010", "VL-A-011", "VL-A-012", "VL-A-013", "VL-A-014", "VL-A-015", "VL-A-016", "VL-A-018", "VL-B-001", "VL-B-002", "VL-B-003", "VL-B-004", "VL-B-005", "VL-B-006", "VL-B-007", "VL-B-008", "VL-B-009", "VL-B-010", "VL-B-011", "VL-B-012"],
+  "publicArtworkIds": ["VL-B-001", "VL-B-002", "VL-B-003", "VL-B-004", "VL-B-005", "VL-B-006", "VL-B-007", "VL-B-008", "VL-B-009", "VL-B-010", "VL-B-011", "VL-B-012", "VL-A-001", "VL-A-002", "VL-A-003", "VL-A-004", "VL-A-005", "VL-A-006", "VL-A-007", "VL-A-008", "VL-A-009", "VL-A-010", "VL-A-011", "VL-A-012", "VL-A-013", "VL-A-014", "VL-A-015", "VL-A-016", "VL-A-018"],
   "artworks": [
     { "id": "VL-A-001", "seriesId": "series-i", "width": 4800, "height": 7200 },
     { "id": "VL-A-002", "seriesId": "series-i", "width": 4800, "height": 7200 },
@@ -18,6 +18,7 @@
     { "id": "VL-A-014", "seriesId": "series-i", "width": 1650, "height": 2400 },
     { "id": "VL-A-015", "seriesId": "series-i", "width": 1650, "height": 2400 },
     { "id": "VL-A-016", "seriesId": "series-i", "width": 2400, "height": 1650 },
+    { "id": "VL-A-018", "seriesId": "series-i", "width": 1650, "height": 2400 },
     { "id": "VL-B-001", "seriesId": "series-ii", "width": 4800, "height": 3600 },
     { "id": "VL-B-002", "seriesId": "series-ii", "width": 4800, "height": 3600 },
     { "id": "VL-B-003", "seriesId": "series-ii", "width": 3486, "height": 4764 },
