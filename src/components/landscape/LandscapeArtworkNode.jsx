@@ -25,6 +25,7 @@ export default function LandscapeArtworkNode({ artwork, placement, selected, reg
             className="landscape-artwork-image"
             sizes="(max-width: 800px) 56vw, 24vw"
             priority={placement.priority}
+            eager
           />
         </span>
         <span className="landscape-hover-note">

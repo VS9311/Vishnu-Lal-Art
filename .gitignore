@@ -13,6 +13,11 @@ dist
 dist-ssr
 *.local
 
+# Local design review output and machine-specific QA helpers
+Review-Screenshots/
+tmp/
+scripts/capture-artist-review.mjs
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

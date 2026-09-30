@@ -1,7 +1,7 @@
 // Presentation only: canonical records and their catalogue order remain unchanged.
 export const SERIES_RELIEF_CONFIG = {
-  'series-i': { sequence: ['levels', 'cut', 'broad', 'open'], proofIds: ['VL-A-001', 'VL-A-002', 'VL-A-003', 'VL-A-004', 'VL-A-005', 'VL-A-006', 'VL-A-007', 'VL-A-016', 'VL-A-009'] },
-  'series-ii': { sequence: ['open', 'broad', 'cut', 'levels'], proofIds: ['VL-B-001', 'VL-B-002', 'VL-B-003'] },
+  'series-i': { sequence: ['levels', 'cut', 'broad', 'open', 'broad', 'levels'] },
+  'series-ii': { sequence: ['open', 'broad', 'levels', 'cut'] },
 };
 
 // Slots share ledge baselines with the architectural planes, in a 560px-high bay.
@@ -31,18 +31,16 @@ export function classifyArtwork(artwork) {
   return ['portrait', 'landscape', 'square'].includes(artwork.orientation) ? artwork.orientation : 'square';
 }
 
-export function selectReliefProof(artworks, seriesId) {
-  const ids = SERIES_RELIEF_CONFIG[seriesId]?.proofIds;
-  return ids ? ids.map(id => artworks.find(work => work.id === id)).filter(Boolean) : artworks.slice(0, 9);
+export function getArtworkRecordPath(artworkId) {
+  return `/artwork/${artworkId}`;
 }
 
 export function buildReliefBays(artworks, seriesId) {
   const sequence = SERIES_RELIEF_CONFIG[seriesId]?.sequence || SERIES_RELIEF_CONFIG['series-i'].sequence;
-  const unique = [...new Map(artworks.map(work => [work.id, work])).values()];
-  return Array.from({ length: Math.ceil(unique.length / 3) }, (_, index) => {
+  return Array.from({ length: Math.ceil(artworks.length / 3) }, (_, index) => {
     const family = sequence[index % sequence.length];
     const definition = RELIEF_FAMILIES[family];
-    const group = unique.slice(index * 3, index * 3 + 3);
+    const group = artworks.slice(index * 3, index * 3 + 3);
     const remaining = [...group];
     const assigned = new Map();
     // Claim exact-compatible slots first so fallback works cannot take them.

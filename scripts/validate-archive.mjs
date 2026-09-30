@@ -24,8 +24,26 @@ const forbiddenFieldNames = new Set([
   'workflownotes',
   'status',
 ]);
-const allowedPublicRecordFields = new Set(['id', 'catalogue', 'formalObservation', 'curatorialObservation', 'acquisitionStatus']);
+const allowedPublicRecordFields = new Set([
+  'id',
+  'catalogue',
+  'formalObservation',
+  'curatorialObservation',
+  'acquisitionStatus',
+  'availability',
+  'price',
+  'medium',
+  'support',
+  'dimensions',
+  'presentation',
+  'framed',
+  'canShipRolled',
+  'canShipFlat',
+  'canShipFramed',
+  'shippingNotes',
+]);
 const errors = [];
+let resolvedSeriesIMasterDirectory = null;
 
 function readJson(relativePath) {
   return JSON.parse(readFileSync(join(root, relativePath), 'utf8'));
@@ -63,7 +81,6 @@ function inspectPublicValue(value, path = '') {
 const index = readJson('src/data/artworks-index.json');
 const seriesData = readJson('src/data/series.json');
 const seriesIManifest = readJson('src/data/series-i-master-manifest.json');
-const sequence = readJson('src/data/homepage-sequence.json');
 const knownIds = index.knownArtworkIds ?? [];
 const publicIds = index.publicArtworkIds ?? [];
 const indexArtworks = index.artworks ?? [];
@@ -101,17 +118,30 @@ for (const [index, entry] of manifestEntries.entries()) {
   }
 }
 
-const seriesIMasterDirectory = join(root, seriesIManifest.mastersRoot);
 const expectedSeriesISources = new Set(manifestEntries.map(({ source }) => source.toLowerCase()));
-const discoveredSeriesIMasters = readdirSync(seriesIMasterDirectory)
-  .filter((filename) => expectedSeriesISources.has(filename.toLowerCase()));
+const directMasterDirectory = join(root, seriesIManifest.mastersRoot);
+const siblingMasterDirectories = readdirSync(join(root, '..'), { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => join(root, '..', entry.name, seriesIManifest.mastersRoot));
+const seriesIMasterDirectory = [directMasterDirectory, ...siblingMasterDirectories]
+  .find((candidate) => existsSync(candidate)
+    && manifestEntries.every(({ source }) => existsSync(join(candidate, source))));
+const discoveredSeriesIMasters = seriesIMasterDirectory
+  ? readdirSync(seriesIMasterDirectory).filter((filename) => expectedSeriesISources.has(filename.toLowerCase()))
+  : [];
+
+if (!seriesIMasterDirectory) {
+  fail(`Series I masters were not found at ${directMasterDirectory} or in a sibling checkout`);
+} else {
+  resolvedSeriesIMasterDirectory = seriesIMasterDirectory;
+}
 
 if (discoveredSeriesIMasters.length !== expectedSeriesIIds.length) {
   fail(`Expected exactly ${expectedSeriesIIds.length} numeric Series I masters, found ${discoveredSeriesIMasters.length}`);
 }
 
 for (const entry of manifestEntries) {
-  if (!existsSync(join(seriesIMasterDirectory, entry.source))) fail(`Series I master is missing for ${entry.id}: ${entry.source}`);
+  if (seriesIMasterDirectory && !existsSync(join(seriesIMasterDirectory, entry.source))) fail(`Series I master is missing for ${entry.id}: ${entry.source}`);
 }
 
 for (const source of discoveredSeriesIMasters) {
@@ -170,20 +200,20 @@ for (const id of publicRecordIds) {
   if (Object.hasOwn(record, 'acquisitionStatus') && !acquisitionStatuses.has(record.acquisitionStatus)) {
     fail(`Public record ${id} has invalid acquisitionStatus ${record.acquisitionStatus}`);
   }
+  if (Object.hasOwn(record, 'availability') && !acquisitionStatuses.has(record.availability)) {
+    fail(`Public record ${id} has invalid availability ${record.availability}`);
+  }
+  for (const field of ['framed', 'canShipRolled', 'canShipFlat', 'canShipFramed']) {
+    if (Object.hasOwn(record, field) && typeof record[field] !== 'boolean') fail(`Public record ${id} has non-boolean ${field}`);
+  }
+  if (record.price && typeof record.price !== 'string'
+    && !(typeof record.price === 'object' && typeof record.price.amount === 'number' && typeof record.price.currency === 'string')) {
+    fail(`Public record ${id} has invalid price`);
+  }
   for (const key of Object.keys(record)) {
     if (!allowedPublicRecordFields.has(key)) fail(`Public record ${id} contains non-canonical field ${key}`);
   }
   inspectPublicValue(record, `public record ${id}`);
-}
-
-for (const step of sequence) {
-  const referencedIds = step.artworkId ? [step.artworkId] : step.artworkIds ?? [];
-  for (const id of referencedIds) {
-    if (!knownIds.includes(id)) fail(`Homepage references nonexistent artwork ${id}`);
-    if (!publicIds.includes(id) && !step.allowPending) {
-      fail(`Homepage references unpublished artwork ${id} without allowPending`);
-    }
-  }
 }
 
 if (errors.length) {
@@ -193,3 +223,4 @@ if (errors.length) {
 }
 
 console.log(`Archive validation passed: ${knownIds.length} known works, ${publicIds.length} public record(s), ${derivativeWidths.length} derivatives per work.`);
+console.log(`Series I masters resolved from: ${resolvedSeriesIMasterDirectory}`);

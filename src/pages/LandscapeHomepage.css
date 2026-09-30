@@ -3,7 +3,6 @@ body:has(.landscape-homepage) {
   color: #292925;
 }
 
-body:has(.landscape-homepage) .archive-header { display: none; }
 body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2efe8; }
 
 .landscape-homepage {

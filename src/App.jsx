@@ -1,34 +1,42 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ArchiveHeader from './components/ArchiveHeader';
-import Homepage from './pages/Homepage';
+import { BrowserRouter as Router, Navigate, Routes, Route, useParams } from 'react-router-dom';
 import LandscapeHomepage from './pages/LandscapeHomepage';
+import ArtistPage from './pages/ArtistPage';
 import { MarbleSeriesPage, MarbleArtworkPage } from './pages/MarbleArchive';
-import ArchiveMapLab from './pages/ArchiveMapLab';
-import Archive from './pages/Archive';
-import SeriesPage from './pages/SeriesPage';
-import ArtworkDetail from './pages/ArtworkDetail';
-import NotFound from './pages/NotFound';
+import ArchiveCart from './components/cart/ArchiveCart';
+import { CartProvider } from './components/cart/CartContext';
+import { RouteMotionProvider, RouteMotionStage } from './motion/RouteMotion';
+
+function LegacyArtworkRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/artwork/${id}`} replace />;
+}
 
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        <a className="skip-link" href="#main-content">Skip to content</a>
-        <ArchiveHeader />
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/homepage-2" element={<LandscapeHomepage />} />
-          <Route path="/homepage-2/series-i" element={<MarbleSeriesPage seriesId="series-i" />} />
-          <Route path="/homepage-2/series-ii" element={<MarbleSeriesPage seriesId="series-ii" />} />
-          <Route path="/homepage-2/artwork/:id" element={<MarbleArtworkPage />} />
-          <Route path="/lab/archive-map" element={<ArchiveMapLab />} />
-          <Route path="/archive" element={<Archive />} />
-          <Route path="/archive/series-i" element={<SeriesPage seriesId="series-i" />} />
-          <Route path="/archive/series-ii" element={<SeriesPage seriesId="series-ii" />} />
-          <Route path="/archive/:id" element={<ArtworkDetail />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <CartProvider>
+        <RouteMotionProvider>
+          <div className="app-container">
+            <a className="skip-link" href="#main-content">Skip to content</a>
+            <RouteMotionStage><Routes>
+            <Route path="/" element={<LandscapeHomepage />} />
+            <Route path="/artist" element={<ArtistPage />} />
+            <Route path="/series-i" element={<MarbleSeriesPage seriesId="series-i" />} />
+            <Route path="/series-ii" element={<MarbleSeriesPage seriesId="series-ii" />} />
+            <Route path="/artwork/:id" element={<MarbleArtworkPage />} />
+
+            <Route path="/homepage-2" element={<Navigate to="/" replace />} />
+            <Route path="/homepage-2/series-i" element={<Navigate to="/series-i" replace />} />
+            <Route path="/homepage-2/series-ii" element={<Navigate to="/series-ii" replace />} />
+            <Route path="/homepage-2/artwork/:id" element={<LegacyArtworkRedirect />} />
+            <Route path="/archive/*" element={<Navigate to="/" replace />} />
+            <Route path="/lab/archive-map" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes></RouteMotionStage>
+            <ArchiveCart />
+          </div>
+        </RouteMotionProvider>
+      </CartProvider>
     </Router>
   );
 }

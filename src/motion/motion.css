@@ -1,0 +1,99 @@
+:root {
+  --motion-fast: 180ms;
+  --motion-panel: 360ms;
+  --motion-gallery: 620ms;
+  --motion-portal-out: 390ms;
+  --motion-portal-in: 530ms;
+  --motion-focus-out: 330ms;
+  --motion-focus-in: 450ms;
+  --motion-record-out: 320ms;
+  --motion-record-in: 380ms;
+  --ease-archive-enter: cubic-bezier(.2,.74,.2,1);
+  --ease-archive-exit: cubic-bezier(.42,0,.66,.3);
+  --ease-archive-spatial: cubic-bezier(.4,0,.2,1);
+}
+
+.app-container,
+.route-motion-stage { min-height: 100svh; background: #ebe8e1; }
+
+.route-motion-stage { transform-origin: center center; }
+.route-motion-stage[data-motion-phase='leaving'] { pointer-events: none; }
+
+.route-motion-stage[data-motion-phase='leaving'][data-motion-kind='portal'] {
+  animation: archive-portal-out var(--motion-portal-out) var(--ease-archive-exit) both;
+}
+.route-motion-stage[data-motion-phase='entering'][data-motion-kind='portal'] {
+  animation: archive-portal-in var(--motion-portal-in) var(--ease-archive-enter) both;
+}
+.route-motion-stage[data-motion-phase='leaving'][data-motion-kind='focus'] {
+  animation: archive-focus-out var(--motion-focus-out) var(--ease-archive-exit) both;
+}
+.route-motion-stage[data-motion-phase='entering'][data-motion-kind='focus'] {
+  animation: archive-focus-in var(--motion-focus-in) var(--ease-archive-enter) both;
+}
+.route-motion-stage[data-motion-phase='leaving'][data-motion-kind='record'] {
+  animation: archive-record-out var(--motion-record-out) var(--ease-archive-exit) both;
+}
+.route-motion-stage[data-motion-phase='entering'][data-motion-kind='record'] {
+  animation: archive-record-in var(--motion-record-in) var(--ease-archive-enter) both;
+}
+.route-motion-stage[data-motion-phase='leaving'][data-motion-kind='record'][data-motion-direction='-1'] {
+  animation-name: archive-record-out-previous;
+}
+.route-motion-stage[data-motion-phase='entering'][data-motion-kind='record'][data-motion-direction='-1'] {
+  animation-name: archive-record-in-previous;
+}
+
+@keyframes archive-portal-out { to { opacity: .18; transform: translate3d(0,-.8rem,0) scale(.985); } }
+@keyframes archive-portal-in { from { opacity: .08; transform: translate3d(0,.9rem,0) scale(1.012); } to { opacity: 1; transform: none; } }
+@keyframes archive-focus-out { to { opacity: .16; transform: scale(1.018); } }
+@keyframes archive-focus-in { from { opacity: .08; transform: scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes archive-record-out { to { opacity: .08; transform: translate3d(-6vw,0,0); } }
+@keyframes archive-record-in { from { opacity: .08; transform: translate3d(6vw,0,0); } to { opacity: 1; transform: none; } }
+@keyframes archive-record-out-previous { to { opacity: .08; transform: translate3d(6vw,0,0); } }
+@keyframes archive-record-in-previous { from { opacity: .08; transform: translate3d(-6vw,0,0); } to { opacity: 1; transform: none; } }
+
+a, button, summary { -webkit-tap-highlight-color: transparent; }
+button, a, summary { transition: color var(--motion-fast) ease, border-color var(--motion-fast) ease, background-color var(--motion-fast) ease, opacity var(--motion-fast) ease; }
+button:active, a:active { opacity: .72; }
+
+.is-image-loading { opacity: 0; }
+.is-image-loaded { opacity: 1; transition: opacity var(--motion-panel) ease; }
+
+dialog {
+  opacity: 0;
+  transform: translate3d(0,10px,0) scale(.99);
+  transition: opacity var(--motion-panel) var(--ease-archive-enter), transform var(--motion-panel) var(--ease-archive-enter), display var(--motion-panel) allow-discrete, overlay var(--motion-panel) allow-discrete;
+}
+dialog[open] { opacity: 1; transform: none; }
+dialog[open].is-closing { opacity: 0; transform: translate3d(0,10px,0) scale(.99); pointer-events: none; }
+dialog[open].is-closing::backdrop { opacity: 0; }
+dialog::backdrop { opacity: 0; transition: opacity var(--motion-panel) ease, display var(--motion-panel) allow-discrete, overlay var(--motion-panel) allow-discrete; }
+dialog[open]::backdrop { opacity: 1; }
+@starting-style {
+  dialog[open] { opacity: 0; transform: translate3d(0,10px,0) scale(.99); }
+  dialog[open]::backdrop { opacity: 0; }
+}
+
+.marble-public-record details::details-content {
+  opacity: 0;
+  transform: translate3d(0,-6px,0);
+  transition: opacity var(--motion-panel) ease, transform var(--motion-panel) var(--ease-archive-enter), content-visibility var(--motion-panel) allow-discrete;
+}
+.marble-public-record details[open]::details-content { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: .01ms;
+    --motion-panel: .01ms;
+    --motion-gallery: .01ms;
+    --motion-portal-out: .01ms;
+    --motion-portal-in: .01ms;
+    --motion-focus-out: .01ms;
+    --motion-focus-in: .01ms;
+    --motion-record-out: .01ms;
+    --motion-record-in: .01ms;
+  }
+  .route-motion-stage { animation: none !important; transform: none !important; opacity: 1 !important; }
+  dialog { transform: none; }
+}

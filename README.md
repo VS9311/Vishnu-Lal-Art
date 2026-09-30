@@ -1,13 +1,12 @@
 # Vishnu Lal Archive
 
-React/Vite MVP for the public entrance to the Vishnu Lal Archive.
+React/Vite application for the public marble experience of the Vishnu Lal Archive.
 
 ## Content boundary
 
 - `src/data/artworks/` contains public-safe structured records only.
 - `src/data/internal/` contains local research and registrar material; it must never be imported by the frontend.
 - `src/data/artworks-index.json` is the lightweight known/public record index.
-- `src/data/homepage-sequence.json` controls encounter order and may explicitly mark an unpublished record with `allowPending`.
 
 ## Artwork images
 
@@ -31,4 +30,4 @@ npm.cmd run build
 
 ## Deployment
 
-This application uses browser-history routing. Configure the production host to rewrite unknown application routes to `index.html`; otherwise direct visits to `/archive/:id` will return a server 404 before React can render the appropriate Archive state.
+This application uses browser-history routing. Configure the production host to rewrite unknown application routes to `index.html`; otherwise direct visits to `/series-i`, `/series-ii`, or `/artwork/:id` will return a server 404 before React can render the appropriate Archive state.

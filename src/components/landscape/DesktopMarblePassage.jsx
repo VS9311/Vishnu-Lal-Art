@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import ReliefBay from './ReliefBay';
 import { buildReliefBays } from './reliefLayout';
+import { MotionLink } from '../../motion/RouteMotion';
 import './DesktopMarblePassage.css';
 
 const clamp = (value, minimum = 0, maximum = 1) => Math.min(maximum, Math.max(minimum, value));
@@ -12,6 +12,9 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
   const worldRef = useRef(null);
   const artworkRefs = useRef(new Map());
   const travelRef = useRef(0);
+  const targetXRef = useRef(0);
+  const renderedXRef = useRef(0);
+  const glideFrameRef = useRef(0);
   const [region, setRegion] = useState(1);
   const [imageDimensions, setImageDimensions] = useState({});
   const bays = buildReliefBays(artworks.map(work => ({ ...work, ...imageDimensions[work.id] })), series.id);
@@ -35,10 +38,36 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
     const world = worldRef.current;
     if (!scene || !frame || !world) return undefined;
 
-    const syncToScroll = () => {
+    const renderWorld = (x) => {
+      renderedXRef.current = x;
+      world.style.transform = `translate3d(${-x}px, 0, 0)`;
+    };
+
+    const glideToTarget = () => {
+      glideFrameRef.current = 0;
+      const difference = targetXRef.current - renderedXRef.current;
+      if (Math.abs(difference) < .18) {
+        renderWorld(targetXRef.current);
+        return;
+      }
+      renderWorld(renderedXRef.current + (difference * .2));
+      glideFrameRef.current = window.requestAnimationFrame(glideToTarget);
+    };
+
+    const requestGlide = () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        renderWorld(targetXRef.current);
+      } else if (!glideFrameRef.current) {
+        glideFrameRef.current = window.requestAnimationFrame(glideToTarget);
+      }
+    };
+
+    const syncToScroll = (immediate = false) => {
       const travel = travelRef.current;
       const progress = travel ? clamp((window.scrollY - scene.offsetTop) / travel) : 0;
-      world.style.transform = `translate3d(${-(progress * travel)}px, 0, 0)`;
+      targetXRef.current = progress * travel;
+      if (immediate) renderWorld(targetXRef.current);
+      else requestGlide();
       setRegion(Math.min(bays.length, 1 + Math.floor(progress * bays.length)));
       frame.style.setProperty('--passage-progress', progress);
     };
@@ -47,7 +76,7 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
       const travel = Math.max(world.scrollWidth - frame.clientWidth, 0);
       travelRef.current = travel;
       scene.style.height = `${window.innerHeight + travel}px`;
-      syncToScroll();
+      syncToScroll(true);
     };
 
     let savedArtworkId = restoreArtworkId;
@@ -64,15 +93,17 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
           0,
           travelRef.current,
         );
-        world.style.transform = `translate3d(${-restoredX}px, 0, 0)`;
+        targetXRef.current = restoredX;
+        renderWorld(restoredX);
         window.scrollTo({ top: scene.offsetTop + restoredX, left: 0, behavior: 'instant' });
       } else {
         window.scrollTo({ top: scene.offsetTop, left: 0, behavior: 'instant' });
       }
-      syncToScroll();
+      syncToScroll(true);
     });
 
-    window.addEventListener('scroll', syncToScroll, { passive: true });
+    const handleScroll = () => syncToScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', measure);
     const horizontalWheel = (event) => {
       if (event.ctrlKey || Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
@@ -83,7 +114,8 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
     frame.addEventListener('wheel', horizontalWheel, { passive: false });
     return () => {
       window.cancelAnimationFrame(restoreFrame);
-      window.removeEventListener('scroll', syncToScroll);
+      if (glideFrameRef.current) window.cancelAnimationFrame(glideFrameRef.current);
+      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', measure);
       frame.removeEventListener('wheel', horizontalWheel);
     };
@@ -92,17 +124,18 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
   return (
     <main id="main-content" className="landscape-homepage marble-passage-page" onLoadCapture={measureImage}>
       <aside className="marble-passage-index" aria-label={`${series.label} collection`}>
-        <Link className="marble-passage-brand" to="/homepage-2">
+        <MotionLink className="marble-passage-brand" to="/" kind="portal">
           <strong>VISHNU LAL</strong>
           <span>THE ARCHIVE</span>
-        </Link>
+        </MotionLink>
         <div className="marble-passage-series">
           <span>{series.label}</span>
           <strong lang="ml">{series.malayalamName}</strong>
           <em>{series.romanizedName}</em>
-          <small>{series.totalWorks || 17} WORKS</small>
+          <small>{artworks.length} WORKS</small>
         </div>
-        <Link className="marble-passage-return" to="/homepage-2">RETURN TO ARCHIVE</Link>
+        <MotionLink className="marble-passage-return" to="/" kind="portal">RETURN TO ARCHIVE</MotionLink>
+        <MotionLink className="marble-passage-return" to="/artist" kind="portal">THE ARTIST</MotionLink>
         <p>VERTICAL SCROLL<br />MOVES THROUGH THE PASSAGE</p>
       </aside>
 
@@ -110,6 +143,12 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
         <div ref={frameRef} className="marble-passage-frame">
           <div ref={worldRef} className="marble-passage-world">
             {bays.map((bay, index) => <ReliefBay key={bay.key} bay={bay} index={index} seriesId={series.id} artworkRefs={artworkRefs} saveSelection={saveSelection} />)}
+            <aside className="marble-passage-end" aria-label={`End of ${series.label}`}>
+              <span>END OF {series.label.toUpperCase()}</span>
+              <MotionLink to={series.id === 'series-i' ? '/series-ii' : '/'} kind="portal">
+                {series.id === 'series-i' ? 'NEXT SERIES →' : 'RETURN TO ARCHIVE →'}
+              </MotionLink>
+            </aside>
           </div>
 
           <div className="marble-passage-progress" aria-hidden="true">

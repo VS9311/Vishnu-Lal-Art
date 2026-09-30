@@ -30,7 +30,6 @@
     padding-right: 70px;
     height: 100%;
     transform-origin: 0 0;
-    transition: transform 240ms cubic-bezier(0.22, 0.72, 0.22, 1);
     will-change: transform;
   }
 
@@ -48,6 +47,8 @@
     align-items: flex-start;
     padding-top: clamp(70px, 16vh, 185px);
   }
+
+  .collection-bay + .collection-bay { margin-left: -36px; }
 
   .collection-bay-composition {
     position: relative;
@@ -97,6 +98,32 @@
   }
   .collection-paper .landscape-artwork-image { display: block; width: 100%; height: auto; }
   .collection-paper:hover .landscape-artwork-sheet { box-shadow: 1px 1px 0 #bcb5a8, 0 2px 3px #554a3655, 5px 5px 10px #665a4428; }
+
+  .marble-passage-end {
+    position: relative;
+    flex: 0 0 clamp(300px, 26vw, 470px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    padding: 0 70px 0 54px;
+    color: rgba(52, 49, 44, .48);
+    font: 9px/1.5 var(--font-mono);
+    letter-spacing: .12em;
+  }
+
+  .marble-passage-end::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 25%;
+    width: 1px;
+    height: 50%;
+    background: rgba(52, 49, 44, .12);
+  }
+
+  .marble-passage-end a { color: rgba(52, 49, 44, .78); }
   @media (max-height: 820px) {
     .collection-bay { padding-top: 55px; }
     .collection-bay-composition { height: 560px; zoom: .88; width: calc(100% / .88); }
@@ -232,6 +259,12 @@
   .marble-passage-work:focus-visible .marble-passage-work-label em {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .route-motion-stage[data-motion-phase='leaving'][data-motion-kind='focus'] .marble-passage-work:focus {
+    z-index: 8;
+    transform: translateX(-50%) scale(1.025);
+    filter: brightness(1.03) drop-shadow(3px 4px 5px #66583c2a);
   }
 
   .marble-passage-work:focus-visible {

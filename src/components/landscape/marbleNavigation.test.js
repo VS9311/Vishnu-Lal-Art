@@ -19,18 +19,11 @@ function simulate(state, selection) {
   }
   if (!plan.adjacent) slots = slots.map(s => ['left', 'right'].includes(s.anchor) ? { ...s, anchor: `off-${s.anchor}` } : s);
   const targets = movementTargets(slots, plan);
-  assert.equal(slots.filter(s => targets[s.key] !== s.anchor).length, plan.adjacent ? 3 : 2);
+  assert.equal(slots.filter(s => targets[s.key] !== s.anchor).length, 4);
+  assert.equal(targets[plan.spare], plan.side, 'Prepared neighbor participates in the main transition');
   assert.equal(state.index, originalIndex);
   slots = slots.map(s => ({ ...s, anchor: targets[s.key] }));
   assert.equal(slots.find(s => s.anchor === 'center').index, plan.target);
-  if (plan.adjacent) slots = slots.map(s => s.key === plan.spare ? { ...s, anchor: plan.side } : s);
-  else {
-    const available = slots.filter(s => s.key !== plan.incoming);
-    for (const [offset, side, node] of [[-1, 'left', available[0]], [1, 'right', available[1]]]) {
-      slots = populateOffstage(slots, node.key, wrap(plan.target + offset, state.count), `off-${side}`);
-      slots = slots.map(s => s.key === node.key ? { ...s, anchor: side } : s);
-    }
-  }
   assert.deepEqual(slots.map(s => s.key), ['left', 'center', 'right', 'staging']);
   assert.equal(slots.filter(s => isOffstage(s.anchor)).length, 1);
   for (const [offset, anchor] of [[-1, 'left'], [0, 'center'], [1, 'right']]) {
@@ -47,6 +40,16 @@ for (const count of [6, 17, 12]) {
   test(`${count} works: persistent slot rotation and mirrored wraps`, () => {
     let state = { ...initialNavigation(0, count), phase: 'IDLE' };
     for (const direction of [1, -1]) for (let i = 0; i < count * 3; i++) state = simulate(state, { direction });
+    assert.equal(state.index, 0);
+  });
+  test(`${count} works: direction reversals and direct/adjacent handoffs keep both neighbors`, () => {
+    let state = { ...initialNavigation(0, count), phase: 'IDLE' };
+    for (const selection of [{ direction: 1 }, { direction: -1 }, { direction: -1 }, { direction: 1 }, { target: count - 2 }, { direction: 1 }, { target: 1 }, { direction: -1 }]) {
+      state = simulate(state, selection);
+      const visible = state.slots.filter(s => !isOffstage(s.anchor));
+      assert.equal(new Set(visible.map(s => s.index)).size, 3);
+      assert.equal(state.slots.length, 4, 'Only one spare per scene is needed');
+    }
     assert.equal(state.index, 0);
   });
 }

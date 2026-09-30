@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
+import { MotionLink } from '../../motion/RouteMotion';
 
 export default function LandscapeRecordPanel({ artwork, isOpen, position, total, onClose, onMove, onOpenRecord }) {
   const isSeriesI = artwork?.seriesId === 'series-i';
-  const seriesPath = isSeriesI ? '/homepage-2/series-i' : '/homepage-2/series-ii';
+  const seriesPath = isSeriesI ? '/series-i' : '/series-ii';
 
   return (
     <aside className={`landscape-record-panel${isOpen ? ' is-open' : ''}`} aria-hidden={!isOpen} inert={!isOpen} aria-label={artwork ? `Archive preview for ${artwork.id}` : 'Archive preview'} onPointerDown={(event) => event.stopPropagation()}>
@@ -19,12 +19,12 @@ export default function LandscapeRecordPanel({ artwork, isOpen, position, total,
       </div>
       <p className="landscape-record-position">SELECTED OBJECT {String(position).padStart(2, '0')} / {String(total).padStart(2, '0')}</p>
       <div className="landscape-record-actions">
-        <Link to={`/homepage-2/artwork/${artwork.id}`} state={{ fromLandscape: true }} onClick={onOpenRecord}>
+        <MotionLink to={`/artwork/${artwork.id}`} kind="focus" state={{ fromLandscape: true }} onClick={onOpenRecord}>
           OPEN ARCHIVE RECORD <span aria-hidden="true">→</span>
-        </Link>
-        <Link to={seriesPath} onClick={onOpenRecord}>
+        </MotionLink>
+        <MotionLink to={seriesPath} kind="portal" onClick={onOpenRecord}>
           ENTER {isSeriesI ? 'SERIES I' : 'SERIES II'} <span aria-hidden="true">→</span>
-        </Link>
+        </MotionLink>
       </div>
       <div className="landscape-record-pagination">
         <button type="button" onClick={() => onMove(-1)}>PREVIOUS</button>

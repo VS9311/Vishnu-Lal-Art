@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useNavigationType } from 'react-router-dom';
+import { useLocation, useNavigationType } from 'react-router-dom';
 import { getArtworkSummary, getSeriesData } from '../../lib/artwork';
 import ResponsiveArtworkImage from '../artwork/ResponsiveArtworkImage';
 import useMarbleNavigation from './useMarbleNavigation';
 import { marbleImageSource } from './marbleImageReadiness';
 import './MobileMarbleHomepage.css';
+import { MotionLink } from '../../motion/RouteMotion';
 
 const STATE_KEY = 'vishnu-lal-archive:mobile-marble-v1';
 
@@ -90,19 +91,19 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
       <section className="mobile-marble-scene" aria-label="Marble artwork collection">
         <img className="mobile-marble-backdrop" src="/homepage-2/mobile-marble-podium-v1.png" alt="" fetchPriority="high" />
         <header className="mobile-marble-header">
-          <Link to="/homepage-2" className="mobile-marble-identity"><strong>VISHNU LAL</strong><span>THE ARCHIVE</span></Link>
+          <MotionLink to="/" kind="portal" className="mobile-marble-identity"><strong>VISHNU LAL</strong><span>THE ARCHIVE</span></MotionLink>
           <button ref={indexButton} type="button" aria-expanded={indexOpen} aria-controls="mobile-marble-index" onClick={() => { setIndexOpen(!indexOpen); setDetails(false); }}>{indexOpen ? 'CLOSE' : 'INDEX'}</button>
         </header>
 
         {indexOpen && <nav id="mobile-marble-index" className="mobile-marble-index" aria-label="Marble archive index">
-          <Link to="/homepage-2" onClick={() => setIndexOpen(false)}>MARBLE HOMEPAGE</Link>
+          <MotionLink to="/" kind="portal" onClick={() => setIndexOpen(false)}>MARBLE HOMEPAGE</MotionLink>
+          <MotionLink to="/artist" kind="portal" onClick={() => setIndexOpen(false)}>THE ARTIST · OUTSIDE THE SYSTEM</MotionLink>
           {['series-i', 'series-ii'].map((id) => {
             const item = getSeriesData(id);
-            return <Link className="mobile-marble-series-destination" to={`/homepage-2/${id}`} key={id} onClick={() => setIndexOpen(false)}>
+            return <MotionLink className="mobile-marble-series-destination" to={`/${id}`} kind="portal" key={id} onClick={() => setIndexOpen(false)}>
               <span>{item.label}</span><strong lang="ml">{item.malayalamName}</strong><span>{item.romanizedName}</span>
-            </Link>;
+            </MotionLink>;
           })}
-          <Link to="/">RETURN TO ENTRANCE</Link>
         </nav>}
 
         <div className={`mobile-marble-stage${busy ? ' is-moving' : ''}${['BOOT', 'ERROR'].includes(navigation.phase) ? ' is-unready' : ''}`} data-navigation-state={navigation.phase} data-navigation-phase={navigation.phase} aria-label="Swipe left or right to browse artworks" aria-busy={busy}
@@ -151,8 +152,8 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
         <div className="mobile-marble-details-heading"><h2>{work.id}</h2><button type="button" onClick={() => { setDetails(false); detailsButton.current?.focus(); }}>HIDE DETAILS</button></div>
         <p className="mobile-marble-series"><span>{series.label}</span><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></p>
         <div className="mobile-marble-record-links">
-          <Link to={`/homepage-2/artwork/${work.id}`} state={collectionId ? { fromCollection: collectionId } : { fromLandscape: true }} onClick={save}>VIEW RECORD & INQUIRE</Link>
-          <Link to={collectionId ? '/homepage-2' : `/homepage-2/${work.seriesId}`} onClick={save}>{collectionId ? 'MARBLE HOMEPAGE' : `ENTER ${series.label}`}</Link>
+          <MotionLink to={`/artwork/${work.id}`} kind="focus" state={collectionId ? { fromCollection: collectionId } : { fromLandscape: true }} onClick={save}>VIEW RECORD & INQUIRE</MotionLink>
+          <MotionLink to={collectionId ? '/' : `/${work.seriesId}`} kind="portal" onClick={save}>{collectionId ? 'MARBLE HOMEPAGE' : `ENTER ${series.label}`}</MotionLink>
         </div>
         <div className="mobile-marble-details-pagination"><button type="button" onClick={() => move(-1)}>PREVIOUS</button><span aria-live="polite">{index + 1} / {artworks.length}</span><button type="button" onClick={() => move(1)}>NEXT</button></div>
         {thumbnails('Choose an artwork while reading details')}

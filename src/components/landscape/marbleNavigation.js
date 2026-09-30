@@ -46,6 +46,9 @@ export function populateOffstage(slots, key, index, anchor) {
 }
 export function movementTargets(slots, plan) {
   return Object.fromEntries(slots.map(slot => {
+    // The decoded spare joins the same movement, replenishing the exposed side
+    // before commit rather than waiting for a second animation after settling.
+    if (plan.adjacent && slot.key === plan.spare) return [slot.key, plan.side];
     if (slot.key === plan.center) return [slot.key, plan.adjacent ? plan.exit : `off-${plan.exit}`];
     if (slot.key === plan.incoming) return [slot.key, 'center'];
     if (plan.adjacent && slot.anchor === plan.exit) return [slot.key, `off-${plan.exit}`];

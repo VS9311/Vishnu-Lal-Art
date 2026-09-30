@@ -119,9 +119,6 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       await animate(movementTargets(live.current.slots, plan), MARBLE_DURATION);
       await update({ ...live.current, index: plan.target, phase: 'COMMIT' });
       committed = true;
-      await update({ ...live.current, phase: 'RESTAGE' });
-      // Decoded neighbors enter from beyond the clip, never change at a visible anchor.
-      await animate({ [plan.spare]: plan.side }, 240);
       await update({ ...live.current, phase: 'IDLE' });
       locked.current = false;
       warmMarbleNeighbors(artworks, plan.target);

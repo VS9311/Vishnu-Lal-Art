@@ -73,6 +73,130 @@ final result: passed
 
 ---
 
+## Site-wide motion and transition system — September 29, 2026
+
+### Motion architecture
+
+- One shared route coordinator now owns page exit, route commit, destination entrance, input locking, direction, and reduced-motion behavior. Direct URLs begin in `idle`, so they do not play a fake entrance.
+- Shared timing and easing tokens live in the motion layer. Portal travel is 920ms total, Series-to-record focus is 780ms total, directional record travel is 700ms total, and gallery travel is 620ms.
+- Homepage/Series transitions use a shallow recede/resolve treatment. Series/artwork transitions preserve the selected work as the visual source without using a fragile shared-element clone.
+- Record next/previous moves the complete record as one unit by 6vw in the requested direction. The coordinator locks competing route commands until the current transition settles.
+- Desktop media uses two fixed, full-frame layers during a 3% directional cross-slide. Controls lock during the handoff, scene assets are preloaded, and the stage returns to one layer after settlement.
+- The desktop Series passage now eases a rendered transform toward scroll position with one requestAnimationFrame loop. Scroll position remains the source of truth; the loop always converges on the latest target.
+- Dialogs, disclosures, controls, and responsive artwork loading use the shared subtle motion language. Responsive images retain explicit dimensions and reveal only after load, preventing layout shift.
+- `prefers-reduced-motion: reduce` removes route and gallery animation, collapses shared durations, disables smooth scroll, and preserves all navigation/state changes.
+
+### Reliability checks
+
+- React development safety-remount was explicitly tested. The route coordinator resets its mounted guard on every effect setup, preventing a permanent `leaving` lock.
+- Homepage → Series → homepage produced `leaving → entering → idle` in order; the 920ms return was sampled at 120ms, 460ms, and 980ms.
+- Series → artwork used the `focus` transition and settled on the intended record.
+- A forced double-click on record `NEXT` advanced exactly one work. `PREVIOUS` reported direction `-1` and returned to the prior work.
+- The full record sequence VL-A-005 → VL-A-006 → VL-A-007 → VL-A-006 → VL-A-005 kept matching image/copy IDs. Rapid `PREVIOUS → PREVIOUS` advanced once, and simultaneous `NEXT → PREVIOUS` honored the first command and settled without overlap.
+- A forced double-click on media `NEXT` created exactly two layers while moving, disabled the control, and settled to one layer with the matching caption.
+- The complete gallery was exercised forward and backward: Marble presentation → Living room → Workspace / office → Interior → Bedroom → Full artwork, then back to Marble presentation. Every transition settled to one layer.
+- Mobile double-NEXT advanced exactly one work and returned to the carousel `IDLE` state. Mobile record navigation also settled cleanly.
+- Enquiry dialog open and animated close were verified; its closing class remains present until the 360ms exit completes. Record disclosure open state was verified after its transition.
+
+### Browser QA
+
+- Desktop matrix passed at 1920 × 1080, 1440 × 900, and 1366 × 768 for `/`, `/series-i`, `/series-ii`, and `/artwork/VL-B-002`.
+- Mobile matrix passed at 390 × 844 and 375 × 812 for the same routes. No horizontal overflow was introduced; the mobile carousel reached `IDLE` after image readiness.
+- Direct-load checks at every route/viewport reported route phase `idle`.
+- Homepage → Series II → VL-B-002 → Series II → VL-B-006 and Record → Series → Homepage were exercised as complete route flows and all returned to `idle`.
+- Series I entries VL-A-003 and VL-A-007 were each opened from the relief passage and returned to their preserved Series position; Series II entries VL-B-002 and VL-B-006 passed the same flow.
+- The desktop Series passage, homepage, record gallery, mobile homepage, and mobile full-artwork record were visually inspected after settlement.
+- Browser console produced no new errors or warnings during this milestone. Earlier retained HMR messages predate this pass.
+- `npm run lint`: passed with no warnings.
+- `npm run build`: passed; all archive, relief-layout, media-order, commerce, motion-contract, and Vite production checks passed.
+- `git diff --check`: passed apart from the repository's existing LF→CRLF notices.
+
+final result: passed
+
+---
+
+## Artwork media refinement and collector cart — September 29, 2026
+
+### Source visual truth and normalization
+
+- Bedroom source: `C:/Users/Windows 10/Downloads/81d0832f-75c7-4df7-be7d-1f78ede33ca9.jpg` (470 × 426 px). Warm paper/frame source: `C:/Users/Windows 10/Downloads/how it should look like.png` (473 × 667 px).
+- Earlier implementation captures were used as the measurable before state for the requested scale and frame corrections: `Review-Screenshots/artwork-media-a1-mobile-living-390x844.png` and `artwork-media-thick-frame-desktop.png`.
+- Final desktop evidence: `artwork-media-frame-reduced-desktop.png` (1265 × 712 px), `artwork-landscape-scale-verified-desktop.png` (1280 × 720 px), and `artwork-cart-checkout-desktop.png` (1265 × 712 px).
+- Final mobile evidence: `artwork-landscape-scale-verified-mobile-390x844.png` and `artwork-cart-mobile-390x844.png` (both 375 × 812 px from a 390 × 844 CSS viewport; the in-app browser scrollbar/chrome accounts for the captured-pixel difference). Device scale factor was 1.
+- Combined comparison inputs: `Review-Screenshots/artwork-refinement-comparison.jpg` and `artwork-reference-comparison.jpg`. Images were fit proportionally onto neutral comparison boards; no density-based visual finding was filed.
+- State: VL-A-016 living-room presentation for landscape scale, VL-B-002 collector-gallery presentation for frame width, VL-B-002/VL-B-003 two-item cart, checkout-request form, and the new bedroom/final-artwork presentations.
+
+### Comparison history and fixes
+
+- [P2, fixed] True landscape sheets appeared materially smaller than portrait A1 works because their width hit the shared envelope before the long edge reached a comparable physical scale. Loaded derivatives now receive an orientation class from their natural dimensions; landscape presentation limits are increased by 16% horizontally and 10% vertically. The corrected VL-A-016 reads at a credible A1 size relative to the sofa on desktop and mobile.
+- [P2, fixed] The first collector-gallery black border used a 13 px minimum frame width and visually overpowered the drawing. Its minimum is now 9 px, a 30.8% reduction, with the warm inner mat and environmental blend preserved. The bedroom keeps its separate slimmer dark-frame treatment.
+- [P3, fixed] Artwork inside the two dark-frame rooms remained slightly cooler than the surrounding evening light. A dark-frame-only 7% sepia blend now warms the paper subtly while retaining grayscale charcoal, contrast, and legibility. Evidence: `artwork-dark-frame-warmer-collector.png` and `artwork-dark-frame-warmer-bedroom.png`.
+- [P1, fixed] Artwork records exposed “Price on request” with no multi-work acquisition path. All 29 public works now receive stable deterministic USD prices between $2,000 and $3,000 in $50 increments. Record pages expose Add to cart/View cart, and the persistent cart supports multiple works, removal, totals, responsive display, and a checkout-request form.
+- [P1, fixed] A live card charge would imply a payment integration that does not exist. The final step is explicitly presented as a purchase request and states that no payment is taken in this prototype; secure payment and delivery calculation remain a launch integration.
+
+### Required fidelity surfaces
+
+- Fonts and typography: the archive serif/mono hierarchy is preserved. Cart headings, labels, totals, buttons, and field copy reuse the established type system and optical weights.
+- Spacing and layout: the frame reduction and landscape scale preserve A1 relationships without collisions. Cart rows, total, checkout fields, and tap targets remain readable at desktop and 390 px mobile widths.
+- Colors and tokens: the cart uses the existing ivory, charcoal, warm-border, and muted-text palette. Bedroom, collector gallery, and full artwork retain the approved warm tonal language.
+- Image quality and fidelity: canonical responsive derivatives remain live DOM imagery. The bedroom environment is a project-local environment-only asset; artwork content was not generated or baked into the room. No clipping, frame overflow, or blend contamination remains.
+- Copy and content: prices are clear USD amounts; Add to cart, Proceed to checkout, Submit purchase request, and the no-payment note accurately describe the prototype behavior.
+- Focused-region review was not separately required: the full desktop and mobile captures show the frame edge, mat, paper blend, price, primary action, cart rows, total, and checkout fields at readable scale.
+
+### Functional verification
+
+- Added VL-B-002 and VL-B-003 in sequence; the cart retained two distinct works and produced a $5,350 total. The checkout-request step exposed six required/optional customer fields. The mobile cart rendered without horizontal overflow.
+- The cart was cleared after testing. A fresh local browser tab loaded VL-B-002 with no console errors and was left open on the adjusted collector-gallery view.
+- `npm run lint`, `npm run build`, archive validation, relief-layout checks, artwork-media ordering checks, catalogue-pricing checks, and `git diff --check` passed.
+
+final result: passed
+
+---
+
+## Mobile full-artwork frame treatment — September 28, 2026
+
+### Visual truth and evidence
+
+- Source visual truth: `C:\Users\Windows 10\Downloads\how it should look like.png` (473 × 667 pixels).
+- Previous-state reference: `C:\Users\Windows 10\Downloads\current.png` (603 × 940 pixels).
+- Implementation route: `http://127.0.0.1:5173/artwork/VL-A-007`.
+- Live implementation screenshot: `Review-Screenshots/mobile-full-artwork-frame-390x844.png`, captured in the in-app browser at a 390 × 844 CSS-pixel viewport with device scale factor 1.
+- State under review: mobile Archive Record, canonical `Full artwork`, item `01 / 01`, scrolled to the top.
+- Full-view comparison: the source visual and the saved browser screenshot were inspected together at native aspect ratio. The source sheet occupies about 89% of its viewport width; the implementation sheet occupies about 90%, so no density rescaling or stretched comparison was required.
+- Focused crop was not required: the framed artwork is the dominant region in both full views and its paper edge, blend, border and contact shadow remain clearly legible at the captured scale. Computed layout and style were also checked in-browser.
+
+### Required fidelity surfaces
+
+- Typography and copy: Archive navigation, media label and counter remain unchanged. The visual target does not specify replacement app typography or copy.
+- Layout and spacing: the canonical artwork now sits in a fitted, intrinsic-ratio sheet at nearly full mobile width, matching the target's tall framed presentation without cropping. The live header and record caption remain as functional Archive context outside the target crop.
+- Colors and visual tokens: the sheet uses the approved warm paper value (`#e8e4dc`) instead of the previous blue-white untreated artwork field.
+- Image fidelity: the canonical VL-A-007 source remains unchanged. Its live presentation uses the same grayscale, restrained contrast/brightness and multiply blend already approved on the marble homepage and indexes.
+- Edge and shadow: the mobile sheet reuses the existing beveled paper border and short two-part contact shadow, replacing the prior single flat image edge.
+
+### Findings and comparison history
+
+- [P1, fixed] The previous mobile full-artwork view displayed the clean canonical file directly, making it read as a pasted blue-white rectangle rather than part of the marble archive.
+  - Fix: added a mobile-only paper-sheet wrapper that reuses the approved Homepage 2 artwork treatment.
+- [P2, fixed] The prior image used a generic shadow and did not have the framed inset edge visible in the target.
+  - Fix: moved the shadow to the warm sheet wrapper, added its existing bevel/border treatment, and removed the nested image shadow.
+- [P2, fixed] The artwork presentation was narrower and more detached from the mobile viewport than the reference.
+  - Fix: sized the fitted sheet to about 90% of the viewport while preserving its intrinsic ratio and a safe viewport-height cap.
+- No actionable P0, P1 or P2 mismatch remains in this requested mobile treatment.
+
+### Verification
+
+- Browser capture confirmed the warm paper, multiply blend, inset border and contact shadow at 390 × 844.
+- The canonical image remains uncropped and its aspect ratio is preserved.
+- The new wrapper is mounted only for the mobile canonical frame; desktop canonical media rendering is unchanged.
+- `npm run lint`: passed.
+- `npm run build`: passed, including archive validation, relief-layout checks and artwork-media ordering checks.
+- `git diff --check`: passed with existing line-ending warnings only.
+- Fresh local preview logs contained only expected hot-module updates and no runtime error.
+
+final result: passed
+
+---
+
 ## Desktop Series I marble passage prototype — September 24, 2026
 
 ### Selected direction and implementation
@@ -298,5 +422,59 @@ At 1440 × 900, all six works completed overview → focus → panel → close �
 - `npx vite build`: passed.
 - `git diff --check`: passed (existing line-ending warnings only).
 - `npm run build`: the frontend portion is healthy, but the wrapper remains blocked by the pre-existing missing local `archive-masters/Series 1` directory during archive validation.
+
+final result: passed
+
+---
+
+## Artwork Record interior gallery — September 28, 2026
+
+### Sequence and presentation
+
+- Desktop order is exactly: Marble presentation → Living room → Workspace / office → Interior → Full artwork.
+- Mobile order is exactly: Full artwork → Living room → Workspace / office → Interior. The marble presentation is omitted on mobile.
+- The approved marble component, backdrop, grading, artwork treatment and positioning remain the existing first desktop slide without modification.
+- The final desktop slide remains the clean canonical responsive image, entirely visible with no environmental scene or pedestal.
+- All three interiors use shared environment-only photographic assets with the canonical artwork mounted live in the DOM. No generated drawing replaces or alters an artwork file.
+
+### Evidence and findings
+
+- Desktop living-room proof: `Review-Screenshots/artwork-gallery-desktop-living-room.png`.
+- Mobile living-room proof with a true landscape-format work: `Review-Screenshots/artwork-gallery-mobile-living-room-390x844.png`.
+- Portrait VL-A-007 was checked through all five desktop slides and all four mobile slides.
+- VL-A-016 was checked to confirm a true landscape work sizes naturally inside the same wall mount.
+- A stored-dimension/orientation disagreement on VL-B-001 was found during review. The mount now sizes from the browser-rendered image rather than archive orientation metadata, so the presentation follows the real derivative.
+- Desktop and mobile controls expose the requested labels, counts and order. Mobile direct selection settles on the correct snap position.
+- No browser console errors were observed.
+- `npm run lint`, `npm run build`, archive validation, relief-layout checks, artwork-media ordering checks and `git diff --check` passed.
+
+final result: passed
+
+---
+
+## Artwork Record A1 calibration and collector interior — September 28, 2026
+
+### Reference and system
+
+- The supplied collector-interior collage (`81d0832f-75c7-4df7-be7d-1f78ede33ca9.jfif`) was used only for mood: warm architectural light, restrained premium residential styling, and a darker occasional frame. Its pictured artworks and layouts were not copied.
+- The reusable media model now records the exact A1 sheet dimensions: portrait 594 × 841 mm and landscape 841 × 594 mm.
+- Each shared interior template carries a calibrated hanging position, maximum A1 wall width/height, frame treatment, and environmental crop. Per-artwork overrides inherit these defaults instead of losing the physical-scale data.
+- The approved marble opening and canonical artwork files remain untouched. Interior slides continue to mount the responsive canonical derivative live over an environment-only background.
+
+### Findings and fixes
+
+- [P1, fixed] Interior artwork scale was previously a generic percentage, with no physical-format contract. Container-relative A1 envelopes now keep portrait and landscape works in a credible relationship to the sofa, desk, bench, wall and floor in each room.
+- [P1, fixed] The new dark collector frame initially allowed multiply blending to interact with the frame colour. The artwork now blends only against an isolated warm inner mat, preserving the charcoal/paper character without tinting the sheet black.
+- [P2, fixed] A landscape derivative could exceed the dark frame's inner mat because its child used the scene maximum rather than the mat width. The mat now owns the calibrated width and the image is constrained to that inner box.
+- Living room and workspace remain pale, quiet environments with off-white framing. The third interior is now a warmer collector gallery/reading hall with architectural track-light pools, a low dark bench, and one restrained dark frame.
+
+### Sequence and verification
+
+- Desktop remains exactly: Marble presentation → Living room → Workspace / office → Interior → Full artwork.
+- Mobile remains exactly: Full artwork → Living room → Workspace / office → Interior; marble is omitted.
+- Portrait VL-B-002 was reviewed in the desktop collector interior. Landscape VL-A-016 was reviewed in the mobile living room to verify orientation-aware sizing.
+- Evidence: `Review-Screenshots/artwork-media-a1-desktop-interior.png`, `artwork-media-a1-mobile-full-390x844.png`, and `artwork-media-a1-mobile-living-390x844.png`.
+- Browser console: no runtime errors.
+- `npm run lint`, `npm run build`, and `git diff --check`: passed.
 
 final result: passed
