@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const root = process.cwd();
+const skipArchiveMasters = process.env.SKIP_ARCHIVE_MASTERS === '1';
 const artworkIdPattern = /^VL-[A-Z]-\d{3}$/;
 const derivativeWidths = [480, 900, 1440, 2400];
 const expectedSeriesIIds = [
@@ -118,34 +119,36 @@ for (const [index, entry] of manifestEntries.entries()) {
   }
 }
 
-const expectedSeriesISources = new Set(manifestEntries.map(({ source }) => source.toLowerCase()));
-const directMasterDirectory = join(root, seriesIManifest.mastersRoot);
-const siblingMasterDirectories = readdirSync(join(root, '..'), { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => join(root, '..', entry.name, seriesIManifest.mastersRoot));
-const seriesIMasterDirectory = [directMasterDirectory, ...siblingMasterDirectories]
-  .find((candidate) => existsSync(candidate)
-    && manifestEntries.every(({ source }) => existsSync(join(candidate, source))));
-const discoveredSeriesIMasters = seriesIMasterDirectory
-  ? readdirSync(seriesIMasterDirectory).filter((filename) => expectedSeriesISources.has(filename.toLowerCase()))
-  : [];
+if (!skipArchiveMasters) {
+  const expectedSeriesISources = new Set(manifestEntries.map(({ source }) => source.toLowerCase()));
+  const directMasterDirectory = join(root, seriesIManifest.mastersRoot);
+  const siblingMasterDirectories = readdirSync(join(root, '..'), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => join(root, '..', entry.name, seriesIManifest.mastersRoot));
+  const seriesIMasterDirectory = [directMasterDirectory, ...siblingMasterDirectories]
+    .find((candidate) => existsSync(candidate)
+      && manifestEntries.every(({ source }) => existsSync(join(candidate, source))));
+  const discoveredSeriesIMasters = seriesIMasterDirectory
+    ? readdirSync(seriesIMasterDirectory).filter((filename) => expectedSeriesISources.has(filename.toLowerCase()))
+    : [];
 
-if (!seriesIMasterDirectory) {
-  fail(`Series I masters were not found at ${directMasterDirectory} or in a sibling checkout`);
-} else {
-  resolvedSeriesIMasterDirectory = seriesIMasterDirectory;
-}
+  if (!seriesIMasterDirectory) {
+    fail(`Series I masters were not found at ${directMasterDirectory} or in a sibling checkout`);
+  } else {
+    resolvedSeriesIMasterDirectory = seriesIMasterDirectory;
+  }
 
-if (discoveredSeriesIMasters.length !== expectedSeriesIIds.length) {
-  fail(`Expected exactly ${expectedSeriesIIds.length} numeric Series I masters, found ${discoveredSeriesIMasters.length}`);
-}
+  if (discoveredSeriesIMasters.length !== expectedSeriesIIds.length) {
+    fail(`Expected exactly ${expectedSeriesIIds.length} numeric Series I masters, found ${discoveredSeriesIMasters.length}`);
+  }
 
-for (const entry of manifestEntries) {
-  if (seriesIMasterDirectory && !existsSync(join(seriesIMasterDirectory, entry.source))) fail(`Series I master is missing for ${entry.id}: ${entry.source}`);
-}
+  for (const entry of manifestEntries) {
+    if (seriesIMasterDirectory && !existsSync(join(seriesIMasterDirectory, entry.source))) fail(`Series I master is missing for ${entry.id}: ${entry.source}`);
+  }
 
-for (const source of discoveredSeriesIMasters) {
-  if (!manifestEntries.some((entry) => entry.source === source)) fail(`Unmapped numeric Series I master: ${source}`);
+  for (const source of discoveredSeriesIMasters) {
+    if (!manifestEntries.some((entry) => entry.source === source)) fail(`Unmapped numeric Series I master: ${source}`);
+  }
 }
 
 for (const id of knownIds) {
@@ -223,4 +226,8 @@ if (errors.length) {
 }
 
 console.log(`Archive validation passed: ${knownIds.length} known works, ${publicIds.length} public record(s), ${derivativeWidths.length} derivatives per work.`);
-console.log(`Series I masters resolved from: ${resolvedSeriesIMasterDirectory}`);
+if (skipArchiveMasters) {
+  console.log('Private Series I archival-master validation skipped because SKIP_ARCHIVE_MASTERS=1.');
+} else {
+  console.log(`Series I masters resolved from: ${resolvedSeriesIMasterDirectory}`);
+}
