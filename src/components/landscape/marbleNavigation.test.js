@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { initialNavigation, planNavigation, populateOffstage, movementTargets, isOffstage, wrap, sceneSlots, SCENE_TRAVEL, DIRECT_ENTER, DIRECT_EXIT } from './marbleNavigation.js';
+import { anchors, adjacentKeyframes, initialNavigation, planNavigation, populateOffstage, movementTargets, isOffstage, wrap, sceneSlots, SCENE_TRAVEL, DIRECT_ENTER, DIRECT_EXIT } from './marbleNavigation.js';
 
 function simulate(state, selection) {
   const plan = planNavigation(state, selection);
@@ -69,4 +69,30 @@ test('whole trios stage beyond the outer edge with overlapping exit/entry timing
   assert.ok(DIRECT_ENTER.delay + DIRECT_ENTER.duration <= 1200);
   assert.equal(DIRECT_EXIT.easing, 'cubic-bezier(.42,0,1,1)');
   assert.equal(DIRECT_ENTER.easing, 'cubic-bezier(0,0,.2,1)');
+});
+
+test('adjacent transforms reproduce the approved anchor path without layout properties', () => {
+  for (const [width, height] of [[390, 497.96], [320, 448.4], [480, 612.87]]) {
+    for (const direction of [-1, 1]) {
+      const state = { ...initialNavigation(0, 6), phase: 'IDLE' };
+      const plan = planNavigation(state, { direction });
+      const slots = populateOffstage(state.slots, plan.spare, plan.future, `off-${plan.side}`);
+      const targets = movementTargets(slots, plan);
+      for (const slot of slots) {
+        const frames = adjacentKeyframes(slot.anchor, targets[slot.key], width, height);
+        frames.forEach(frame => assert.deepEqual(Object.keys(frame), ['transform']));
+        const end = frames[1].transform.match(/translate\(calc\(-50% \+ ([-\d.e]+)px\), ([-\d.e]+)px\) scale\(([\d.]+)\)/);
+        assert.ok(end);
+        const from = anchors[slot.anchor];
+        const to = anchors[targets[slot.key]];
+        for (const progress of [0, .25, .5, .75, 1]) {
+          assert.ok(Math.abs(parseFloat(from.left) * width / 100 + Number(end[1]) * progress
+            - (parseFloat(from.left) + (parseFloat(to.left) - parseFloat(from.left)) * progress) * width / 100) < .0001);
+          assert.ok(Math.abs(-parseFloat(from.bottom) * height / 100 + Number(end[2]) * progress
+            + (parseFloat(from.bottom) + (parseFloat(to.bottom) - parseFloat(from.bottom)) * progress) * height / 100) < .0001);
+        }
+        assert.equal(Number(end[3]), targets[slot.key] === 'center' ? 1 : .8);
+      }
+    }
+  }
 });

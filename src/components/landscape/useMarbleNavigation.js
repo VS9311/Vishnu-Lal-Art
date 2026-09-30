@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { anchors, initialNavigation, MARBLE_DURATION, MARBLE_EASING, movementTargets, planNavigation, populateOffstage, wrap, sceneSlots, SCENE_TRAVEL, DIRECT_EXIT, DIRECT_ENTER } from './marbleNavigation';
-import { decodeMarbleArtwork, warmMarbleNeighbors } from './marbleImageReadiness';
+import { flushSync } from 'react-dom';
+import { adjacentKeyframes, initialNavigation, MARBLE_DURATION, MARBLE_EASING, movementTargets, planNavigation, populateOffstage, wrap, sceneSlots, SCENE_TRAVEL, DIRECT_EXIT, DIRECT_ENTER } from './marbleNavigation';
+import { decodeMarbleArtwork, decodeMarblePresentation, warmMarbleNeighbors } from './marbleImageReadiness';
 
 const painted = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
@@ -15,9 +16,11 @@ export default function useMarbleNavigation(initialIndex, artworks) {
   const [error, setError] = useState('');
   const publish = next => { live.current = next; setState(next); };
   const decodeSlots = useCallback(async (slots, scene = live.current.scene) => {
-    await Promise.all(slots.map(s => decodeMarbleArtwork(artworks[s.index])));
     // Wait for the actual persistent presentation images as well as preloaders.
-    await Promise.all(slots.map(s => nodes.current[`${scene}:${s.key}`].querySelector('img').decode()));
+    await Promise.all(slots.flatMap(s => [
+      decodeMarbleArtwork(artworks[s.index]),
+      decodeMarblePresentation(nodes.current[`${scene}:${s.key}`].querySelector('img')),
+    ]));
   }, [artworks]);
   useEffect(() => {
     const token = ++generation.current;
@@ -56,25 +59,39 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       return populateOffstage(slots, key, index, anchor);
     };
     let committed = false;
-    const animate = async (targets, duration) => {
+    const animateAdjacent = async (targets) => {
       const snapshot = live.current;
+      // One geometry read before movement; all four persistent nodes share a clock.
+      const { width, height } = scenes.current[snapshot.scene].getBoundingClientRect();
+      const startTime = document.timeline.currentTime;
       const running = snapshot.slots.filter(s => targets[s.key] && targets[s.key] !== s.anchor).map(s =>
-        nodes.current[`${snapshot.scene}:${s.key}`].animate([anchors[s.anchor], anchors[targets[s.key]]], {
-          duration: reduced ? 0 : duration, easing: MARBLE_EASING, fill: 'forwards',
+        nodes.current[`${snapshot.scene}:${s.key}`].animate(adjacentKeyframes(s.anchor, targets[s.key], width, height), {
+          duration: reduced ? 0 : MARBLE_DURATION, easing: MARBLE_EASING, fill: 'forwards',
         }));
+      if (startTime !== null) running.forEach(a => { a.startTime = startTime; });
       animations.current = running;
       // Real completion only. Cancellation rejects and cannot commit a new record.
       await Promise.all(running.map(a => a.finished));
       guard();
-      await update({ ...live.current, slots: snapshot.slots.map(s => ({ ...s, anchor: targets[s.key] || s.anchor })) });
+      let slots = snapshot.slots.map(s => ({ ...s, anchor: targets[s.key] || s.anchor }));
+      // Recycle only the now fully offscreen object, ready for the next step.
+      const spare = slots.find(s => s.anchor.startsWith('off-'));
+      slots = populateOffstage(slots, spare.key, wrap(plan.target + 2 * plan.direction, artworks.length), `off-${plan.side}`);
+      flushSync(() => publish({ ...live.current, slots, index: plan.target, phase: 'IDLE' }));
       running.forEach(a => a.cancel());
       animations.current = [];
+      committed = true;
+      locked.current = false;
+      // Decode ahead during idle, never in the visible movement. A failed preload
+      // is retried (and reported if still unavailable) by the next request.
+      void decodeSlots(slots).catch(() => {});
+      warmMarbleNeighbors(artworks, plan.target);
     };
     try {
-      await update({ ...before, phase: 'PREPARE' });
-      await Promise.all([plan.target, wrap(plan.target - 1, artworks.length), wrap(plan.target + 1, artworks.length)].map(i => decodeMarbleArtwork(artworks[i])));
-      guard();
       if (!plan.adjacent) {
+        await update({ ...before, phase: 'PREPARE' });
+        await Promise.all([plan.target, wrap(plan.target - 1, artworks.length), wrap(plan.target + 1, artworks.length)].map(i => decodeMarbleArtwork(artworks[i])));
+        guard();
         const outgoing = before.scene;
         const incoming = outgoing === 'a' ? 'b' : 'a';
         const distance = SCENE_TRAVEL * plan.direction;
@@ -112,16 +129,16 @@ export default function useMarbleNavigation(initialIndex, artworks) {
         return;
       }
       const prepared = populate(live.current.slots, plan.spare, plan.future, `off-${plan.side}`);
-      await update({ ...live.current, slots: prepared });
+      // Commit the offscreen source once; no extra paint barriers are needed for
+      // explicit WAAPI keyframes. Already decoded persistent images stay ready.
+      const spare = before.slots.find(s => s.key === plan.spare);
+      if (spare.index !== plan.future || spare.anchor !== `off-${plan.side}`) {
+        flushSync(() => publish({ ...before, slots: prepared, phase: 'PREPARE' }));
+      }
       await decodeSlots(prepared);
       guard();
-      await update({ ...live.current, phase: 'MOVE' });
-      await animate(movementTargets(live.current.slots, plan), MARBLE_DURATION);
-      await update({ ...live.current, index: plan.target, phase: 'COMMIT' });
-      committed = true;
-      await update({ ...live.current, phase: 'IDLE' });
-      locked.current = false;
-      warmMarbleNeighbors(artworks, plan.target);
+      publish({ ...live.current, phase: 'MOVE' });
+      await animateAdjacent(movementTargets(live.current.slots, plan));
     } catch {
       if (token !== generation.current) return;
       animations.current.forEach(a => a.cancel());

@@ -74,13 +74,18 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
     </nav>
   );
 
-  const endSwipe = (event) => {
+  const recognizeSwipe = (event) => {
     const start = pointer.current;
-    pointer.current = null;
-    if (!start) return;
+    if (!start || start.id !== event.pointerId) return;
     const dx = event.clientX - start.x;
     const dy = event.clientY - start.y;
+    // Yield early to vertical intent so scrolling cannot become a late swipe.
+    if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) {
+      pointer.current = null;
+      return;
+    }
     if (Math.abs(dx) >= 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      pointer.current = null;
       didSwipe.current = true;
       move(dx < 0 ? 1 : -1);
     }
@@ -110,12 +115,13 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
           onPointerDown={(event) => {
             if (busy || !event.isPrimary || event.button !== 0) return;
             didSwipe.current = false;
-            pointer.current = { x: event.clientX, y: event.clientY };
+            pointer.current = { x: event.clientX, y: event.clientY, id: event.pointerId };
             // Capture on the pressed button so an ordinary tap still activates it.
             const captureTarget = event.target.closest('button') || event.currentTarget;
             captureTarget.setPointerCapture(event.pointerId);
           }}
-          onPointerUp={endSwipe}
+          onPointerMove={recognizeSwipe}
+          onPointerUp={(event) => { recognizeSwipe(event); pointer.current = null; }}
           onPointerCancel={() => { pointer.current = null; }}
           onClickCapture={(event) => { if (didSwipe.current) { event.preventDefault(); event.stopPropagation(); didSwipe.current = false; } }}
           onKeyDown={(event) => {

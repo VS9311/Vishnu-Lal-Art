@@ -21,6 +21,7 @@
 .mobile-marble-stage.is-unready { visibility: hidden; }
 .mobile-marble-stage .mobile-marble-work { position: absolute; padding: 0; min-height: 0; left: var(--anchor-x); bottom: var(--anchor-bottom); transform: translateX(-50%) scale(var(--anchor-scale)); transform-origin: center bottom; transition: none; }
 .mobile-marble-stage.is-moving { pointer-events: none; }
+.mobile-marble-scene-group[data-current='true'] .mobile-marble-work { will-change: transform; }
 .mobile-marble-work--center { --anchor-x: 50%; --anchor-bottom: 28.1%; --anchor-scale: 1; z-index: 3; }
 .mobile-marble-work--left { --anchor-x: -8%; --anchor-bottom: 38.3%; --anchor-scale: .8; z-index: 2; }
 .mobile-marble-work--right { --anchor-x: 108%; --anchor-bottom: 38.3%; --anchor-scale: .8; z-index: 2; }

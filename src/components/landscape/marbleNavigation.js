@@ -12,6 +12,19 @@ export const anchors = {
   'off-left': { left: '-40%', bottom: '38.3%', transform: 'translateX(-50%) scale(.8)' },
   'off-right': { left: '140%', bottom: '38.3%', transform: 'translateX(-50%) scale(.8)' },
 };
+// Keep the CSS anchor fixed during movement. Equivalent pixel translations
+// avoid animating left/bottom (and laying out every frame).
+export function adjacentKeyframes(from, to, width, height) {
+  const start = anchors[from];
+  const end = anchors[to];
+  const dx = (parseFloat(end.left) - parseFloat(start.left)) * width / 100;
+  const dy = (parseFloat(start.bottom) - parseFloat(end.bottom)) * height / 100;
+  const scale = anchor => anchor === 'center' ? 1 : .8;
+  return [
+    { transform: `translate(calc(-50% + 0px), 0px) scale(${scale(from)})` },
+    { transform: `translate(calc(-50% + ${dx}px), ${dy}px) scale(${scale(to)})` },
+  ];
+}
 export function sceneSlots(index, count) {
   return [
     { key: 'left', index: wrap(index - 1, count), anchor: 'left' },

@@ -1,6 +1,18 @@
 // Fixed mobile rendition avoids responsive-source reselection after decoding.
 export const marbleImageSource = artwork => `/artworks/${artwork.id}/900.webp`;
 const cache = new Map();
+const presentations = new WeakMap();
+export function decodeMarblePresentation(image) {
+  const src = image.src;
+  const cached = presentations.get(image);
+  if (cached?.src === src) return cached.ready;
+  const entry = { src, ready: image.decode().catch(error => {
+    if (presentations.get(image) === entry) presentations.delete(image);
+    throw error;
+  }) };
+  presentations.set(image, entry);
+  return entry.ready;
+}
 export function decodeMarbleArtwork(artwork) {
   const src = marbleImageSource(artwork);
   if (cache.has(src)) {
