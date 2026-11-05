@@ -163,6 +163,10 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
         </div>
         <div className="mobile-marble-details-pagination"><button type="button" onClick={() => move(-1)}>PREVIOUS</button><span aria-live="polite">{index + 1} / {artworks.length}</span><button type="button" onClick={() => move(1)}>NEXT</button></div>
         {thumbnails('Choose an artwork while reading details')}
+        {collectionId && series.summary && <div className="mobile-marble-series-summary" aria-label={`About ${series.romanizedName}`}>
+          <h3><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></h3>
+          <p>{series.summary}</p>
+        </div>}
       </section>}
     </main>
   );

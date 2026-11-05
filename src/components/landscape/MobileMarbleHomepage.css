@@ -51,5 +51,10 @@
 .mobile-marble-record-links a { display: flex; align-items: center; min-height: 46px; font: 10px/1.5 var(--font-mono); letter-spacing: 0.05em; }
 .mobile-marble-details-pagination { display: flex; justify-content: space-between; align-items: center; font: 10px/1.5 var(--font-mono); }
 .mobile-marble-details .mobile-marble-thumbnails { margin-top: 0; }
+.mobile-marble-series-summary { margin-top: 20px; padding: 22px 0 12px; border-top: 1px solid #c7c0b3; }
+.mobile-marble-series-summary h3 { display: grid; gap: 4px; margin: 0 0 14px; font-weight: 400; }
+.mobile-marble-series-summary h3 [lang] { font: 28px/1.3 var(--font-sans); }
+.mobile-marble-series-summary h3 span:last-child { font: 21px/1.25 var(--font-serif); letter-spacing: .04em; }
+.mobile-marble-series-summary p { max-width: 38ch; margin: 0; color: #625b50; font: 16px/1.55 var(--font-serif); }
 @media (max-width: 359px) { .mobile-marble-identity strong { font-size: 21px; } .mobile-marble-thumbnails { gap: 3px; } .mobile-marble-details { padding-inline: 12px; } }
 @media (prefers-reduced-motion: reduce) { .mobile-marble-stage .mobile-marble-work.is-travelling { transition: none; } }
