@@ -62,7 +62,7 @@ export function buildReliefBays(artworks, seriesId) {
         const orientation = classifyArtwork(artwork);
         const ratio = artwork.width > 0 && artwork.height > 0 ? artwork.width / artwork.height : 1;
         const weight = { small: .88, medium: 1, large: 1.08 }[artwork.presentationSize] || 1;
-        const width = Math.min(orientation === 'landscape' ? 290 : orientation === 'square' ? 235 : 220, 320 * ratio) * slot.size * weight;
+        const width = Math.min(orientation === 'landscape' ? 290 : orientation === 'square' ? 235 : 220, 320 * ratio) * slot.size * weight * 1.9;
         return [{ ...slot, artwork, orientation, width }];
       }),
     };

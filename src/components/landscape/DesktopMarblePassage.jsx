@@ -142,6 +142,13 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
       <section ref={sceneRef} className="marble-passage-scene" aria-label={`${series.label} relief wall`}>
         <div ref={frameRef} className="marble-passage-frame">
           <div ref={worldRef} className="marble-passage-world">
+            <section className="marble-passage-introduction" aria-labelledby="marble-series-title">
+              <div>
+                <h1 id="marble-series-title" lang="ml">{series.malayalamName}</h1>
+                <p className="marble-passage-introduction-romanized">{series.romanizedName}</p>
+                <p className="marble-passage-introduction-summary">{series.summary}</p>
+              </div>
+            </section>
             {bays.map((bay, index) => <ReliefBay key={bay.key} bay={bay} index={index} seriesId={series.id} artworkRefs={artworkRefs} saveSelection={saveSelection} />)}
             <aside className="marble-passage-end" aria-label={`End of ${series.label}`}>
               <span>END OF {series.label.toUpperCase()}</span>

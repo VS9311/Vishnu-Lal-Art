@@ -46,14 +46,18 @@
 .artwork-media-interior-scene { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--interior-object-position); }
 .artwork-media-interior-mount { position: absolute; z-index: 1; top: var(--interior-art-y); left: var(--interior-art-x); width: 100%; transform: translate(-50%,-50%); display: grid; place-items: center; pointer-events: none; }
 .artwork-media-interior-sheet { width: fit-content; max-width: none; max-height: none; transform: none; box-shadow: 0 2px 3px #4f463755, 0 13px 24px -11px #4f463766; }
-.artwork-media-interior-sheet .landscape-artwork-image { width: auto; height: auto; max-width: var(--a1-max-width); max-height: var(--a1-max-height); }
-.artwork-media-interior-sheet .landscape-artwork-image.is-landscape-image { max-width: calc(var(--a1-max-width) * 1.16); max-height: calc(var(--a1-max-height) * 1.1); }
+.artwork-media-interior-sheet .landscape-artwork-image { width: auto; height: auto; max-width: var(--a1-base-width); max-height: var(--a1-base-height); }
+.artwork-media-interior-sheet .landscape-artwork-image.is-landscape-image { max-width: calc(var(--a1-base-width) * 1.16); max-height: calc(var(--a1-base-height) * 1.1); }
 .artwork-media-interior-mat { width: fit-content; display: grid; place-items: center; isolation: isolate; background: #e8e4dc; }
 .artwork-media-interior-sheet.is-dark-frame { padding: 8px; background: #29251f; border-color: #16130f; border-left-color: #4a4338; border-top-color: #4a4338; border-right-color: #15120f; border-bottom-color: #15120f; box-shadow: 0 3px 4px #211a1266, 0 16px 28px -12px #211a1290; }
 .artwork-media-interior-sheet.is-dark-frame .artwork-media-interior-mat { padding: 6px; background: #ddd6c9; box-shadow: inset 0 0 16px #66594729; }
 .artwork-media-interior-sheet.is-dark-frame .landscape-artwork-image { filter: grayscale(1) sepia(.07) saturate(.72) contrast(.9) brightness(1.015); }
 .artwork-media-interior-sheet.is-heavy-frame { padding: clamp(9px,1.2cqw,14px); border-width: 2px; box-shadow: 0 4px 6px #211a1278, 0 20px 34px -10px #211a12a0; }
 .artwork-media-interior-sheet.is-heavy-frame .artwork-media-interior-mat { padding: clamp(7px,.8cqw,10px); }
+@media (min-width: 801px) {
+  .artwork-media-interior-sheet .landscape-artwork-image { max-width: min(calc(var(--a1-base-width) * 1.25), 52cqw); max-height: min(calc(var(--a1-base-height) * 1.25), 43cqh); }
+  .artwork-media-interior-sheet .landscape-artwork-image.is-landscape-image { max-width: min(calc(var(--a1-base-width) * 1.45), 58cqw); max-height: min(calc(var(--a1-base-height) * 1.375), 43cqh); }
+}
 .artwork-media-controls { position: absolute; z-index: 3; left: clamp(24px,4vw,58px); right: clamp(24px,4vw,58px); bottom: 28px; display: grid; grid-template-columns: minmax(120px,1fr) auto; gap: 16px 28px; align-items: end; color: #514b42; font: 9px/1.5 var(--font-mono); letter-spacing: .08em; }
 .artwork-media-caption { display: flex; justify-content: space-between; gap: 20px; padding-top: 10px; border-top: 1px solid #aaa19380; text-transform: uppercase; }
 .artwork-media-caption strong { font-weight: 400; }

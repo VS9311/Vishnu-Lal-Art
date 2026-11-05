@@ -23,8 +23,8 @@ function MediaFrame({ item, priority = false, mobile = false }) {
   const templateStyle = {
     '--interior-art-x': `${template.x ?? 50}%`,
     '--interior-art-y': `${template.y ?? 35}%`,
-    '--a1-max-width': `${template.a1MaxWidthCqw ?? 31}cqw`,
-    '--a1-max-height': `${template.a1MaxHeightCqh ?? 26}cqh`,
+    '--a1-base-width': `${template.a1MaxWidthCqw ?? 31}cqw`,
+    '--a1-base-height': `${template.a1MaxHeightCqh ?? 26}cqh`,
     '--interior-object-position': template.objectPosition || '50% 50%',
   };
   const frameTone = template.frameTone === 'dark-heavy'
