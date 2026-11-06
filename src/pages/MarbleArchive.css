@@ -159,6 +159,8 @@
   .artwork-media-frame--canonical { padding: 16px 4vw 22px; }
   .artwork-media-canonical-sheet { max-height: calc(min(70svh,660px) - 38px); padding: 6px; }
   .artwork-media-canonical-sheet .artwork-media-canonical-image { max-height: calc(min(70svh,660px) - 52px); box-shadow: none; }
+  .artwork-media-interior-sheet .landscape-artwork-image { max-width: min(calc(var(--a1-base-width) * 1.2), 52cqw); max-height: min(calc(var(--a1-base-height) * 1.2), 38cqh); }
+  .artwork-media-interior-sheet .landscape-artwork-image.is-landscape-image { max-width: min(calc(var(--a1-base-width) * 1.392), 58cqw); max-height: min(calc(var(--a1-base-height) * 1.32), 38cqh); }
   .artwork-media-controls { position: relative; inset: auto; padding: 14px 7% 20px; display: block; }
   .artwork-media-tabs { margin-top: 10px; flex-wrap: nowrap; overflow-x: auto; }
   .marble-record-copy { padding: 24px 7% 40px; max-width: 600px; margin: 0 auto; position: relative; }
