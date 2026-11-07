@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { buildArchiveSnapshot } from '../src/lib/archiveData.js';
+import { configureHomepageSelection, getHomepageArtworkIds } from '../src/lib/homepageSelection.js';
 
 const fallbackSeries = [
   { id: 'series-i', seriesNumber: 1, label: 'Series I', romanizedName: 'Alolam' },
@@ -28,5 +29,20 @@ assert.equal(snapshot.artworks.find((artwork) => artwork.id === 'VL-C-001').seri
 assert.equal(snapshot.artworks.find((artwork) => artwork.id === 'VL-C-001').priceUsd, 2400);
 assert.equal(snapshot.publicArtworkIds.includes('VL-C-002'), true, 'Sold works remain visible.');
 assert.equal(snapshot.knownArtworkIds.includes('VL-A-001'), true, 'Historical identifiers remain known.');
+
+const publicIds = ['VL-1', 'VL-2', 'VL-3', 'VL-4', 'VL-5', 'VL-6', 'VL-7'];
+configureHomepageSelection({
+  desktopArtworkIds: ['VL-6', 'VL-5', 'VL-4', 'VL-3', 'VL-2', 'VL-1'],
+  mobileArtworkIds: ['VL-2', 'VL-4', 'VL-6', 'VL-7'],
+  publicArtworkIds: publicIds,
+});
+assert.deepEqual(getHomepageArtworkIds('desktop'), ['VL-6', 'VL-5', 'VL-4', 'VL-3', 'VL-2', 'VL-1']);
+assert.deepEqual(getHomepageArtworkIds('mobile'), ['VL-2', 'VL-4', 'VL-6', 'VL-7']);
+configureHomepageSelection({
+  desktopArtworkIds: ['VL-1'],
+  mobileArtworkIds: ['VL-1'],
+  publicArtworkIds: ['VL-A-007', 'VL-A-018', 'VL-B-002', 'VL-B-006', 'VL-B-011', 'VL-B-010'],
+});
+assert.equal(getHomepageArtworkIds('desktop').length, 6, 'Incomplete curation must retain the approved fallback.');
 
 console.log('Sanity adapter tests passed.');

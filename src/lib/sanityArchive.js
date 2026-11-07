@@ -3,6 +3,7 @@ import artworkIndex from '../data/artworks-index.json';
 import seriesData from '../data/series.json';
 import { configureArchiveData } from './artwork';
 import { setCataloguePriceOverrides } from './cataloguePricing';
+import { configureHomepageSelection } from './homepageSelection';
 
 const projectId = import.meta.env.VITE_SANITY_PROJECT_ID || '2gtua40d';
 const dataset = import.meta.env.VITE_SANITY_DATASET || 'staging';
@@ -26,6 +27,10 @@ const archiveQuery = `{
     "imageUrl": image.asset->url,
     "width": image.asset->metadata.dimensions.width,
     "height": image.asset->metadata.dimensions.height
+  },
+  "homepageSelection": *[_type == "homepageSelection"] | order(_updatedAt desc)[0] {
+    "desktopArtworkIds": desktopArtworks[]->artworkId,
+    "mobileArtworkIds": mobileArtworks[]->artworkId
   }
 }`;
 
@@ -41,6 +46,11 @@ export async function initializeArchiveFromSanity() {
       fallbackKnownArtworkIds: artworkIndex.knownArtworkIds,
       sanitySeries: result?.series || [],
       sanityArtworks: result?.artworks || [],
+    });
+    configureHomepageSelection({
+      desktopArtworkIds: result?.homepageSelection?.desktopArtworkIds,
+      mobileArtworkIds: result?.homepageSelection?.mobileArtworkIds,
+      publicArtworkIds: snapshot.publicArtworkIds,
     });
     setCataloguePriceOverrides(snapshot.artworks.map((artwork) => [artwork.id, artwork.priceUsd]));
     document.documentElement.dataset.archiveSource = 'sanity-staging';

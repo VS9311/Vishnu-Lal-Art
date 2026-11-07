@@ -6,11 +6,11 @@ import LandscapeIndex from '../components/landscape/LandscapeIndex';
 import LandscapeRecordPanel from '../components/landscape/LandscapeRecordPanel';
 import MobileMarbleHomepage from '../components/landscape/MobileMarbleHomepage';
 import { getArtworkSummary } from '../lib/artwork';
+import { getHomepageArtworkIds } from '../lib/homepageSelection';
 import './LandscapeHomepage.css';
 
 const WORLD = { width: 3344, height: 1882 };
 const STATE_KEY = 'vishnu-lal-archive:homepage-2';
-const SELECTED_IDS = ['VL-A-007', 'VL-A-018', 'VL-B-002', 'VL-B-006', 'VL-B-011', 'VL-B-010'];
 const FOCUS_PHASE = Object.freeze({
   overview: 'OVERVIEW',
   focusing: 'FOCUSING',
@@ -18,16 +18,16 @@ const FOCUS_PHASE = Object.freeze({
   returning: 'RETURNING',
 });
 
-const PLACEMENTS = {
+const PLACEMENT_SLOTS = [
   // y is the contact edge on the stone, in the 3344 × 1882 background space.
   // Bottom anchoring keeps the contact point fixed across image ratios and hover.
-  'VL-A-007': { x: 1040, y: 844, width: 370, rotate: -0.35, presentation: 'upright', mobileBase: 860, mobileLeft: 52, mobileWidth: 210, priority: true },
-  'VL-A-018': { x: 2570, y: 744, width: 330, rotate: 0.35, presentation: 'upright', mobileBase: 1440, mobileLeft: 58, mobileWidth: 210, priority: true },
-  'VL-B-002': { x: 1800, y: 914, width: 320, rotate: -0.3, presentation: 'upright', mobileBase: 2020, mobileLeft: 48, mobileWidth: 210 },
-  'VL-B-006': { x: 1140, y: 1470, width: 360, rotate: 0.35, presentation: 'leaning', mobileBase: 2600, mobileLeft: 55, mobileWidth: 225 },
-  'VL-B-011': { x: 1840, y: 1580, width: 490, rotate: -0.35, presentation: 'upright', mobileBase: 3180, mobileLeft: 47, mobileWidth: 255 },
-  'VL-B-010': { x: 2680, y: 1590, width: 410, rotate: 0.3, presentation: 'upright', mobileBase: 3760, mobileLeft: 55, mobileWidth: 255 },
-};
+  { x: 1040, y: 844, width: 370, rotate: -0.35, presentation: 'upright', mobileBase: 860, mobileLeft: 52, mobileWidth: 210, priority: true },
+  { x: 2570, y: 744, width: 330, rotate: 0.35, presentation: 'upright', mobileBase: 1440, mobileLeft: 58, mobileWidth: 210, priority: true },
+  { x: 1800, y: 914, width: 320, rotate: -0.3, presentation: 'upright', mobileBase: 2020, mobileLeft: 48, mobileWidth: 210 },
+  { x: 1140, y: 1470, width: 360, rotate: 0.35, presentation: 'leaning', mobileBase: 2600, mobileLeft: 55, mobileWidth: 225 },
+  { x: 1840, y: 1580, width: 490, rotate: -0.35, presentation: 'upright', mobileBase: 3180, mobileLeft: 47, mobileWidth: 255 },
+  { x: 2680, y: 1590, width: 410, rotate: 0.3, presentation: 'upright', mobileBase: 3760, mobileLeft: 55, mobileWidth: 255 },
+];
 
 const CAMERA_ROUTE = [
   { x: 1672, y: 941, scale: 0.48 },
@@ -76,12 +76,13 @@ const subscribeMobile = (callback) => {
 
 export default function LandscapeHomepage() {
   const isMobile = useSyncExternalStore(subscribeMobile, () => window.matchMedia('(max-width: 800px)').matches, () => false);
+  const selectedIds = getHomepageArtworkIds(isMobile ? 'mobile' : 'desktop');
   return isMobile
-    ? <MobileMarbleHomepage artworkIds={SELECTED_IDS} />
-    : <DesktopLandscapeHomepage />;
+    ? <MobileMarbleHomepage artworkIds={selectedIds} />
+    : <DesktopLandscapeHomepage artworkIds={selectedIds} />;
 }
 
-function DesktopLandscapeHomepage() {
+function DesktopLandscapeHomepage({ artworkIds }) {
   const sceneRef = useRef(null);
   const worldRef = useRef(null);
   const artworkRefs = useRef(new Map());
@@ -90,16 +91,20 @@ function DesktopLandscapeHomepage() {
   const navigationType = useNavigationType();
   const shouldRestore = navigationType === 'POP' || location.state?.restoreLandscape;
   const initialState = useMemo(() => (shouldRestore ? readSavedState() : null), [shouldRestore]);
-  const [selectedId, setSelectedId] = useState(SELECTED_IDS.includes(initialState?.selectedId) ? initialState.selectedId : null);
-  const [lastSelectedId, setLastSelectedId] = useState(SELECTED_IDS.includes(initialState?.selectedId) ? initialState.selectedId : null);
+  const [selectedId, setSelectedId] = useState(artworkIds.includes(initialState?.selectedId) ? initialState.selectedId : null);
+  const [lastSelectedId, setLastSelectedId] = useState(artworkIds.includes(initialState?.selectedId) ? initialState.selectedId : null);
   const [activeArtworkId, setActiveArtworkId] = useState(null);
   const [focusPhase, setFocusPhase] = useState(
-    SELECTED_IDS.includes(initialState?.selectedId) ? FOCUS_PHASE.focusing : FOCUS_PHASE.overview,
+    artworkIds.includes(initialState?.selectedId) ? FOCUS_PHASE.focusing : FOCUS_PHASE.overview,
   );
 
   const artworks = useMemo(
-    () => SELECTED_IDS.map((id) => getArtworkSummary(id)).filter(Boolean),
-    [],
+    () => artworkIds.slice(0, PLACEMENT_SLOTS.length).map((id) => getArtworkSummary(id)).filter(Boolean),
+    [artworkIds],
+  );
+  const placementById = useMemo(
+    () => new Map(artworks.map((artwork, index) => [artwork.id, PLACEMENT_SLOTS[index]])),
+    [artworks],
   );
   const selectedIndex = artworks.findIndex((artwork) => artwork.id === selectedId);
   const selectedArtwork = selectedIndex >= 0 ? artworks[selectedIndex] : null;
@@ -145,7 +150,7 @@ function DesktopLandscapeHomepage() {
     progressRef.current = progress;
 
     if (selectedId) {
-      const placement = PLACEMENTS[selectedId];
+      const placement = placementById.get(selectedId);
       const nodeHeight = artworkRefs.current.get(selectedId)?.offsetHeight || placement.width;
       const viewportWidth = scene.clientWidth;
       const viewportHeight = window.innerHeight;
@@ -166,7 +171,7 @@ function DesktopLandscapeHomepage() {
       if (progress < 0.25) camera.scale += (openingScale() - CAMERA_ROUTE[0].scale) * (1 - progress / 0.25);
       applyCamera(camera);
     }
-  }, [applyCamera, applyFocusTransform, selectedId]);
+  }, [applyCamera, applyFocusTransform, placementById, selectedId]);
 
   useLayoutEffect(() => {
     if (!initialState) {
@@ -290,7 +295,7 @@ function DesktopLandscapeHomepage() {
               <LandscapeArtworkNode
                 key={artwork.id}
                 artwork={artwork}
-                placement={PLACEMENTS[artwork.id]}
+                placement={placementById.get(artwork.id)}
                 selected={selectedId === artwork.id}
                 registerNode={registerNode}
                 onSelect={selectArtwork}
