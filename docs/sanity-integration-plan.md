@@ -53,24 +53,26 @@ If staging is absent, confirm creation of an empty private staging dataset in th
 existing project. Never copy production automatically. Permit only the local
 Studio origin if CORS configuration is required; do not use a wildcard origin.
 
-## Proposed content foundation — next stage
+## Implemented content foundation — staging Studio
 
-- Artwork documents keep an immutable identifier such as `VL-A-007`. Document IDs
-  must not depend on current series membership, titles, or slugs.
-- New series are separate referenced documents. Support Series I, II, III and
-  future series without hard-coded counts. Collections are independent references.
-- Moving an artwork changes its series reference, never its identifier or assets.
-- Preserve old series codes and source references as historical, unverified
-  provenance. Existing Series I/II assignments and Notion classifications do not
-  populate approved current series automatically.
-- Artwork fields: titles, descriptions, themes/keywords, motifs, techniques,
-  dimensions with units and orientation, medium/support, availability, featured
-  flag, and artist reference.
-- Keep editorial review status separate from Sanity's draft/published lifecycle.
-  All proposed imports start as drafts requiring classification review.
-- Preserve original image assets, filenames, checksums, source provenance, and
-  artwork associations. Display derivatives are distinct from archival originals.
-- Artist documents hold approved biography, portrait, and public information.
+- `series` documents contain the series title, optional Malayalam title, a stable
+  generated/editable series code, and the single shared series summary.
+- `artwork` documents deliberately have no title or individual description. They
+  contain only the approved artwork image, immutable artwork ID, series reference,
+  USD price, and catalogue status.
+- Catalogue status is one of `unpublished`, `published`, or `soldOut`. New artwork
+  records default to `unpublished`. This field controls later website behavior and
+  is separate from Sanity's own draft/published document lifecycle.
+- Artwork IDs follow the existing `VL-A-007` pattern and are checked for uniqueness
+  across artwork documents. Moving an artwork changes its series reference, never
+  its identifier or image.
+- The series reference keeps Sanity's inline Create New action enabled, so an
+  editor can add a series while editing an artwork. The new series form can
+  generate an editable code from its title.
+- There are no hard-coded Series I/II/III limits. Future series use the same
+  document type and relationship.
+- Existing classifications and Notion assignments are not imported or treated as
+  authoritative automatically.
 
 ## Migration proposal — approval required before execution
 
