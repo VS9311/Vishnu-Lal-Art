@@ -180,20 +180,3 @@
   .marble-enquiry-wide { grid-column: auto; }
   .marble-contact-dialog fieldset { flex-wrap: wrap; }
 }
-.marble-empty-series > section {
-  min-height: 100vh;
-  margin-left: 176px;
-  padding: clamp(8rem, 18vh, 13rem) clamp(2rem, 8vw, 9rem);
-  background: radial-gradient(circle at 62% 28%, #faf8f3 0, #eeeae1 62%, #e5e0d7 100%);
-  color: #3f3a32;
-}
-
-.marble-empty-series > section > p:first-child,
-.marble-empty-series > section > span { font: 10px/1.6 monospace; letter-spacing: .16em; text-transform: uppercase; }
-.marble-empty-series h1 { margin: 2rem 0 .35rem; font-size: clamp(3.2rem, 8vw, 8rem); font-weight: 400; }
-.marble-empty-series h2 { margin: 0 0 2rem; font: 400 clamp(1.5rem, 3vw, 3rem)/1.1 Georgia, serif; }
-.marble-empty-series > section > p:not(:first-child) { max-width: 48rem; font: 1.1rem/1.8 Georgia, serif; }
-
-@media (max-width: 800px) {
-  .marble-empty-series > section { margin-left: 0; padding: 9rem 1.5rem 4rem; }
-}

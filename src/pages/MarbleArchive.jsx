@@ -9,7 +9,7 @@ import ArtworkEnquiryDialog from '../components/artwork/ArtworkEnquiryDialog';
 import { buildArtworkMedia, getArtworkMediaSequence } from '../components/artwork/artworkMedia';
 import { useCart } from '../components/cart/cartContextState';
 import DesktopMarblePassage from '../components/landscape/DesktopMarblePassage';
-import MobileMarbleHomepage from '../components/landscape/MobileMarbleHomepage';
+import MobileMarbleHomepage, { MobileMarbleEmptySeries } from '../components/landscape/MobileMarbleHomepage';
 import { formatCataloguePrice, getCataloguePrice } from '../lib/cataloguePricing';
 import { MotionLink } from '../motion/RouteMotion';
 import './LandscapeHomepage.css';
@@ -36,16 +36,7 @@ export function MarbleSeriesPage({ seriesId }) {
   const series = getSeriesData(seriesId);
   const artworks = getSeriesArtworks(seriesId);
   if (!series) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Series not available</h1><MotionLink to="/" kind="portal">Return to the marble homepage</MotionLink></main>;
-  if (!artworks.length) return <main id="main-content" className="landscape-homepage marble-archive marble-empty-series">
-    <MarbleNavigation seriesId={seriesId} />
-    <section>
-      <p>{series.label}</p>
-      <h1 lang="ml">{series.malayalamName}</h1>
-      <h2>{series.romanizedName}</h2>
-      {series.summary && <p>{series.summary}</p>}
-      <span>No published works yet.</span>
-    </section>
-  </main>;
+  if (mobile && !artworks.length) return <MobileMarbleEmptySeries series={series} />;
   if (mobile) return <MobileMarbleHomepage key={seriesId} artworkIds={artworks.map((work) => work.id)} collectionId={seriesId} />;
   return <DesktopMarblePassage
     key={seriesId}

@@ -9,6 +9,33 @@ import { MotionLink } from '../../motion/RouteMotion';
 
 const STATE_KEY = 'vishnu-lal-archive:mobile-marble-v1';
 
+export function MobileMarbleEmptySeries({ series }) {
+  const [indexOpen, setIndexOpen] = useState(false);
+  return <main id="main-content" className="landscape-homepage mobile-marble-homepage mobile-marble-collection">
+    <section className="mobile-marble-scene" aria-label={`${series.label} artwork collection`}>
+      <img className="mobile-marble-backdrop" src="/homepage-2/mobile-marble-podium-v1.png" alt="" fetchPriority="high" />
+      <header className="mobile-marble-header">
+        <MotionLink to="/" kind="portal" className="mobile-marble-identity"><strong>VISHNU LAL</strong><span>THE ARCHIVE</span></MotionLink>
+        <button type="button" aria-expanded={indexOpen} aria-controls="mobile-marble-index" onClick={() => setIndexOpen(!indexOpen)}>{indexOpen ? 'CLOSE' : 'INDEX'}</button>
+      </header>
+      {indexOpen && <nav id="mobile-marble-index" className="mobile-marble-index" aria-label="Marble archive index">
+        <MotionLink to="/" kind="portal">MARBLE HOMEPAGE</MotionLink>
+        <MotionLink to="/artist" kind="portal">THE ARTIST · OUTSIDE THE SYSTEM</MotionLink>
+        {getAllSeries().map((item) => <MotionLink className="mobile-marble-series-destination" to={`/${item.id}`} kind="portal" key={item.id}>
+          <span>{item.label}</span><strong lang="ml">{item.malayalamName}</strong><span>{item.romanizedName}</span>
+        </MotionLink>)}
+      </nav>}
+      <div className="mobile-marble-empty-collection">
+        <p>{series.label}</p>
+        <h1 lang="ml">{series.malayalamName}</h1>
+        <h2>{series.romanizedName}</h2>
+        {series.summary && <p className="mobile-marble-empty-summary">{series.summary}</p>}
+        <span>No published works yet.</span>
+      </div>
+    </section>
+  </main>;
+}
+
 function restoreState(allowed, count, stateKey) {
   if (!allowed) return { index: 0, details: false };
   try {

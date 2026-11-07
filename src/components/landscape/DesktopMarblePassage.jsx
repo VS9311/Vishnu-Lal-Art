@@ -71,7 +71,7 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
       targetXRef.current = progress * travel;
       if (immediate) renderWorld(targetXRef.current);
       else requestGlide();
-      setRegion(Math.min(bays.length, 1 + Math.floor(progress * bays.length)));
+      setRegion(bays.length ? Math.min(bays.length, 1 + Math.floor(progress * bays.length)) : 0);
       frame.style.setProperty('--passage-progress', progress);
     };
 
@@ -152,6 +152,9 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
                 <p className="marble-passage-introduction-summary">{series.summary}</p>
               </div>
             </section>
+            {!bays.length && <section className="marble-passage-empty" aria-label={`${series.label} publication status`}>
+              <span>No published works yet.</span>
+            </section>}
             {bays.map((bay, index) => <ReliefBay key={bay.key} bay={bay} index={index} seriesId={series.id} artworkRefs={artworkRefs} saveSelection={saveSelection} />)}
             <aside className="marble-passage-end" aria-label={`End of ${series.label}`}>
               <span>END OF {series.label.toUpperCase()}</span>

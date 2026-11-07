@@ -55,10 +55,23 @@
   .marble-passage-introduction-summary {
     margin: 0;
     max-width: 440px;
+    min-height: 106px;
     padding-top: 25px;
     border-top: 1px solid #aca49799;
     color: #655e54;
     font: 400 clamp(17px, 1.35vw, 22px)/1.55 var(--font-serif);
+  }
+
+  .marble-passage-empty {
+    flex: 0 0 clamp(360px, 30vw, 520px);
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 70px 7vh 24px;
+    color: rgba(52, 49, 44, .5);
+    font: 9px/1.6 var(--font-mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
   }
 
   .marble-passage-frame {
