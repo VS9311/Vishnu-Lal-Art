@@ -93,7 +93,6 @@ function DesktopLandscapeHomepage() {
   const [selectedId, setSelectedId] = useState(SELECTED_IDS.includes(initialState?.selectedId) ? initialState.selectedId : null);
   const [lastSelectedId, setLastSelectedId] = useState(SELECTED_IDS.includes(initialState?.selectedId) ? initialState.selectedId : null);
   const [activeArtworkId, setActiveArtworkId] = useState(null);
-  const [activeRegion, setActiveRegion] = useState('all');
   const [focusPhase, setFocusPhase] = useState(
     SELECTED_IDS.includes(initialState?.selectedId) ? FOCUS_PHASE.focusing : FOCUS_PHASE.overview,
   );
@@ -144,7 +143,6 @@ function DesktopLandscapeHomepage() {
     const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
     const progress = clamp(-scene.getBoundingClientRect().top / travel);
     progressRef.current = progress;
-    setActiveRegion(progress < 0.12 ? 'all' : progress < 0.54 ? 'series-ii' : 'series-iii');
 
     if (selectedId) {
       const placement = PLACEMENTS[selectedId];
@@ -272,17 +270,6 @@ function DesktopLandscapeHomepage() {
     selectArtwork(artworks[nextIndex].id);
   }, [artworks, selectedIndex, selectArtwork]);
 
-  const travelTo = useCallback((progress) => {
-    closeFocus();
-    const scene = sceneRef.current;
-    if (!scene) return;
-    const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
-    window.scrollTo({
-      top: scene.offsetTop + (travel * progress),
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-    });
-  }, [closeFocus]);
-
   return (
     <main
       id="main-content"
@@ -299,8 +286,6 @@ function DesktopLandscapeHomepage() {
             onTransitionEnd={handleWorldTransitionEnd}
           >
             <img className="landscape-world-image" src="/homepage-2/pale-archive-podium-landscape-v2.png" alt="" width="1672" height="941" fetchPriority="high" />
-            <div className="landscape-region-label landscape-region-label--one" aria-hidden="true">SERIES II / ANAMAM</div>
-            <div className="landscape-region-label landscape-region-label--two" aria-hidden="true">SERIES III / ANDARALAM</div>
             {artworks.map((artwork) => (
               <LandscapeArtworkNode
                 key={artwork.id}
@@ -313,7 +298,7 @@ function DesktopLandscapeHomepage() {
             ))}
           </div>
 
-          <LandscapeIndex activeRegion={activeRegion} activeArtworkId={activeArtworkId} onTravel={travelTo} />
+          <LandscapeIndex activeArtworkId={activeArtworkId} />
           <div className="landscape-travel-note" aria-hidden="true"><span>SCROLL TO MOVE THROUGH THE ARCHIVE</span><i /></div>
           <LandscapeRecordPanel
             artwork={panelArtwork}

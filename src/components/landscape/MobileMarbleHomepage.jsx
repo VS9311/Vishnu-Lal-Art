@@ -20,7 +20,7 @@ export function MobileMarbleEmptySeries({ series }) {
       </header>
       {indexOpen && <nav id="mobile-marble-index" className="mobile-marble-index" aria-label="Marble archive index">
         <MotionLink to="/" kind="portal">MARBLE HOMEPAGE</MotionLink>
-        <MotionLink to="/artist" kind="portal">THE ARTIST · OUTSIDE THE SYSTEM</MotionLink>
+        <MotionLink to="/artist" kind="portal">THE ARTIST</MotionLink>
         {getAllSeries().map((item) => <MotionLink className="mobile-marble-series-destination" to={`/${item.id}`} kind="portal" key={item.id}>
           <span>{item.label}</span><strong lang="ml">{item.malayalamName}</strong><span>{item.romanizedName}</span>
         </MotionLink>)}
@@ -129,7 +129,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
 
         {indexOpen && <nav id="mobile-marble-index" className="mobile-marble-index" aria-label="Marble archive index">
           <MotionLink to="/" kind="portal" onClick={() => setIndexOpen(false)}>MARBLE HOMEPAGE</MotionLink>
-          <MotionLink to="/artist" kind="portal" onClick={() => setIndexOpen(false)}>THE ARTIST · OUTSIDE THE SYSTEM</MotionLink>
+          <MotionLink to="/artist" kind="portal" onClick={() => setIndexOpen(false)}>THE ARTIST</MotionLink>
           {getAllSeries().map((item) => {
             const id = item.id;
             return <MotionLink className="mobile-marble-series-destination" to={`/${id}`} kind="portal" key={id} onClick={() => setIndexOpen(false)}>

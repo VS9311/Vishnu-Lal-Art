@@ -46,16 +46,6 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
   pointer-events: none;
 }
 
-.landscape-region-label {
-  position: absolute;
-  z-index: 1;
-  color: rgba(45, 44, 40, 0.27);
-  font: 18px/1 var(--font-mono);
-  letter-spacing: 0.17em;
-}
-.landscape-region-label--one { left: 560px; top: 360px; }
-.landscape-region-label--two { left: 2220px; top: 345px; }
-
 .landscape-index {
   position: absolute;
   z-index: 20;
@@ -80,7 +70,6 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
 }
 .landscape-index-identity span { padding-left: 35px; color: var(--landscape-faint); font-size: 8px; }
 
-.landscape-index button,
 .landscape-index > a {
   appearance: none;
   border: 0;
@@ -95,15 +84,11 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
   cursor: pointer;
   transition: color 280ms ease, transform 280ms ease;
 }
-.landscape-index button strong, .landscape-index > a strong { color: rgba(45, 44, 40, 0.72); font: 15px/1.25 var(--font-sans); }
-.landscape-index button em, .landscape-index > a em { color: rgba(45, 44, 40, 0.55); font-style: normal; }
-.landscape-index button small, .landscape-index > a small { color: var(--landscape-faint); font: inherit; }
-.landscape-index button:hover,
-.landscape-index button:focus-visible,
-.landscape-index button.is-active,
+.landscape-index > a strong { color: rgba(45, 44, 40, 0.72); font: 15px/1.25 var(--font-sans); }
+.landscape-index > a em { color: rgba(45, 44, 40, 0.55); font-style: normal; }
+.landscape-index > a small { color: var(--landscape-faint); font: inherit; }
 .landscape-index > a:hover,
 .landscape-index > a:focus-visible { color: var(--landscape-ink); transform: translateX(3px); }
-.landscape-index button:focus-visible,
 .landscape-index > a:focus-visible { outline: 1px solid rgba(45, 44, 40, 0.62); outline-offset: 6px; }
 
 .landscape-index-status {
@@ -277,10 +262,6 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
   .landscape-world-image {
     display: none;
   }
-  .landscape-region-label { font-size: 9px; }
-  .landscape-region-label--one { left: 24px; top: 390px; }
-  .landscape-region-label--two { left: auto; right: 24px; top: 2260px; }
-
   .landscape-index {
     position: absolute;
     inset: 0 0 auto 0;
@@ -295,9 +276,7 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
   }
   .landscape-index-identity { grid-column: 1 / -1; margin-bottom: 4px; }
   .landscape-index-identity strong { font-size: 22px; }
-  .landscape-index button,
   .landscape-index > a { font-size: 8px; }
-  .landscape-index button:first-of-type { grid-column: 1 / -1; }
   .landscape-index > a { grid-column: 1 / -1; }
   .landscape-index-status { display: none; }
 

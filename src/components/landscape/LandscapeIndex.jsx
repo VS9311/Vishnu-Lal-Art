@@ -1,17 +1,13 @@
 import { MotionLink } from '../../motion/RouteMotion';
 import { getAllSeries, getSeriesArtworks } from '../../lib/artwork';
 
-export default function LandscapeIndex({ activeRegion, activeArtworkId, onTravel }) {
+export default function LandscapeIndex({ activeArtworkId }) {
   return (
     <nav className="landscape-index" aria-label="Archive landscape index">
       <div className="landscape-index-identity">
         <strong>VISHNU LAL</strong>
         <span>THE ARCHIVE</span>
       </div>
-
-      <button className={activeRegion === 'all' ? 'is-active' : ''} type="button" onClick={() => onTravel(0)}>
-        ALL WORKS
-      </button>
 
       {getAllSeries().map((series) => <MotionLink key={series.id} to={`/${series.id}`} kind="portal">
         <span>{series.label.toUpperCase()}</span>
@@ -22,7 +18,6 @@ export default function LandscapeIndex({ activeRegion, activeArtworkId, onTravel
 
       <MotionLink className="landscape-index-artist" to="/artist" kind="portal">
         <span>THE ARTIST</span>
-        <em>OUTSIDE THE SYSTEM</em>
       </MotionLink>
 
       <div className="landscape-index-status" aria-live="polite">
