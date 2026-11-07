@@ -35,6 +35,17 @@ export function MarbleSeriesPage({ seriesId }) {
   const navigationType = useNavigationType();
   const series = getSeriesData(seriesId);
   const artworks = getSeriesArtworks(seriesId);
+  if (!series) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Series not available</h1><MotionLink to="/" kind="portal">Return to the marble homepage</MotionLink></main>;
+  if (!artworks.length) return <main id="main-content" className="landscape-homepage marble-archive marble-empty-series">
+    <MarbleNavigation seriesId={seriesId} />
+    <section>
+      <p>{series.label}</p>
+      <h1 lang="ml">{series.malayalamName}</h1>
+      <h2>{series.romanizedName}</h2>
+      {series.summary && <p>{series.summary}</p>}
+      <span>No published works yet.</span>
+    </section>
+  </main>;
   if (mobile) return <MobileMarbleHomepage key={seriesId} artworkIds={artworks.map((work) => work.id)} collectionId={seriesId} />;
   return <DesktopMarblePassage
     key={seriesId}
@@ -83,7 +94,7 @@ function MarbleArtworkRecord({ id }) {
   const artwork = getArtworkSummary(id);
   const mobile = useSyncExternalStore(subscribe, mobileSnapshot, () => false);
   const location = useLocation();
-  const [record, setRecord] = useState(null);
+  const [record, setRecord] = useState(() => artwork?.source === 'sanity' ? {} : null);
   const [error, setError] = useState(false);
   const [intent, setIntent] = useState(null);
   const inquiryTrigger = useRef(null);
@@ -91,21 +102,22 @@ function MarbleArtworkRecord({ id }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     if (!isPublicArtwork(id)) return;
+    if (artwork?.source === 'sanity') { setRecord({}); setError(false); return; }
     let cancelled = false;
     import(`../data/artworks/${id}.json`).then((module) => { if (!cancelled) setRecord(module.default); }).catch(() => { if (!cancelled) setError(true); });
     return () => { cancelled = true; };
-  }, [id]);
+  }, [artwork?.source, id]);
   if (!artwork || !isPublicArtwork(id)) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Work not available</h1><MotionLink to="/" kind="portal">Return to the marble homepage</MotionLink></main>;
   const series = getSeriesData(artwork.seriesId);
   const navigation = getSeriesNavigation(id);
   const fromHome = location.state?.fromLandscape;
   const media = buildArtworkMedia(artwork);
   const mediaItems = getArtworkMediaSequence(media, mobile);
-  const status = record?.availability || record?.acquisitionStatus;
-  const statusLabel = availabilityLabel(status);
-  const price = getCataloguePrice(artwork.id);
+  const status = artwork.source === 'sanity' ? artwork.status : record?.availability || record?.acquisitionStatus;
+  const statusLabel = artwork.status === 'soldOut' ? 'Sold out' : artwork.status === 'published' ? 'Available' : availabilityLabel(status);
+  const price = artwork.priceUsd || getCataloguePrice(artwork.id);
   const formattedPrice = formatCataloguePrice(price);
-  const unavailable = ['ACQUIRED', 'NOT_CURRENTLY_AVAILABLE'].includes(status);
+  const unavailable = artwork.status === 'soldOut' || ['ACQUIRED', 'NOT_CURRENTLY_AVAILABLE'].includes(status);
   const inCart = includesArtwork(artwork.id);
   const primaryLabel = unavailable ? 'ENQUIRE' : inCart ? 'VIEW CART' : 'ADD TO CART';
   return <main id="main-content" className="landscape-homepage marble-archive marble-record">
@@ -126,7 +138,7 @@ function MarbleArtworkRecord({ id }) {
           if (!inCart) addArtwork(artwork.id);
           openCart();
         }}>{primaryLabel}</button>{primaryLabel !== 'ENQUIRE' && <button onClick={(event) => { inquiryTrigger.current = event.currentTarget; setIntent('Other'); }}>ENQUIRE</button>}</div>
-        {!record && !error && <p role="status">Loading catalogue record…</p>}
+        {!record && artwork.source !== 'sanity' && !error && <p role="status">Loading catalogue record…</p>}
         {error && <p role="alert">The catalogue record could not be loaded. Please refresh to try again.</p>}
         {record && <div className="marble-public-record"><CatalogueRecord metadata={record.catalogue} />
           {record.formalObservation && <details><summary>FORMAL OBSERVATION</summary><FormalObservation data={record.formalObservation} /></details>}

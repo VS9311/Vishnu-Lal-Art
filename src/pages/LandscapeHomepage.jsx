@@ -144,7 +144,7 @@ function DesktopLandscapeHomepage() {
     const travel = Math.max(scene.offsetHeight - window.innerHeight, 1);
     const progress = clamp(-scene.getBoundingClientRect().top / travel);
     progressRef.current = progress;
-    setActiveRegion(progress < 0.12 ? 'all' : progress < 0.54 ? 'series-i' : 'series-ii');
+    setActiveRegion(progress < 0.12 ? 'all' : progress < 0.54 ? 'series-ii' : 'series-iii');
 
     if (selectedId) {
       const placement = PLACEMENTS[selectedId];
@@ -299,8 +299,8 @@ function DesktopLandscapeHomepage() {
             onTransitionEnd={handleWorldTransitionEnd}
           >
             <img className="landscape-world-image" src="/homepage-2/pale-archive-podium-landscape-v2.png" alt="" width="1672" height="941" fetchPriority="high" />
-            <div className="landscape-region-label landscape-region-label--one" aria-hidden="true">SERIES I / ANAMAM</div>
-            <div className="landscape-region-label landscape-region-label--two" aria-hidden="true">SERIES II / ANTHARALAM</div>
+            <div className="landscape-region-label landscape-region-label--one" aria-hidden="true">SERIES II / ANAMAM</div>
+            <div className="landscape-region-label landscape-region-label--two" aria-hidden="true">SERIES III / ANDARALAM</div>
             {artworks.map((artwork) => (
               <LandscapeArtworkNode
                 key={artwork.id}

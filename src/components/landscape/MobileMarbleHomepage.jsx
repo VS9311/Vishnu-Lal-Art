@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
-import { getArtworkSummary, getSeriesData } from '../../lib/artwork';
+import { getAllSeries, getArtworkSummary, getSeriesData } from '../../lib/artwork';
 import ResponsiveArtworkImage from '../artwork/ResponsiveArtworkImage';
 import useMarbleNavigation from './useMarbleNavigation';
 import { marbleImageSource } from './marbleImageReadiness';
@@ -103,8 +103,8 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
         {indexOpen && <nav id="mobile-marble-index" className="mobile-marble-index" aria-label="Marble archive index">
           <MotionLink to="/" kind="portal" onClick={() => setIndexOpen(false)}>MARBLE HOMEPAGE</MotionLink>
           <MotionLink to="/artist" kind="portal" onClick={() => setIndexOpen(false)}>THE ARTIST · OUTSIDE THE SYSTEM</MotionLink>
-          {['series-i', 'series-ii'].map((id) => {
-            const item = getSeriesData(id);
+          {getAllSeries().map((item) => {
+            const id = item.id;
             return <MotionLink className="mobile-marble-series-destination" to={`/${id}`} kind="portal" key={id} onClick={() => setIndexOpen(false)}>
               <span>{item.label}</span><strong lang="ml">{item.malayalamName}</strong><span>{item.romanizedName}</span>
             </MotionLink>;

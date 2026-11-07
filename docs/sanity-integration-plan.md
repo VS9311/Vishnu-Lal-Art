@@ -91,7 +91,7 @@ Studio origin if CORS configuration is required; do not use a wildcard origin.
 
 ## Website integration proposal — later approval stage
 
-Build a data adapter on the feature branch that maps published Sanity documents
+The feature branch now includes a public, read-only data adapter that maps published Sanity documents
 to the existing view contracts. Preserve layouts, typography, motion, positioning,
 routes, responsive behavior, and historical artwork URLs. Test using explicit
 preview configuration, with the current static-data path remaining the production

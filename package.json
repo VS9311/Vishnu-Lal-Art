@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "npm run validate && vite build",
     "lint": "oxlint",
-    "validate": "node scripts/validate-archive.mjs && node scripts/test-relief-layout.mjs && node scripts/test-artwork-media.mjs && node scripts/test-commerce.mjs && node scripts/test-motion-system.mjs",
+    "validate": "node scripts/validate-archive.mjs && node scripts/test-relief-layout.mjs && node scripts/test-artwork-media.mjs && node scripts/test-commerce.mjs && node scripts/test-motion-system.mjs && node scripts/test-sanity-adapter.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sanity/client": "^8.15.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"

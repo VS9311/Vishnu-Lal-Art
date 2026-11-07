@@ -2,6 +2,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import ReliefBay from './ReliefBay';
 import { buildReliefBays } from './reliefLayout';
 import { MotionLink } from '../../motion/RouteMotion';
+import { getAllSeries } from '../../lib/artwork';
 import './DesktopMarblePassage.css';
 
 const clamp = (value, minimum = 0, maximum = 1) => Math.min(maximum, Math.max(minimum, value));
@@ -18,6 +19,8 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
   const [region, setRegion] = useState(1);
   const [imageDimensions, setImageDimensions] = useState({});
   const bays = buildReliefBays(artworks.map(work => ({ ...work, ...imageDimensions[work.id] })), series.id);
+  const allSeries = getAllSeries();
+  const nextSeries = allSeries[allSeries.findIndex((item) => item.id === series.id) + 1] || null;
   const measureImage = (event) => {
     const image = event.target;
     const id = image.closest('.collection-paper')?.id.replace('marble-', '');
@@ -152,8 +155,8 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
             {bays.map((bay, index) => <ReliefBay key={bay.key} bay={bay} index={index} seriesId={series.id} artworkRefs={artworkRefs} saveSelection={saveSelection} />)}
             <aside className="marble-passage-end" aria-label={`End of ${series.label}`}>
               <span>END OF {series.label.toUpperCase()}</span>
-              <MotionLink to={series.id === 'series-i' ? '/series-ii' : '/'} kind="portal">
-                {series.id === 'series-i' ? 'NEXT SERIES →' : 'RETURN TO ARCHIVE →'}
+              <MotionLink to={nextSeries ? `/${nextSeries.id}` : '/'} kind="portal">
+                {nextSeries ? 'NEXT SERIES →' : 'RETURN TO ARCHIVE →'}
               </MotionLink>
             </aside>
           </div>

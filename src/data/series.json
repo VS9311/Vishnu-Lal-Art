@@ -3,20 +3,32 @@
     {
       "id": "series-i",
       "label": "Series I",
-      "malayalamName": "അനാമം",
-      "romanizedName": "Anamam",
-      "summary": "An exploration of figures and marks that resist a fixed name. Across the drawings, charcoal forms emerge, overlap and remain open to interpretation.",
-      "workCount": 17,
+      "malayalamName": "അലോലം",
+      "romanizedName": "Alolam",
+      "summary": "",
+      "workCount": 0,
+      "seriesNumber": 1,
       "slug": "series-i"
     },
     {
       "id": "series-ii",
       "label": "Series II",
+      "malayalamName": "അനാമം",
+      "romanizedName": "Anamam",
+      "summary": "An exploration of figures and marks that resist a fixed name. Across the drawings, charcoal forms emerge, overlap and remain open to interpretation.",
+      "workCount": 17,
+      "seriesNumber": 2,
+      "slug": "series-ii"
+    },
+    {
+      "id": "series-iii",
+      "label": "Series III",
       "malayalamName": "അന്തരാളം",
-      "romanizedName": "Antharalam",
+      "romanizedName": "Andaralam",
       "summary": "A movement from isolated figure construction toward increasingly complex compositions, where the spaces between forms become part of the drawing.",
       "workCount": 12,
-      "slug": "series-ii"
+      "seriesNumber": 3,
+      "slug": "series-iii"
     }
   ]
 }

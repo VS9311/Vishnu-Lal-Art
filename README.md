@@ -30,4 +30,4 @@ npm.cmd run build
 
 ## Deployment
 
-This application uses browser-history routing. Configure the production host to rewrite unknown application routes to `index.html`; otherwise direct visits to `/series-i`, `/series-ii`, or `/artwork/:id` will return a server 404 before React can render the appropriate Archive state.
+This application uses browser-history routing. Configure the production host to rewrite unknown application routes to `index.html`; otherwise direct visits to `/series-i`, `/series-ii`, `/series-iii`, or `/artwork/:id` will return a server 404 before React can render the appropriate Archive state.

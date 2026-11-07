@@ -142,7 +142,7 @@ export default function ArtistPage() {
     </section>
 
     <section className="artist-series" aria-labelledby="work-title">
-      <header className="artist-section-heading" data-reveal><p className="artist-section-index">THE WORK · 06</p><h2 id="work-title" className="artist-section-title">Two bodies.<br />One evolving archive.</h2></header>
+      <header className="artist-section-heading" data-reveal><p className="artist-section-index">THE WORK · 06</p><h2 id="work-title" className="artist-section-title">Three bodies.<br />One evolving archive.</h2></header>
       <div className="artist-series-grid">{profile.series.map((item, index) => <ArtistSeries key={item.id} item={item} index={index} />)}</div>
     </section>
 

@@ -1,7 +1,8 @@
 // Presentation only: canonical records and their catalogue order remain unchanged.
 export const SERIES_RELIEF_CONFIG = {
   'series-i': { sequence: ['levels', 'cut', 'broad', 'open', 'broad', 'levels'] },
-  'series-ii': { sequence: ['open', 'broad', 'levels', 'cut'] },
+  'series-ii': { sequence: ['levels', 'cut', 'broad', 'open', 'broad', 'levels'] },
+  'series-iii': { sequence: ['open', 'broad', 'levels', 'cut'] },
 };
 
 // Slots share ledge baselines with the architectural planes, in a 560px-high bay.

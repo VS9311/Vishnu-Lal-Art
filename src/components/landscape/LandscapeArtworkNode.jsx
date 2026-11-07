@@ -1,7 +1,8 @@
 import ResponsiveArtworkImage from '../artwork/ResponsiveArtworkImage';
+import { getSeriesData } from '../../lib/artwork';
 
 export default function LandscapeArtworkNode({ artwork, placement, selected, registerNode, onSelect }) {
-  const seriesLabel = artwork.seriesId === 'series-i' ? 'SERIES I' : 'SERIES II';
+  const seriesLabel = getSeriesData(artwork.seriesId)?.label?.toUpperCase() || 'ARCHIVE';
 
   return (
     <article

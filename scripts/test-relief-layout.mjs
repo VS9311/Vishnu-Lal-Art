@@ -30,5 +30,6 @@ for (const [seriesId, expectedCount] of [['series-i', 17], ['series-ii', 12]]) {
   assert.ok(bays.flatMap(bay => bay.slots).every(slot => getArtworkRecordPath(slot.artwork.id) === `/artwork/${slot.artwork.id}`));
 }
 assert.deepEqual(SERIES_RELIEF_CONFIG['series-i'].sequence, ['levels', 'cut', 'broad', 'open', 'broad', 'levels']);
-assert.deepEqual(SERIES_RELIEF_CONFIG['series-ii'].sequence, ['open', 'broad', 'levels', 'cut']);
+assert.deepEqual(SERIES_RELIEF_CONFIG['series-ii'].sequence, ['levels', 'cut', 'broad', 'open', 'broad', 'levels']);
+assert.deepEqual(SERIES_RELIEF_CONFIG['series-iii'].sequence, ['open', 'broad', 'levels', 'cut']);
 console.log('Relief layout: orientation, assignment, uniqueness, deterministic growth to 103 works passed.');

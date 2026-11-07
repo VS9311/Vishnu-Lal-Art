@@ -1,5 +1,7 @@
+import { getArtworkImageSource } from '../../lib/artwork';
+
 // Fixed mobile rendition avoids responsive-source reselection after decoding.
-export const marbleImageSource = artwork => `/artworks/${artwork.id}/900.webp`;
+export const marbleImageSource = artwork => getArtworkImageSource(artwork, 900);
 const cache = new Map();
 const presentations = new WeakMap();
 export function decodeMarblePresentation(image) {

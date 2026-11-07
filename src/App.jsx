@@ -23,11 +23,13 @@ function App() {
             <Route path="/artist" element={<ArtistPage />} />
             <Route path="/series-i" element={<MarbleSeriesPage seriesId="series-i" />} />
             <Route path="/series-ii" element={<MarbleSeriesPage seriesId="series-ii" />} />
+            <Route path="/series-iii" element={<MarbleSeriesPage seriesId="series-iii" />} />
             <Route path="/artwork/:id" element={<MarbleArtworkPage />} />
 
             <Route path="/homepage-2" element={<Navigate to="/" replace />} />
             <Route path="/homepage-2/series-i" element={<Navigate to="/series-i" replace />} />
             <Route path="/homepage-2/series-ii" element={<Navigate to="/series-ii" replace />} />
+            <Route path="/homepage-2/series-iii" element={<Navigate to="/series-iii" replace />} />
             <Route path="/homepage-2/artwork/:id" element={<LegacyArtworkRedirect />} />
             <Route path="/archive/*" element={<Navigate to="/" replace />} />
             <Route path="/lab/archive-map" element={<Navigate to="/" replace />} />
