@@ -173,6 +173,19 @@
     .collection-bay-composition { height: 92svh; }
   }
 
+  /*
+   * At unusually large effective viewports (including a desktop browser
+   * zoomed far out), keep each complete relief bay optically aligned with
+   * the centred introduction. Normal desktop and mobile layouts retain the
+   * approved top-led composition.
+   */
+  @media (min-width: 3000px) and (min-height: 1200px) {
+    .collection-bay {
+      align-items: center;
+      padding-top: 0;
+    }
+  }
+
   .marble-passage-index {
     position: fixed;
     z-index: 20;
