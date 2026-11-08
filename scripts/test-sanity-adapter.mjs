@@ -24,11 +24,20 @@ const snapshot = buildArchiveSnapshot({
 assert.deepEqual(snapshot.series.map((series) => series.id), ['series-i', 'series-ii', 'series-iii']);
 assert.equal(snapshot.series[0].romanizedName, 'Alolam');
 assert.equal(snapshot.artworks.some((artwork) => artwork.id === 'VL-A-001'), false, 'An unpublished Sanity record suppresses its fallback duplicate.');
-assert.equal(snapshot.artworks.find((artwork) => artwork.id === 'VL-B-001').seriesId, 'series-iii');
+assert.equal(snapshot.artworks.some((artwork) => artwork.id === 'VL-B-001'), false, 'A complete Sanity response replaces the static public catalogue.');
 assert.equal(snapshot.artworks.find((artwork) => artwork.id === 'VL-C-001').seriesId, 'series-i');
 assert.equal(snapshot.artworks.find((artwork) => artwork.id === 'VL-C-001').priceUsd, 2400);
 assert.equal(snapshot.publicArtworkIds.includes('VL-C-002'), true, 'Sold works remain visible.');
 assert.equal(snapshot.knownArtworkIds.includes('VL-A-001'), true, 'Historical identifiers remain known.');
+
+const fallbackSnapshot = buildArchiveSnapshot({
+  fallbackSeries,
+  fallbackArtworks: [
+    { id: 'VL-A-001', seriesId: 'series-i', width: 10, height: 20 },
+    { id: 'VL-B-001', seriesId: 'series-ii', width: 20, height: 10 },
+  ],
+});
+assert.equal(fallbackSnapshot.artworks.length, 2, 'The static catalogue remains available when Sanity is unavailable.');
 
 const publicIds = ['VL-1', 'VL-2', 'VL-3', 'VL-4', 'VL-5', 'VL-6', 'VL-7'];
 configureHomepageSelection({

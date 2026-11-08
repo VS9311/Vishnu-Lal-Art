@@ -60,10 +60,8 @@ export function buildArchiveSnapshot({ fallbackSeries, fallbackArtworks, sanityS
   const visibleSanity = sanityArtworks
     .map(normalizeSanityArtwork)
     .filter((artwork) => artwork && ['published', 'soldOut'].includes(artwork.status));
-  const artworks = [
-    ...remappedFallback.filter((artwork) => !managedIds.has(artwork.id)),
-    ...visibleSanity,
-  ].sort((left, right) => {
+  const hasSanityArchive = sanitySeries.length > 0 && sanityArtworks.length > 0;
+  const artworks = (hasSanityArchive ? visibleSanity : remappedFallback).sort((left, right) => {
     const leftSeries = seriesById.get(left.seriesId)?.seriesNumber || 999;
     const rightSeries = seriesById.get(right.seriesId)?.seriesNumber || 999;
     return leftSeries - rightSeries || left.id.localeCompare(right.id, undefined, { numeric: true });
