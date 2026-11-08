@@ -7,6 +7,7 @@ import { configureHomepageSelection } from './homepageSelection';
 
 const projectId = import.meta.env.VITE_SANITY_PROJECT_ID || '2gtua40d';
 const dataset = import.meta.env.VITE_SANITY_DATASET || 'staging';
+const homepageSelectionDocumentId = '57a09b5e-b3f8-4f4d-927d-b21bb0abb08b';
 
 const client = createClient({
   projectId,
@@ -28,7 +29,7 @@ const archiveQuery = `{
     "width": image.asset->metadata.dimensions.width,
     "height": image.asset->metadata.dimensions.height
   },
-  "homepageSelection": *[_type == "homepageSelection"] | order(_updatedAt desc)[0] {
+  "homepageSelection": *[_type == "homepageSelection" && _id == "${homepageSelectionDocumentId}"][0] {
     "desktopArtworkIds": desktopArtworks[]->artworkId,
     "mobileArtworkIds": mobileArtworks[]->artworkId
   }
