@@ -254,6 +254,12 @@
     border-top: 1px solid rgba(52, 49, 44, 0.14);
   }
 
+  .marble-passage-next {
+    margin-top: 0;
+    padding-top: 12px;
+    border-top: 0;
+  }
+
   .marble-passage-index > p {
     margin-top: auto;
     color: rgba(52, 49, 44, 0.4);

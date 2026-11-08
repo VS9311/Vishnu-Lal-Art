@@ -138,6 +138,7 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
           <small>{artworks.length} WORKS</small>
         </div>
         <MotionLink className="marble-passage-return" to="/" kind="portal">RETURN TO ARCHIVE</MotionLink>
+        {nextSeries && <MotionLink className="marble-passage-return marble-passage-next" to={`/${nextSeries.id}`} kind="portal">NEXT SERIES →</MotionLink>}
         <MotionLink className="marble-passage-return" to="/artist" kind="portal">THE ARTIST</MotionLink>
         <p>VERTICAL SCROLL<br />MOVES THROUGH THE PASSAGE</p>
       </aside>
