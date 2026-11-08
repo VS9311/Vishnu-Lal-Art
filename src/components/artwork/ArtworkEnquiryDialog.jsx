@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { MOTION_DURATIONS } from '../../motion/motionConfig';
+import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 const TOPICS = [
   'Purchasing this work',
@@ -64,7 +65,7 @@ export default function ArtworkEnquiryDialog({ artworkId, initialTopic = 'Other'
   }} aria-labelledby={`${formId}-title`}>
     <button className="marble-dialog-close" type="button" onClick={close} autoFocus>CLOSE ×</button>
     {prepared ? <div className="marble-enquiry-prepared" role="status">
-      <p className="marble-eyebrow">{artworkId}</p>
+      <p className="marble-eyebrow">{formatArtworkDisplayId(artworkId)}</p>
       <h2 id={`${formId}-title`}>Enquiry prepared.</h2>
       <p>This proof keeps your information on this device. Secure website delivery will be connected before enquiries go live.</p>
       <button type="button" onClick={close}>RETURN TO ARTWORK</button>
@@ -74,7 +75,7 @@ export default function ArtworkEnquiryDialog({ artworkId, initialTopic = 'Other'
       <p>Ask about acquisition, framing, delivery, viewing, or previewing the work in your space.</p>
 
       <div className="marble-enquiry-grid">
-        <label>ARTWORK<input value={artworkId} readOnly /></label>
+        <label>ARTWORK<input value={formatArtworkDisplayId(artworkId)} readOnly /></label>
         <label>NAME<input name="name" autoComplete="name" required /></label>
         <label>EMAIL<input name="email" type="email" autoComplete="email" required /></label>
         <label>CITY / COUNTRY<input name="location" autoComplete="country-name" required /></label>

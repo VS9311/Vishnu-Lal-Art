@@ -1,5 +1,6 @@
 import ResponsiveArtworkImage from '../artwork/ResponsiveArtworkImage';
 import { getSeriesData } from '../../lib/artwork';
+import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 export default function LandscapeArtworkNode({ artwork, placement, selected, registerNode, onSelect }) {
   const seriesLabel = getSeriesData(artwork.seriesId)?.label?.toUpperCase() || 'ARCHIVE';
@@ -30,7 +31,7 @@ export default function LandscapeArtworkNode({ artwork, placement, selected, reg
           />
         </span>
         <span className="landscape-hover-note">
-          <strong>{artwork.id}</strong>
+          <strong>{formatArtworkDisplayId(artwork.id)}</strong>
           <span>{seriesLabel}</span>
           <em>VIEW FIELD NOTE</em>
         </span>

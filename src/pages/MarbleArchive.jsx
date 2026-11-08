@@ -11,6 +11,7 @@ import { useCart } from '../components/cart/cartContextState';
 import DesktopMarblePassage from '../components/landscape/DesktopMarblePassage';
 import MobileMarbleHomepage, { MobileMarbleEmptySeries } from '../components/landscape/MobileMarbleHomepage';
 import { formatCataloguePrice, getCataloguePrice } from '../lib/cataloguePricing';
+import { formatArtworkDisplayId } from '../lib/artworkDisplay';
 import { MotionLink } from '../motion/RouteMotion';
 import './LandscapeHomepage.css';
 import './MarbleArchive.css';
@@ -45,14 +46,6 @@ export function MarbleSeriesPage({ seriesId }) {
     restoreArtworkId={location.state?.artworkId}
     restoreFromHistory={navigationType === 'POP'}
   />;
-}
-
-function availabilityLabel(status) {
-  return {
-    AVAILABLE: 'Available',
-    ACQUIRED: 'Acquired',
-    NOT_CURRENTLY_AVAILABLE: 'Not currently available',
-  }[status] || null;
 }
 
 function ArtworkSpecifications({ record }) {
@@ -105,7 +98,6 @@ function MarbleArtworkRecord({ id }) {
   const media = buildArtworkMedia(artwork);
   const mediaItems = getArtworkMediaSequence(media, mobile);
   const status = artwork.source === 'sanity' ? artwork.status : record?.availability || record?.acquisitionStatus;
-  const statusLabel = artwork.status === 'soldOut' ? 'Sold out' : artwork.status === 'published' ? 'Available' : availabilityLabel(status);
   const price = artwork.priceUsd || getCataloguePrice(artwork.id);
   const formattedPrice = formatCataloguePrice(price);
   const unavailable = artwork.status === 'soldOut' || ['ACQUIRED', 'NOT_CURRENTLY_AVAILABLE'].includes(status);
@@ -117,11 +109,11 @@ function MarbleArtworkRecord({ id }) {
       <div className="marble-record-visual"><ArtworkMediaGallery artwork={artwork} items={mediaItems} mobile={mobile} /></div>
       <article className="marble-record-copy">
         <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="portal" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOMEPAGE' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>
-        <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p><h1>{id}</h1>
+        <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p><h1 lang={id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(id)}</h1>
         <p className="marble-record-series"><span lang="ml">{series.malayalamName}</span> / {series.romanizedName}</p>
         <div className="marble-commerce-summary">
           {!unavailable && <div><span>PRICE</span><strong>{formattedPrice}</strong></div>}
-          {statusLabel && <div><span>AVAILABILITY</span><strong>{statusLabel}</strong></div>}
+          {unavailable && <div className="marble-commerce-status"><strong>SOLD OUT</strong></div>}
         </div>
         <ArtworkSpecifications record={record} />
         <div className="marble-acquisition"><button onClick={(event) => {

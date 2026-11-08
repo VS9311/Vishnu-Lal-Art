@@ -3,6 +3,7 @@ import MarbleArtworkPresentation from './MarbleArtworkPresentation';
 import ResponsiveArtworkImage from './ResponsiveArtworkImage';
 import { clampMediaIndex } from './artworkMedia';
 import { MOTION_DURATIONS } from '../../motion/motionConfig';
+import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 function MediaFrame({ item, priority = false, mobile = false }) {
   if (item.kind === 'marble') {
@@ -87,7 +88,7 @@ export default function ArtworkMediaGallery({ artwork, items, mobile }) {
   const move = (direction) => select((safeActive + direction + items.length) % items.length, direction);
   const count = `${String(safeActive + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
 
-  return <section className={`artwork-media-gallery${mobile ? ' is-mobile' : ' is-desktop'}`} aria-label={`Media for ${artwork.id}`}>
+  return <section className={`artwork-media-gallery${mobile ? ' is-mobile' : ' is-desktop'}`} aria-label={`Media for ${formatArtworkDisplayId(artwork.id)}`}>
     {mobile ? <div ref={track} className="artwork-media-track" onScroll={(event) => {
       const width = event.currentTarget.clientWidth;
       if (width) setActive(Math.round(event.currentTarget.scrollLeft / width));

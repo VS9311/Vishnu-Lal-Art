@@ -5,6 +5,7 @@ import { formatCataloguePrice, getCataloguePrice } from '../../lib/cataloguePric
 import ResponsiveArtworkImage from '../artwork/ResponsiveArtworkImage';
 import { useCart } from './cartContextState';
 import { MotionLink } from '../../motion/RouteMotion';
+import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 export default function ArchiveCart() {
   const location = useLocation();
@@ -42,7 +43,7 @@ export default function ArchiveCart() {
         {items.length ? <>
           <ul className="archive-cart-items">{items.map((artwork) => <li key={artwork.id}>
             <MotionLink to={`/artwork/${artwork.id}`} kind="focus" onClick={close} className="archive-cart-thumb"><ResponsiveArtworkImage artwork={artwork} sizes="80px" /></MotionLink>
-            <div><MotionLink to={`/artwork/${artwork.id}`} kind="focus" onClick={close}>{artwork.id}</MotionLink><span>{formatCataloguePrice(getCataloguePrice(artwork.id))}</span></div>
+            <div><MotionLink to={`/artwork/${artwork.id}`} kind="focus" onClick={close}>{formatArtworkDisplayId(artwork.id)}</MotionLink><span>{formatCataloguePrice(getCataloguePrice(artwork.id))}</span></div>
             <button type="button" onClick={() => removeArtwork(artwork.id)}>REMOVE</button>
           </li>)}</ul>
           <div className="archive-cart-total"><span>TOTAL</span><strong>{formatCataloguePrice(total)}</strong></div>

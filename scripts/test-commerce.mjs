@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { formatCataloguePrice, getCataloguePrice } from '../src/lib/cataloguePricing.js';
+import { formatArtworkDisplayId } from '../src/lib/artworkDisplay.js';
 
 const index = JSON.parse(await readFile(new URL('../src/data/artworks-index.json', import.meta.url), 'utf8'));
 const prices = index.publicArtworkIds.map((id) => getCataloguePrice(id));
@@ -10,5 +11,7 @@ assert.ok(prices.every((price) => price >= 2000 && price <= 3000), 'Catalogue pr
 assert.ok(prices.every((price) => price % 50 === 0), 'Catalogue prices must use clean $50 increments.');
 assert.equal(getCataloguePrice('VL-A-001'), getCataloguePrice('VL-A-001'), 'Catalogue prices must remain stable between visits.');
 assert.match(formatCataloguePrice(2500), /^\$2,500$/, 'Catalogue prices must be formatted in USD.');
+assert.equal(formatArtworkDisplayId('THUNDU-001'), 'തുണ്ട്-001', 'New archive identifiers must use the Malayalam public label.');
+assert.equal(formatArtworkDisplayId('VL-A-007'), 'VL-A-007', 'Historical archive identifiers must remain unchanged.');
 
 console.log('Catalogue pricing checks passed.');

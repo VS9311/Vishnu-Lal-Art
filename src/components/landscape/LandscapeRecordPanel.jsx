@@ -1,18 +1,19 @@
 import { MotionLink } from '../../motion/RouteMotion';
 import { getSeriesData } from '../../lib/artwork';
+import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 export default function LandscapeRecordPanel({ artwork, isOpen, position, total, onClose, onMove, onOpenRecord }) {
   const series = artwork ? getSeriesData(artwork.seriesId) : null;
   const seriesPath = series ? `/${series.id}` : '/';
 
   return (
-    <aside className={`landscape-record-panel${isOpen ? ' is-open' : ''}`} aria-hidden={!isOpen} inert={!isOpen} aria-label={artwork ? `Archive preview for ${artwork.id}` : 'Archive preview'} onPointerDown={(event) => event.stopPropagation()}>
+    <aside className={`landscape-record-panel${isOpen ? ' is-open' : ''}`} aria-hidden={!isOpen} inert={!isOpen} aria-label={artwork ? `Archive preview for ${formatArtworkDisplayId(artwork.id)}` : 'Archive preview'} onPointerDown={(event) => event.stopPropagation()}>
       {artwork && <>
       <button className="landscape-record-close" type="button" onClick={onClose} aria-label="Close archive preview">
         CLOSE
       </button>
       <p>ARCHIVE OBJECT</p>
-      <h1>{artwork.id}</h1>
+      <h1>{formatArtworkDisplayId(artwork.id)}</h1>
       <div className="landscape-record-series">
         <span>{series?.label}</span>
         <strong lang="ml">{series?.malayalamName}</strong>

@@ -6,6 +6,7 @@ import useMarbleNavigation from './useMarbleNavigation';
 import { marbleImageSource } from './marbleImageReadiness';
 import './MobileMarbleHomepage.css';
 import { MotionLink } from '../../motion/RouteMotion';
+import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 const STATE_KEY = 'vishnu-lal-archive:mobile-marble-v1';
 
@@ -94,7 +95,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
   const thumbnails = (label) => (
     <nav className="mobile-marble-thumbnails" aria-label={label}>
       {artworks.map((artwork, position) => (
-        <button key={artwork.id} type="button" aria-label={`Show ${artwork.id}`} aria-current={position === index ? 'true' : undefined} onClick={() => requestSelection(position)}>
+        <button key={artwork.id} type="button" aria-label={`Show ${formatArtworkDisplayId(artwork.id)}`} aria-current={position === index ? 'true' : undefined} onClick={() => requestSelection(position)}>
           <ResponsiveArtworkImage artwork={artwork} sizes="60px" className="mobile-marble-thumbnail" />
         </button>
       ))}
@@ -161,7 +162,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
             const settledAnchor = slot.anchor;
             const visible = scene === navigation.scene && ['center', 'left', 'right'].includes(positionAnchor);
             const spareHidden = (navigation.direct || scene !== navigation.scene) && positionAnchor.startsWith('off-');
-            return <button key={slot.key} ref={node => bindSlot(`${scene}:${slot.key}`, node)} type="button" data-slot={slot.key} data-artwork-id={artwork.id} data-anchor={positionAnchor} style={spareHidden ? { visibility: 'hidden' } : undefined} className={`mobile-marble-work mobile-marble-work--${positionAnchor}`} aria-hidden={!visible} tabIndex={visible && !busy ? 0 : -1} aria-label={settledAnchor === 'center' ? `Show details for ${artwork.id}` : `${settledAnchor === 'left' ? 'Previous' : 'Next'} artwork, ${artwork.id}`} aria-expanded={settledAnchor === 'center' ? details : undefined} aria-controls={settledAnchor === 'center' ? 'mobile-marble-details' : undefined}
+            return <button key={slot.key} ref={node => bindSlot(`${scene}:${slot.key}`, node)} type="button" data-slot={slot.key} data-artwork-id={artwork.id} data-anchor={positionAnchor} style={spareHidden ? { visibility: 'hidden' } : undefined} className={`mobile-marble-work mobile-marble-work--${positionAnchor}`} aria-hidden={!visible} tabIndex={visible && !busy ? 0 : -1} aria-label={settledAnchor === 'center' ? `Show details for ${formatArtworkDisplayId(artwork.id)}` : `${settledAnchor === 'left' ? 'Previous' : 'Next'} artwork, ${formatArtworkDisplayId(artwork.id)}`} aria-expanded={settledAnchor === 'center' ? details : undefined} aria-controls={settledAnchor === 'center' ? 'mobile-marble-details' : undefined}
               onClick={() => { if (busy) return; if (slot.index === index) setDetails(!details); else move(settledAnchor === 'left' ? -1 : 1); }}>
               <span className="landscape-artwork-sheet"><img src={marbleImageSource(artwork)} width={artwork.width} height={artwork.height} alt={`Artwork ${artwork.id}`} className="landscape-artwork-image" decoding="async" draggable="false" /></span>
             </button>;
@@ -170,7 +171,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
 
         <div className="mobile-marble-controls">
           {error && <div role="alert">{error} <button type="button" onClick={retry}>RETRY</button></div>}
-          <div className="mobile-marble-caption" aria-live="polite" aria-atomic="true"><h1>{work.id}</h1><p>{series.label}{collectionId ? ` · ${series.romanizedName}` : ''}</p></div>
+          <div className="mobile-marble-caption" aria-live="polite" aria-atomic="true"><h1>{formatArtworkDisplayId(work.id)}</h1><p>{series.label}{collectionId ? ` · ${series.romanizedName}` : ''}</p></div>
           <div className="mobile-marble-actions">
             <button type="button" onClick={() => move(-1)} aria-label="Previous artwork">PREVIOUS</button>
             <button ref={detailsButton} type="button" className="mobile-marble-details-toggle" aria-expanded={details} aria-controls="mobile-marble-details" onClick={() => setDetails(!details)}>{details ? 'HIDE DETAILS' : 'DETAILS'}</button>
@@ -181,8 +182,8 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
         </div>
       </section>
 
-      {details && <section id="mobile-marble-details" className="mobile-marble-details" aria-label={`Details for ${work.id}`}>
-        <div className="mobile-marble-details-heading"><h2>{work.id}</h2><button type="button" onClick={() => { setDetails(false); detailsButton.current?.focus(); }}>HIDE DETAILS</button></div>
+      {details && <section id="mobile-marble-details" className="mobile-marble-details" aria-label={`Details for ${formatArtworkDisplayId(work.id)}`}>
+        <div className="mobile-marble-details-heading"><h2>{formatArtworkDisplayId(work.id)}</h2><button type="button" onClick={() => { setDetails(false); detailsButton.current?.focus(); }}>HIDE DETAILS</button></div>
         <p className="mobile-marble-series"><span>{series.label}</span><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></p>
         <div className="mobile-marble-record-links">
           <MotionLink to={`/artwork/${work.id}`} kind="focus" state={collectionId ? { fromCollection: collectionId } : { fromLandscape: true }} onClick={save}>VIEW RECORD & INQUIRE</MotionLink>
