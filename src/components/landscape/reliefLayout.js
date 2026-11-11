@@ -54,17 +54,18 @@ export function buildReliefBays(artworks, seriesId) {
     });
     const seed = group.reduce((sum, work) => sum + [...work.id].reduce((n, char) => n + char.charCodeAt(0), 0), 0);
     const shift = (seed % 5 - 2) * 5;
+    const compactXs = group.length === 1 ? [50] : group.length === 2 ? [31, 69] : null;
+    const assignedSlots = [...assigned.entries()].sort(([a], [b]) => a - b);
     return {
-      family, key: group[0].id, shift, inset: seed % 3 * 3,
+      family, key: group[0].id, shift, inset: seed % 3 * 3, workCount: group.length,
       planes: definition.planes,
-      slots: definition.slots.flatMap((slot, slotIndex) => {
-        const artwork = assigned.get(slotIndex);
-        if (!artwork) return [];
+      slots: assignedSlots.map(([slotIndex, artwork], artworkIndex) => {
+        const slot = definition.slots[slotIndex];
         const orientation = classifyArtwork(artwork);
         const ratio = artwork.width > 0 && artwork.height > 0 ? artwork.width / artwork.height : 1;
         const weight = { small: .88, medium: 1, large: 1.08 }[artwork.presentationSize] || 1;
         const width = Math.min(orientation === 'landscape' ? 290 : orientation === 'square' ? 235 : 220, 320 * ratio) * slot.size * weight * 1.9;
-        return [{ ...slot, artwork, orientation, width }];
+        return { ...slot, x: compactXs?.[artworkIndex] ?? slot.x, artwork, orientation, width };
       }),
     };
   });

@@ -4,7 +4,7 @@ import { MotionLink } from '../../motion/RouteMotion';
 import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 export default function ReliefBay({ bay, index, seriesId, artworkRefs, saveSelection }) {
-  return <section className={`collection-bay collection-bay--${bay.family}`} style={{ '--bay-shift': `${bay.shift}px`, '--edge-inset': `${bay.inset}px` }} aria-label={`Collection bay ${index + 1}`}>
+  return <section className={`collection-bay collection-bay--${bay.family} collection-bay--count-${bay.workCount}`} style={{ '--bay-shift': `${bay.shift}px`, '--edge-inset': `${bay.inset}px` }} aria-label={`Collection bay ${index + 1}`}>
     <div className="collection-bay-composition">
       <div className="collection-bay-architecture" aria-hidden="true">
         {bay.planes.map((plane, planeIndex) => <span key={planeIndex} className={`collection-plane collection-plane--${plane.kind}`} style={{ left: `${plane.x}%`, width: `${plane.w}%`, '--plane-base': `${plane.base}px`, height: `${plane.h}px`, '--plane-depth': `${plane.depth || 0}px` }} />)}

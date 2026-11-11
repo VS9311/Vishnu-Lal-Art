@@ -10,6 +10,16 @@ import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
 
 const STATE_KEY = 'vishnu-lal-archive:mobile-marble-v1';
 
+function MobileInformationLinks() {
+  return <div className="mobile-marble-information-links" aria-label="Studio information and policies">
+    <MotionLink to="/contact" kind="portal">CONTACT</MotionLink>
+    <MotionLink to="/privacy" kind="portal">PRIVACY</MotionLink>
+    <MotionLink to="/terms" kind="portal">TERMS</MotionLink>
+    <MotionLink to="/refund-cancellation" kind="portal">RETURNS</MotionLink>
+    <MotionLink to="/shipping-delivery" kind="portal">SHIPPING</MotionLink>
+  </div>;
+}
+
 export function MobileMarbleEmptySeries({ series }) {
   const [indexOpen, setIndexOpen] = useState(false);
   return <main id="main-content" className="landscape-homepage mobile-marble-homepage mobile-marble-collection">
@@ -25,6 +35,7 @@ export function MobileMarbleEmptySeries({ series }) {
         {getAllSeries().map((item) => <MotionLink className="mobile-marble-series-destination" to={`/${item.id}`} kind="portal" key={item.id}>
           <span>{item.label}</span><strong lang="ml">{item.malayalamName}</strong><span>{item.romanizedName}</span>
         </MotionLink>)}
+        <MobileInformationLinks />
       </nav>}
       <div className="mobile-marble-empty-collection">
         <p>{series.label}</p>
@@ -137,6 +148,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
               <span>{item.label}</span><strong lang="ml">{item.malayalamName}</strong><span>{item.romanizedName}</span>
             </MotionLink>;
           })}
+          <MobileInformationLinks />
         </nav>}
 
         <div className={`mobile-marble-stage${busy ? ' is-moving' : ''}${['BOOT', 'ERROR'].includes(navigation.phase) ? ' is-unready' : ''}`} data-navigation-state={navigation.phase} data-navigation-phase={navigation.phase} aria-label="Swipe left or right to browse artworks" aria-busy={busy}

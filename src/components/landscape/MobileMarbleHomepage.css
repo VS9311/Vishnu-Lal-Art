@@ -15,6 +15,8 @@
 .mobile-marble-index a { font: 11px/1.4 var(--font-mono); letter-spacing: 0.08em; padding: 14px 0; }
 .mobile-marble-index .mobile-marble-series-destination { grid-column: auto; display: grid; gap: 7px; }
 .mobile-marble-collection .mobile-marble-thumbnails { display: flex; overflow-x: auto; padding: 3px; scrollbar-width: thin; }
+.mobile-marble-information-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px 18px; padding-top: 20px; border-top: 1px solid rgba(56, 52, 46, .16); }
+.mobile-marble-information-links a { color: inherit; font: 8px/1.4 var(--font-mono); letter-spacing: .1em; text-decoration: none; }
 .mobile-marble-collection .mobile-marble-thumbnails button { flex: 0 0 48px; }
 .mobile-marble-stage { position: absolute; inset: 13% 0 28%; touch-action: pan-y; user-select: none; overflow: visible; }
 .mobile-marble-scene-group { position: absolute; inset: 0; overflow: visible; }

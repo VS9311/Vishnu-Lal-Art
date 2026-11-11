@@ -207,11 +207,13 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
   cursor: pointer;
 }
 .landscape-record-panel > p:first-of-type { margin-top: 15vh; color: var(--landscape-faint); font: 9px/1 var(--font-mono); letter-spacing: 0.15em; }
-.landscape-record-panel h1 { margin-top: 18px; font: 48px/1 var(--font-serif); letter-spacing: 0.025em; }
-.landscape-record-series { margin-top: 38px; display: grid; gap: 7px; }
-.landscape-record-series span,
-.landscape-record-series em { color: var(--landscape-muted); font: 9px/1 var(--font-mono); letter-spacing: 0.12em; font-style: normal; }
-.landscape-record-series strong { font: 22px/1.2 var(--font-sans); font-weight: 400; }
+.landscape-record-panel h1 { margin-top: 18px; }
+.landscape-record-series-title { display: grid; gap: 7px; font-weight: 400; }
+.landscape-record-series-title > span { font: 42px/1.12 var(--font-sans); letter-spacing: 0; }
+.landscape-record-series-title > small { color: var(--landscape-muted); font: 24px/1.1 var(--font-serif); letter-spacing: 0.035em; }
+.landscape-record-fragment { margin-top: 38px; display: grid; gap: 8px; }
+.landscape-record-fragment span { color: var(--landscape-muted); font: 9px/1 var(--font-mono); letter-spacing: 0.12em; }
+.landscape-record-fragment strong { font: 14px/1.25 var(--font-sans); font-weight: 400; letter-spacing: 0.025em; }
 .landscape-record-position { margin-top: 34px; color: var(--landscape-faint); font: 9px/1 var(--font-mono); letter-spacing: 0.1em; }
 .landscape-record-actions { margin-top: auto; display: grid; border-top: 1px solid rgba(45, 44, 40, 0.15); }
 .landscape-record-actions a { padding: 17px 0; display: flex; justify-content: space-between; color: rgba(45, 44, 40, 0.78); font: 9px/1 var(--font-mono); letter-spacing: 0.1em; border-bottom: 1px solid rgba(45, 44, 40, 0.15); }
@@ -314,9 +316,12 @@ body:has(.landscape-homepage) .skip-link:focus { background: #292925; color: #f2
   }
   .landscape-record-panel.is-open { transform: translateY(0); }
   .landscape-record-panel > p:first-of-type { margin-top: 0; }
-  .landscape-record-panel h1 { margin-top: 8px; font-size: 34px; }
-  .landscape-record-series { margin-top: 14px; gap: 4px; }
-  .landscape-record-series strong { font-size: 17px; }
+  .landscape-record-panel h1 { margin-top: 8px; }
+  .landscape-record-series-title { gap: 3px; }
+  .landscape-record-series-title > span { font-size: 30px; }
+  .landscape-record-series-title > small { font-size: 19px; }
+  .landscape-record-fragment { margin-top: 14px; gap: 4px; }
+  .landscape-record-fragment strong { font-size: 13px; }
   .landscape-record-position { margin-top: 12px; }
   .landscape-record-actions { margin-top: 16px; }
   .landscape-record-actions a { padding: 11px 0; }

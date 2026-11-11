@@ -5,6 +5,8 @@ import { MarbleSeriesPage, MarbleArtworkPage } from './pages/MarbleArchive';
 import ArchiveCart from './components/cart/ArchiveCart';
 import { CartProvider } from './components/cart/CartContext';
 import { RouteMotionProvider, RouteMotionStage } from './motion/RouteMotion';
+import StudioPolicyPage from './pages/StudioPolicyPage';
+import SiteInformationLinks from './components/site/SiteInformationLinks';
 
 function LegacyArtworkRedirect() {
   const { id } = useParams();
@@ -25,6 +27,11 @@ function App() {
             <Route path="/series-ii" element={<MarbleSeriesPage seriesId="series-ii" />} />
             <Route path="/series-iii" element={<MarbleSeriesPage seriesId="series-iii" />} />
             <Route path="/artwork/:id" element={<MarbleArtworkPage />} />
+            <Route path="/contact" element={<StudioPolicyPage page="contact" />} />
+            <Route path="/privacy" element={<StudioPolicyPage page="privacy" />} />
+            <Route path="/terms" element={<StudioPolicyPage page="terms" />} />
+            <Route path="/refund-cancellation" element={<StudioPolicyPage page="returns" />} />
+            <Route path="/shipping-delivery" element={<StudioPolicyPage page="shipping" />} />
 
             <Route path="/homepage-2" element={<Navigate to="/" replace />} />
             <Route path="/homepage-2/series-i" element={<Navigate to="/series-i" replace />} />
@@ -36,6 +43,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
             </Routes></RouteMotionStage>
             <ArchiveCart />
+            <SiteInformationLinks />
           </div>
         </RouteMotionProvider>
       </CartProvider>

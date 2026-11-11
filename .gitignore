@@ -18,6 +18,9 @@ Review-Screenshots/
 tmp/
 scripts/capture-artist-review.mjs
 
+# Private compliance notes — never published with the website
+internal-legal-review/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

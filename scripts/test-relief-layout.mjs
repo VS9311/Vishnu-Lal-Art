@@ -14,6 +14,9 @@ for (const count of [12, 17, 30, 100, 103]) {
   assert.equal(slots.length, count);
   assert.equal(new Set(slots.map(slot => slot.artwork.id)).size, count);
   assert.ok(slots.every(slot => slot.width > 0 && Number.isFinite(slot.width)));
+  assert.equal(bays.at(-1).workCount, count % 3 || 3);
+  if (count % 3 === 1) assert.deepEqual(bays.at(-1).slots.map(slot => slot.x), [50]);
+  if (count % 3 === 2) assert.deepEqual(bays.at(-1).slots.map(slot => slot.x), [31, 69]);
   assert.deepEqual(buildReliefBays(input, 'series-i'), bays, 'Layout must be deterministic');
 }
 for (const [seriesId, expectedCount] of [['series-i', 17], ['series-ii', 12]]) {

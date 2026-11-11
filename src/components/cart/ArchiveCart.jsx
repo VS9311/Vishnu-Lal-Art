@@ -64,8 +64,12 @@ export default function ArchiveCart() {
           <label className="archive-cart-wide">DELIVERY ADDRESS<textarea name="address" rows="3" autoComplete="street-address" required /></label>
           <label className="archive-cart-wide">NOTES <span>(optional)</span><textarea name="notes" rows="3" /></label>
         </div>
+        <label className="archive-cart-consent">
+          <input name="policy-consent" type="checkbox" required />
+          <span>By continuing, I agree to the <a href="/terms" target="_blank" rel="noreferrer">Terms &amp; Conditions</a> and acknowledge the <a href="/refund-cancellation" target="_blank" rel="noreferrer">Refund / Cancellation</a>, <a href="/shipping-delivery" target="_blank" rel="noreferrer">Shipping &amp; Delivery</a>, and <a href="/privacy" target="_blank" rel="noreferrer">Privacy</a> policies.</span>
+        </label>
         <button className="archive-cart-primary" type="submit">SUBMIT PURCHASE REQUEST</button>
-        <p className="archive-cart-note">No payment is taken in this prototype. Secure payment and delivery calculation will be connected before launch.</p>
+        <p className="archive-cart-note">Submitting this request does not reserve an artwork or create an accepted order. Availability, delivery charges, and acquisition terms will be confirmed before payment. No payment is taken in this preview; secure Razorpay payment will be connected after merchant activation.</p>
       </form>}
       {step === 'complete' && <div role="status">
         <p className="marble-eyebrow">PURCHASE REQUEST</p>

@@ -4,6 +4,8 @@ import { formatCataloguePrice, getCataloguePrice } from '../src/lib/cataloguePri
 import { formatArtworkDisplayId } from '../src/lib/artworkDisplay.js';
 
 const index = JSON.parse(await readFile(new URL('../src/data/artworks-index.json', import.meta.url), 'utf8'));
+const cartSource = await readFile(new URL('../src/components/cart/ArchiveCart.jsx', import.meta.url), 'utf8');
+const policySource = await readFile(new URL('../src/pages/StudioPolicyPage.jsx', import.meta.url), 'utf8');
 const prices = index.publicArtworkIds.map((id) => getCataloguePrice(id));
 
 assert.equal(prices.length, 29, 'Every public artwork must receive a catalogue price.');
@@ -13,5 +15,24 @@ assert.equal(getCataloguePrice('VL-A-001'), getCataloguePrice('VL-A-001'), 'Cata
 assert.match(formatCataloguePrice(2500), /^\$2,500$/, 'Catalogue prices must be formatted in USD.');
 assert.equal(formatArtworkDisplayId('THUNDU-001'), 'തുണ്ട്-001', 'New archive identifiers must use the Malayalam public label.');
 assert.equal(formatArtworkDisplayId('VL-A-007'), 'VL-A-007', 'Historical archive identifiers must remain unchanged.');
+assert.match(cartSource, /name="policy-consent" type="checkbox" required/, 'Checkout must require policy acknowledgement.');
+for (const route of ['/terms', '/refund-cancellation', '/shipping-delivery', '/privacy']) {
+  assert.ok(cartSource.includes(`href="${route}"`), `Checkout must link to ${route}.`);
+}
+
+for (const protection of [
+  'unique, one-of-one physical work',
+  'AVAILABLE, RESERVED, PAID, or ACQUIRED',
+  'cleared payment has been received in full',
+  'Purchase transfers ownership of the physical artwork only',
+  'permanent Vishnu Lal Archive catalogue ID',
+  'Certificate of Authenticity',
+  'resale royalty, droit de suite, resale share',
+  'Private Collection',
+  'No investment representation',
+  'mandatory consumer rights',
+]) {
+  assert.ok(policySource.includes(protection), `Public policies must preserve the protection: ${protection}`);
+}
 
 console.log('Catalogue pricing checks passed.');

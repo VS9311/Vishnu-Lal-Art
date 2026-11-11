@@ -90,6 +90,8 @@
   }
 
   .collection-bay + .collection-bay { margin-left: -36px; }
+  .collection-bay--count-2 { flex-basis: clamp(1080px, 82vw, 1350px); }
+  .collection-bay--count-1 { flex-basis: clamp(620px, 48vw, 820px); }
 
   .collection-bay-composition {
     position: relative;
@@ -200,6 +202,17 @@
     backdrop-filter: blur(12px);
     font: 9px/1.55 var(--font-mono);
     letter-spacing: 0.11em;
+  }
+
+  .marble-passage-index::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -80px;
+    width: 80px;
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(90deg, #eeeae3 0%, rgba(238, 234, 227, .92) 52%, rgba(238, 234, 227, 0) 100%);
   }
 
   .marble-passage-brand {

@@ -13,11 +13,13 @@ export default function LandscapeRecordPanel({ artwork, isOpen, position, total,
         CLOSE
       </button>
       <p>ARCHIVE OBJECT</p>
-      <h1>{formatArtworkDisplayId(artwork.id)}</h1>
-      <div className="landscape-record-series">
+      <h1 className="landscape-record-series-title">
+        <span lang="ml">{series?.malayalamName}</span>
+        <small>{series?.romanizedName}</small>
+      </h1>
+      <div className="landscape-record-fragment">
         <span>{series?.label}</span>
-        <strong lang="ml">{series?.malayalamName}</strong>
-        <em>{series?.romanizedName?.toUpperCase()}</em>
+        <strong lang={artwork.id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(artwork.id)}</strong>
       </div>
       <p className="landscape-record-position">SELECTED OBJECT {String(position).padStart(2, '0')} / {String(total).padStart(2, '0')}</p>
       <div className="landscape-record-actions">

@@ -1,0 +1,78 @@
+.site-information-links {
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(43, 40, 34, 0.13);
+  color: #4f4b43;
+  background: rgba(241, 238, 231, 0.82);
+  box-shadow: 0 8px 28px rgba(42, 38, 31, 0.05);
+  backdrop-filter: blur(12px);
+}
+
+.site-information-links--home {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1rem;
+  transition: right var(--motion-panel) var(--ease-archive-enter);
+}
+
+.app-container:has(.landscape-record-panel.is-open) .site-information-links--home {
+  right: calc(min(390px, 31vw) + 1.25rem);
+}
+
+.site-information-links--footer {
+  position: relative;
+  width: max-content;
+  max-width: calc(100% - 2.5rem);
+  margin: 1rem 1.25rem 1rem auto;
+}
+
+.site-information-links a {
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.11em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.site-information-links a:hover,
+.site-information-links a:focus-visible {
+  color: #0b0b0a;
+}
+
+.site-information-links--policy {
+  position: static;
+  flex-wrap: wrap;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+@media (max-width: 720px) {
+  .app-container:has(.mobile-marble-homepage) > .site-information-links:not(.site-information-links--policy) {
+    display: none;
+  }
+
+  .site-information-links--home,
+  .site-information-links--footer {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    gap: 0.65rem;
+    max-width: calc(100vw - 1.3rem);
+    width: max-content;
+    margin: 0.65rem auto;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .site-information-links--home a,
+  .site-information-links--footer a {
+    font-size: 0.45rem;
+    letter-spacing: 0.08em;
+  }
+}

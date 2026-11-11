@@ -108,11 +108,12 @@ function MarbleArtworkRecord({ id }) {
     <div className="marble-record-layout">
       <div className="marble-record-visual"><ArtworkMediaGallery artwork={artwork} items={mediaItems} mobile={mobile} /></div>
       <article className="marble-record-copy">
-        <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="portal" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOMEPAGE' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>
-        <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p><h1 lang={id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(id)}</h1>
-        <p className="marble-record-series"><span lang="ml">{series.malayalamName}</span> / {series.romanizedName}</p>
+        <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="focus" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOMEPAGE' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>
+        <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p>
+        <h1 className="marble-record-series-title"><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></h1>
+        <p className="marble-record-series marble-record-artwork-id" lang={id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(id)}</p>
         <div className="marble-commerce-summary">
-          {!unavailable && <div><span>PRICE</span><strong>{formattedPrice}</strong></div>}
+          {!unavailable && <div><span>PRICE</span><strong className="marble-price">{formattedPrice}</strong></div>}
           {unavailable && <div className="marble-commerce-status"><strong>SOLD OUT</strong></div>}
         </div>
         <ArtworkSpecifications record={record} />
@@ -127,7 +128,7 @@ function MarbleArtworkRecord({ id }) {
           {record.formalObservation && <details><summary>FORMAL OBSERVATION</summary><FormalObservation data={record.formalObservation} /></details>}
           {record.curatorialObservation && <details><summary>CURATORIAL OBSERVATION</summary><CuratorialObservation data={record.curatorialObservation} /></details>}
         </div>}
-        <nav className="marble-record-pagination" aria-label="More works in this series">{navigation.prevId ? <MotionLink to={`/artwork/${navigation.prevId}`} kind="record" direction={-1}>← PREVIOUS</MotionLink> : <span>FIRST WORK</span>}<MotionLink to={`/${series.id}`} kind="portal" state={{ artworkId: id }}>ALL {navigation.totalWorks} WORKS</MotionLink>{navigation.nextId ? <MotionLink to={`/artwork/${navigation.nextId}`} kind="record" direction={1}>NEXT →</MotionLink> : <span>LAST WORK</span>}</nav>
+        <nav className="marble-record-pagination" aria-label="More works in this series">{navigation.prevId ? <MotionLink to={`/artwork/${navigation.prevId}`} kind="record" direction={-1}>← PREVIOUS</MotionLink> : <span>FIRST WORK</span>}<MotionLink to={`/${series.id}`} kind="focus" state={{ artworkId: id }}>ALL {navigation.totalWorks} WORKS</MotionLink>{navigation.nextId ? <MotionLink to={`/artwork/${navigation.nextId}`} kind="record" direction={1}>NEXT →</MotionLink> : <span>LAST WORK</span>}</nav>
       </article>
     </div>
     {intent && <ArtworkEnquiryDialog artworkId={artwork.id} initialTopic={intent} onClose={() => { setIntent(null); inquiryTrigger.current?.focus(); }} />}
