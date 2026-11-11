@@ -1,10 +1,10 @@
 export const artistProfile = {
   introduction: 'Vishnu Lal is a contemporary artist from Kerala, India, whose practice is rooted in automatism and Kari, the eternal darkness from which all forms arise. Through instinctive gesture and unconscious movement, he explores the emergence of form, the void, perception and the uncertain boundary between the seen and the unknown.',
-  mentorship: 'His understanding of artistic freedom and disciplined openness was shaped in part by his mentor, B. D. Duttan.',
+  mentorship: 'His understanding of artistic freedom and disciplined openness was shaped in part by his mentor, B. D. Dethan.',
   statement: [
     {
       title: 'Freedom & discipline',
-      body: 'Art, for me, has no fixed form. There is no singularly correct way to make it, just as there is no perfect artist or definitive measure of what is right. My mentor, B. D. Duttan, taught me both this freedom and the discipline required to sustain it. Freedom is the commitment to remain receptive to what a work may become.',
+      body: 'Art, for me, has no fixed form. There is no singularly correct way to make it, just as there is no perfect artist or definitive measure of what is right. My mentor, B. D. Dethan, taught me both this freedom and the discipline required to sustain it. Freedom is the commitment to remain receptive to what a work may become.',
     },
     {
       title: 'Automatism',
