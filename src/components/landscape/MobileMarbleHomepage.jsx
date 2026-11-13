@@ -139,7 +139,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
 
         <div className="mobile-marble-controls">
           {error && <div role="alert">{error} <button type="button" onClick={retry}>RETRY</button></div>}
-          <div className="mobile-marble-caption" aria-live="polite" aria-atomic="true"><h1 lang={!collectionId ? "ml" : undefined} className={`mobile-marble-series-title${collectionId ? " is-english" : ""}`}>{collectionId ? series.romanizedName : series.malayalamName}</h1><p>{collectionId ? formatArtworkDisplayId(work.id) : series.label}</p></div>
+          <div className="mobile-marble-caption" aria-live="polite" aria-atomic="true"><h1 lang={collectionId ? "ml" : undefined} className={`mobile-marble-series-title${!collectionId ? " is-english" : ""}`}>{collectionId ? series.malayalamName : series.romanizedName}</h1><p>{collectionId ? formatArtworkDisplayId(work.id) : series.label}</p></div>
           <div className="mobile-marble-actions">
             <button type="button" onClick={() => move(-1)} aria-label="Previous artwork">PREVIOUS</button>
             <MotionLink className="mobile-marble-open-artwork" to={`/artwork/${work.id}`} kind="focus" state={collectionId ? { fromCollection: collectionId } : { fromLandscape: true }} onClick={(event) => { if (busy) event.preventDefault(); else save(); }}>OPEN ARTWORK</MotionLink>

@@ -62,6 +62,7 @@ export default function ArtistPage() {
       </div>
       <figure className="artist-portrait"><ArtistPhoto name="portrait" alt="Vishnu Lal seated in his studio, looking towards the light." priority /><figcaption>VISHNU LAL · IN THE STUDIO</figcaption></figure>
     </section>
+    {!mobile && <ArtistStudioFilm />}
     <section id="artist-statement" className="artist-statement" aria-labelledby="statement-title">
       <div className="artist-statement-heading" data-reveal><p className="artist-label">ARTIST STATEMENT</p><h2 id="statement-title">The hand moves<br />before the mind names.</h2></div>
       <div className="artist-statement-grid">{profile.statement.map((paragraph) => <section key={paragraph.title} className="artist-statement-part" data-reveal><h3>{paragraph.title}</h3><p>{paragraph.body}</p></section>)}</div>
@@ -70,7 +71,6 @@ export default function ArtistPage() {
       <figure><ArtistPhoto name="studio" alt="Vishnu Lal considering a large drawing on the wall of his studio." /></figure>
       <div className="artist-studio-copy"><p className="artist-label">PERCEPTION / THE SEEN &amp; THE UNKNOWN</p><blockquote>“What we see is never the entirety of what exists.”</blockquote><p className="artist-studio-caption">Interpretation belongs to the viewer.</p></div>
     </section>
-    {!mobile && <ArtistStudioFilm />}
     <footer id="artist-access" className="artist-footer">
       <div><p className="artist-label">THE STUDIO</p><p>For acquisitions, exhibitions and conversations about the work.</p><a className="artist-contact" href={`mailto:${profile.email}`}>{profile.email} ↗</a></div>
       <MotionLink className="artist-text-link" to="/" kind="portal">EXPLORE THE WORKS →</MotionLink>
