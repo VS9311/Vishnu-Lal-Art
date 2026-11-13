@@ -1,5 +1,8 @@
-.mobile-marble-homepage { background: #eeeae3; min-height: 100svh; }
-.mobile-marble-scene { position: relative; width: 100%; max-width: 480px; margin: 0 auto; height: 100svh; min-height: 560px; overflow: hidden; container-type: inline-size; }
+/* Keep the page and scene on the same visible viewport height, including when
+   Safari changes its browser bars. Override the shared desktop 100vh minimum. */
+.landscape-homepage.mobile-marble-homepage { background: #eeeae3; min-height: 100svh; min-height: 100dvh; }
+.mobile-marble-scene { position: relative; width: 100%; max-width: 480px; margin: 0 auto; height: 100svh; height: 100dvh; min-height: 560px; overflow: hidden; container-type: inline-size; }
+html:has(.mobile-marble-homepage), body:has(.mobile-marble-homepage) { overscroll-behavior-y: none; }
 .mobile-marble-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none; }
 .mobile-marble-homepage button { appearance: none; border: 0; background: none; color: #34312c; font: 11px/1.4 var(--font-mono); letter-spacing: 0.13em; cursor: pointer; min-height: 44px; }
 .mobile-marble-homepage button:focus-visible, .mobile-marble-homepage a:focus-visible { outline: 2px solid #534b3d; outline-offset: 3px; }
@@ -22,6 +25,7 @@
 .mobile-marble-scene-group { position: absolute; inset: 0; overflow: visible; }
 .mobile-marble-stage.is-unready { visibility: hidden; }
 .mobile-marble-stage .mobile-marble-work { position: absolute; padding: 0; min-height: 0; left: var(--anchor-x); bottom: var(--anchor-bottom); transform: translateX(-50%) scale(var(--anchor-scale)); transform-origin: center bottom; transition: none; }
+.mobile-marble-stage .mobile-marble-work:active { opacity: 1; }
 .mobile-marble-scene-group[data-current='true'] .mobile-marble-work { will-change: transform; }
 .mobile-marble-work--center { --anchor-x: 50%; --anchor-bottom: 28.1%; --anchor-scale: 1; z-index: 3; }
 .mobile-marble-work--left { --anchor-x: -8%; --anchor-bottom: 38.3%; --anchor-scale: .8; z-index: 2; }
