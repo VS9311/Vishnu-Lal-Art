@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import MarbleArtworkPresentation from './MarbleArtworkPresentation';
 import ResponsiveArtworkImage from './ResponsiveArtworkImage';
 import { clampMediaIndex } from './artworkMedia';
@@ -48,27 +48,77 @@ export default function ArtworkMediaGallery({ artwork, items, mobile }) {
   const [transition, setTransition] = useState(null);
   const track = useRef(null);
   const transitionTimer = useRef(0);
-  const mobileScrollTimer = useRef(0);
+  const mobileSettleFrame = useRef(0);
+  const mobileTouching = useRef(false);
+  const activeIndex = useRef(0);
   const safeActive = clampMediaIndex(active, items.length);
+  activeIndex.current = safeActive;
+  const looping = mobile && items.length > 1;
   const mobileLoopItems = mobile && items.length > 1
-    ? [items[items.length - 1], ...items, items[0]]
+    ? [...items, ...items, ...items]
     : items;
 
-  useEffect(() => {
+  const recenterMobileTrack = useCallback(() => {
+    const element = track.current;
+    if (!element || items.length < 2 || !element.clientWidth) return;
+    const position = element.scrollLeft / element.clientWidth;
+    const snapped = Math.round(position);
+    // Rebase an identical, settled frame only. Never interrupt a partial drag.
+    if (Math.abs(position - snapped) > .002) return;
+    if (snapped < items.length || snapped >= items.length * 2) {
+      const index = ((snapped % items.length) + items.length) % items.length;
+      element.scrollTo({ left: (items.length + index) * element.clientWidth, behavior: 'instant' });
+    }
+  }, [items.length]);
+
+  const settleMobileTrack = useCallback(() => {
+    if (mobileSettleFrame.current) return;
+    let previous = track.current?.scrollLeft;
+    let stableFrames = 0;
+    const check = () => {
+      const element = track.current;
+      if (!element) { mobileSettleFrame.current = 0; return; }
+      const position = element.scrollLeft;
+      stableFrames = Math.abs(position - previous) < .1 ? stableFrames + 1 : 0;
+      previous = position;
+      if (!mobileTouching.current && stableFrames >= 2) {
+        mobileSettleFrame.current = 0;
+        recenterMobileTrack();
+        return;
+      }
+      mobileSettleFrame.current = requestAnimationFrame(check);
+    };
+    mobileSettleFrame.current = requestAnimationFrame(check);
+  }, [recenterMobileTrack]);
+
+  useLayoutEffect(() => {
     setActive(0);
+    activeIndex.current = 0;
     setTransition(null);
     window.clearTimeout(transitionTimer.current);
-    window.clearTimeout(mobileScrollTimer.current);
+    cancelAnimationFrame(mobileSettleFrame.current);
+    mobileSettleFrame.current = 0;
+    mobileTouching.current = false;
     const element = track.current;
+    let observer;
     if (element) {
-      const left = mobile && items.length > 1 ? element.clientWidth : 0;
+      let width = element.clientWidth;
+      const left = looping ? width * items.length : 0;
       element.scrollTo({ left, behavior: 'instant' });
+      observer = new ResizeObserver(() => {
+        if (!element.clientWidth || element.clientWidth === width) return;
+        width = element.clientWidth;
+        element.scrollTo({ left: ((looping ? items.length : 0) + activeIndex.current) * width, behavior: 'instant' });
+      });
+      observer.observe(element);
     }
     return () => {
+      observer?.disconnect();
       window.clearTimeout(transitionTimer.current);
-      window.clearTimeout(mobileScrollTimer.current);
+      cancelAnimationFrame(mobileSettleFrame.current);
+      mobileSettleFrame.current = 0;
     };
-  }, [artwork.id, mobile, items.length]);
+  }, [artwork.id, mobile, looping, items.length]);
 
   useEffect(() => {
     if (mobile) return undefined;
@@ -87,8 +137,13 @@ export default function ArtworkMediaGallery({ artwork, items, mobile }) {
     if (next === safeActive || transition) return;
     if (mobile) {
       setActive(next);
-      const trackIndex = items.length > 1 ? next + 1 : next;
-      track.current?.scrollTo({ left: track.current.clientWidth * trackIndex, behavior: 'smooth' });
+      const element = track.current;
+      if (!element) return;
+      const position = element.scrollLeft / element.clientWidth;
+      const candidates = items.length > 1 ? [next, next + items.length, next + items.length * 2] : [next];
+      const trackIndex = candidates.reduce((closest, candidate) => Math.abs(candidate - position) < Math.abs(closest - position) ? candidate : closest);
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      element.scrollTo({ left: element.clientWidth * trackIndex, behavior: reduced ? 'instant' : 'smooth' });
       return;
     }
     const direction = Math.sign(requestedDirection || next - safeActive) || 1;
@@ -128,30 +183,24 @@ export default function ArtworkMediaGallery({ artwork, items, mobile }) {
   </div>;
 
   return <section className={`artwork-media-gallery${mobile ? ' is-mobile' : ' is-desktop'}`} aria-label={`Media for ${formatArtworkDisplayId(artwork.id)}`}>
-    {mobile ? <div ref={track} className="artwork-media-track" onScroll={(event) => {
+    {mobile ? <div ref={track} className="artwork-media-track"
+    onTouchStart={() => { recenterMobileTrack(); mobileTouching.current = true; }}
+    onTouchEnd={() => { mobileTouching.current = false; settleMobileTrack(); }}
+    onTouchCancel={() => { mobileTouching.current = false; settleMobileTrack(); }}
+    onScrollEnd={() => { if (!mobileTouching.current) recenterMobileTrack(); }}
+    onScroll={(event) => {
       const width = event.currentTarget.clientWidth;
       if (!width) return;
       const trackIndex = Math.round(event.currentTarget.scrollLeft / width);
       const itemCount = items.length;
-      const nextActive = itemCount > 1
-        ? trackIndex === 0 ? itemCount - 1 : trackIndex === itemCount + 1 ? 0 : trackIndex - 1
-        : 0;
+      const nextActive = ((trackIndex % itemCount) + itemCount) % itemCount;
       setActive(clampMediaIndex(nextActive, itemCount));
-      window.clearTimeout(mobileScrollTimer.current);
-      mobileScrollTimer.current = window.setTimeout(() => {
-        const element = track.current;
-        if (!element || itemCount < 2) return;
-        const settledIndex = Math.round(element.scrollLeft / element.clientWidth);
-        if (settledIndex === 0) element.scrollTo({ left: element.clientWidth * itemCount, behavior: 'instant' });
-        if (settledIndex === itemCount + 1) element.scrollTo({ left: element.clientWidth, behavior: 'instant' });
-      }, 90);
+      settleMobileTrack();
     }}>
       {mobileLoopItems.map((item, index) => {
-        const isClone = items.length > 1 && (index === 0 || index === mobileLoopItems.length - 1);
-        const realIndex = items.length > 1
-          ? index === 0 ? items.length - 1 : index === mobileLoopItems.length - 1 ? 0 : index - 1
-          : index;
-        return <article className="artwork-media-slide" key={`${item.id}-${isClone ? `loop-${index}` : 'original'}`} aria-hidden={isClone || undefined} aria-label={isClone ? undefined : `${item.label}, ${realIndex + 1} of ${items.length}`}>
+        const isClone = looping && (index < items.length || index >= items.length * 2);
+        const realIndex = index % items.length;
+        return <article className="artwork-media-slide" key={`${item.id}-${isClone ? `loop-${index}` : 'original'}`} data-media-index={realIndex} aria-hidden={isClone || undefined} aria-label={isClone ? undefined : `${item.label}, ${realIndex + 1} of ${items.length}`}>
           <MediaFrame item={item} priority={realIndex === 0} mobile />
         </article>;
       })}

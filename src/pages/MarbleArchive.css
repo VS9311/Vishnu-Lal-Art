@@ -171,9 +171,9 @@
   .marble-record-layout { margin-left: 0; display: block; }
   .marble-record-visual { position: relative; height: auto; min-height: 0; max-width: none; margin: 0; overflow: visible; }
   .artwork-media-gallery { height: auto; overflow: visible; }
-  .artwork-media-track { display: flex; height: min(70svh,660px); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .artwork-media-track { display: flex; height: min(70svh,660px); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
   .artwork-media-track::-webkit-scrollbar { display: none; }
-  .artwork-media-slide { flex: 0 0 100%; scroll-snap-align: center; }
+  .artwork-media-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: center; }
   .artwork-media-frame--canonical { padding: 16px 4vw 22px; }
   .artwork-media-canonical-sheet { max-height: calc(min(70svh,660px) - 38px); padding: 6px; }
   .artwork-media-canonical-sheet .artwork-media-canonical-image { max-height: calc(min(70svh,660px) - 52px); box-shadow: none; }
