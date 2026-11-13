@@ -53,11 +53,13 @@
   backdrop-filter: none;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 800px) {
   .app-container:has(.mobile-marble-homepage) > .site-information-links:not(.site-information-links--policy) {
     display: none;
   }
+}
 
+@media (max-width: 720px) {
   .site-information-links--home,
   .site-information-links--footer {
     position: relative;

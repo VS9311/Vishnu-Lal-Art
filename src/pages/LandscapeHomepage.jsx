@@ -304,7 +304,7 @@ function DesktopLandscapeHomepage({ artworkIds }) {
           </div>
 
           <LandscapeIndex activeArtworkId={activeArtworkId} />
-          <div className="landscape-travel-note" aria-hidden="true"><span>SCROLL TO MOVE THROUGH THE ARCHIVE</span><i /></div>
+          <div className="landscape-travel-note" aria-hidden="true"><span>SCROLL TO EXPLORE THE WORKS</span><i /></div>
           <LandscapeRecordPanel
             artwork={panelArtwork}
             isOpen={Boolean(selectedArtwork)}

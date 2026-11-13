@@ -129,7 +129,7 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
       <aside className="marble-passage-index" aria-label={`${series.label} collection`}>
         <MotionLink className="marble-passage-brand" to="/" kind="portal">
           <strong>VISHNU LAL</strong>
-          <span>THE ARCHIVE</span>
+
         </MotionLink>
         <div className="marble-passage-series">
           <span>{series.label}</span>
@@ -137,7 +137,7 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
           <em>{series.romanizedName}</em>
           <small>{artworks.length} WORKS</small>
         </div>
-        <MotionLink className="marble-passage-return" to="/" kind="portal">RETURN TO ARCHIVE</MotionLink>
+        <MotionLink className="marble-passage-return" to="/" kind="portal">RETURN TO HOME</MotionLink>
         {nextSeries && <MotionLink className="marble-passage-return marble-passage-next" to={`/${nextSeries.id}`} kind="portal">NEXT SERIES →</MotionLink>}
         <MotionLink className="marble-passage-return" to="/artist" kind="portal">THE ARTIST</MotionLink>
         <p>VERTICAL SCROLL<br />MOVES THROUGH THE PASSAGE</p>
@@ -160,7 +160,7 @@ export default function DesktopMarblePassage({ series, artworks, restoreArtworkI
             <aside className="marble-passage-end" aria-label={`End of ${series.label}`}>
               <span>END OF {series.label.toUpperCase()}</span>
               <MotionLink to={nextSeries ? `/${nextSeries.id}` : '/'} kind="portal">
-                {nextSeries ? 'NEXT SERIES →' : 'RETURN TO ARCHIVE →'}
+                {nextSeries ? 'NEXT SERIES →' : 'RETURN TO HOME →'}
               </MotionLink>
             </aside>
           </div>

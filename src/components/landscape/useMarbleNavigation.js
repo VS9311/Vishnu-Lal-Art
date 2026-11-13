@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { adjacentKeyframes, initialNavigation, MARBLE_DURATION, MARBLE_EASING, movementTargets, planNavigation, populateOffstage, wrap, sceneSlots, SCENE_TRAVEL, DIRECT_EXIT, DIRECT_ENTER } from './marbleNavigation';
+import { adjacentKeyframes, initialNavigation, MARBLE_EASING, movementTargets, planNavigation, populateOffstage, wrap, sceneSlots, SCENE_TRAVEL, DIRECT_EXIT, DIRECT_ENTER } from './marbleNavigation';
 import { decodeMarbleArtwork, decodeMarblePresentation, warmMarbleNeighbors } from './marbleImageReadiness';
 
 const painted = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -13,6 +13,9 @@ export default function useMarbleNavigation(initialIndex, artworks) {
   const animations = useRef([]);
   const generation = useRef(0);
   const locked = useRef(true);
+  const pendingMoves = useRef([]);
+  const pumping = useRef(false);
+  const [continuous, setContinuous] = useState(false);
   const [error, setError] = useState('');
   const publish = next => { live.current = next; setState(next); };
   const decodeSlots = useCallback(async (slots, scene = live.current.scene) => {
@@ -36,7 +39,7 @@ export default function useMarbleNavigation(initialIndex, artworks) {
     });
     // These refs deliberately point to the latest operation, not mount-time nodes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => { generation.current++; animations.current.forEach(a => a.cancel()); };
+    return () => { generation.current++; pendingMoves.current = []; animations.current.forEach(a => a.cancel()); };
   }, [artworks, decodeSlots]);
 
   const request = async selection => {
@@ -66,7 +69,8 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       const startTime = document.timeline.currentTime;
       const running = snapshot.slots.filter(s => targets[s.key] && targets[s.key] !== s.anchor).map(s =>
         nodes.current[`${snapshot.scene}:${s.key}`].animate(adjacentKeyframes(s.anchor, targets[s.key], width, height), {
-          duration: reduced ? 0 : MARBLE_DURATION, easing: MARBLE_EASING, fill: 'forwards',
+          duration: reduced ? 0 : pendingMoves.current.length ? 240 : 460,
+          easing: pendingMoves.current.length ? 'linear' : MARBLE_EASING, fill: 'forwards',
         }));
       if (startTime !== null) running.forEach(a => { a.startTime = startTime; });
       animations.current = running;
@@ -134,7 +138,7 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       const spare = before.slots.find(s => s.key === plan.spare);
       if (spare.index !== plan.future || spare.anchor !== `off-${plan.side}`) {
         flushSync(() => publish({ ...before, slots: prepared, phase: 'PREPARE' }));
-      }
+      } else publish({ ...before, phase: 'PREPARE' });
       await decodeSlots(prepared);
       guard();
       publish({ ...live.current, phase: 'MOVE' });
@@ -145,6 +149,31 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       animations.current = [];
       publish({ ...live.current, phase: 'ERROR', recoveryIndex: committed ? plan.target : before.index });
       setError('An artwork could not load or movement was interrupted. Retry to continue.');
+      pendingMoves.current = [];
+    }
+  };
+  const move = async direction => {
+    if (['BOOT', 'ERROR'].includes(live.current.phase)) return;
+    const step = Math.sign(direction);
+    if (!step) return;
+    // Keep accepting gestures while the persistent artwork objects are moving.
+    // Reversing cancels a waiting step before adding travel in the other direction.
+    if (pendingMoves.current.at(-1) === -step) pendingMoves.current.pop();
+    else pendingMoves.current.push(step);
+    if (live.current.phase === 'MOVE') {
+      animations.current.forEach(animation => animation.updatePlaybackRate(3));
+    }
+    if (pumping.current || locked.current) return;
+    pumping.current = true;
+    setContinuous(true);
+    const token = generation.current;
+    try {
+      while (pendingMoves.current.length && token === generation.current && live.current.phase !== 'ERROR') {
+        await request({ direction: pendingMoves.current.shift() });
+      }
+    } finally {
+      pumping.current = false;
+      if (token === generation.current) setContinuous(false);
     }
   };
   const retry = async () => {
@@ -164,8 +193,8 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       setError('Artwork unavailable. Please retry.');
     }
   };
-  return { state, index: state.index, busy: state.phase !== 'IDLE', error, retry,
+  return { state, index: state.index, busy: continuous || state.phase !== 'IDLE', error, retry,
     bindSlot: (key, node) => { if (node) nodes.current[key] = node; },
     bindScene: (key, node) => { if (node) scenes.current[key] = node; },
-    move: direction => void request({ direction }), select: target => void request({ target }) };
+    move: direction => void move(direction), select: target => void request({ target }) };
 }

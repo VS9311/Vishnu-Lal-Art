@@ -15,7 +15,7 @@ export default function ArchiveCart() {
   const [step, setStep] = useState('cart');
   const items = useMemo(() => artworkIds.map(getArtworkSummary).filter(Boolean), [artworkIds]);
   const total = items.reduce((sum, artwork) => sum + getCataloguePrice(artwork.id), 0);
-  const inArchive = location.pathname.startsWith('/artwork/') || location.pathname.startsWith('/series-');
+  const inArchive = location.pathname === '/' || location.pathname.startsWith('/artwork/') || location.pathname.startsWith('/series-');
 
   useEffect(() => {
     const element = dialog.current;
@@ -34,7 +34,13 @@ export default function ArchiveCart() {
   if (!inArchive) return null;
 
   return <>
-    <button className="archive-cart-trigger" type="button" ref={trigger} onClick={openCart}>CART <span>{items.length}</span></button>
+    {items.length > 0 && <button className="archive-cart-trigger" type="button" ref={trigger} onClick={openCart} aria-label={`Open cart, ${items.length} ${items.length === 1 ? 'artwork' : 'artworks'}`} title="View cart">
+      <svg width="23" height="25" viewBox="0 0 24 26" fill="none" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 8h16l1 16H3L4 8Z" fill="#eeeae3" />
+        <path d="M8 9V6a4 4 0 0 1 8 0v3" strokeLinecap="round" />
+        <text x="12" y="17" textAnchor="middle" dominantBaseline="middle" fill="currentColor" stroke="none" fontFamily="var(--font-mono)" fontSize={items.length > 99 ? '6' : '8'} letterSpacing="0">{items.length > 99 ? '99+' : items.length}</text>
+      </svg>
+    </button>}
     <dialog className="archive-cart-dialog" ref={dialog} onCancel={(event) => { event.preventDefault(); close(); }} aria-labelledby="archive-cart-title">
       <button className="archive-cart-close" type="button" onClick={close}>CLOSE ×</button>
       {step === 'cart' && <div>
@@ -75,7 +81,7 @@ export default function ArchiveCart() {
         <p className="marble-eyebrow">PURCHASE REQUEST</p>
         <h2 id="archive-cart-title">Request prepared.</h2>
         <p>Your selected works remain in the cart on this device. Secure delivery will be connected before the shop goes live.</p>
-        <button className="archive-cart-primary" type="button" onClick={close}>RETURN TO THE ARCHIVE</button>
+        <button className="archive-cart-primary" type="button" onClick={close}>RETURN TO HOME</button>
       </div>}
     </dialog>
   </>;

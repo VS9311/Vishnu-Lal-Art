@@ -6,7 +6,7 @@ export default function LandscapeIndex({ activeArtworkId }) {
     <nav className="landscape-index" aria-label="Archive landscape index">
       <div className="landscape-index-identity">
         <strong>VISHNU LAL</strong>
-        <span>THE ARCHIVE</span>
+
       </div>
 
       {getAllSeries().map((series) => <MotionLink key={series.id} to={`/${series.id}`} kind="portal">

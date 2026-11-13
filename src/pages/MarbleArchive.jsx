@@ -10,6 +10,7 @@ import { buildArtworkMedia, getArtworkMediaSequence } from '../components/artwor
 import { useCart } from '../components/cart/cartContextState';
 import DesktopMarblePassage from '../components/landscape/DesktopMarblePassage';
 import MobileMarbleHomepage, { MobileMarbleEmptySeries } from '../components/landscape/MobileMarbleHomepage';
+import MobileArchiveHeader from '../components/landscape/MobileArchiveHeader';
 import { formatCataloguePrice, getCataloguePrice } from '../lib/cataloguePricing';
 import { formatArtworkDisplayId } from '../lib/artworkDisplay';
 import { MotionLink } from '../motion/RouteMotion';
@@ -21,8 +22,8 @@ const mobileSnapshot = () => window.matchMedia('(max-width: 800px)').matches;
 
 function MarbleNavigation({ seriesId }) {
   return <nav className="marble-navigation" aria-label="Marble archive">
-    <MotionLink className="marble-brand" to="/" kind="portal"><strong>VISHNU LAL</strong><span>THE ARCHIVE</span></MotionLink>
-    <MotionLink className="marble-home-link" to="/" kind="portal">MARBLE HOMEPAGE</MotionLink>
+    <MotionLink className="marble-brand" to="/" kind="portal"><strong>VISHNU LAL</strong></MotionLink>
+    <MotionLink className="marble-home-link" to="/" kind="portal">HOME</MotionLink>
     <MotionLink className="marble-home-link" to="/artist" kind="portal">THE ARTIST</MotionLink>
     {getAllSeries().map((series) => <MotionLink className="marble-series-link" aria-current={series.id === seriesId ? 'page' : undefined} key={series.id} to={`/${series.id}`} kind="portal">
       <span>{series.label}</span><strong lang="ml">{series.malayalamName}</strong><span>{series.romanizedName}</span><small>{getSeriesArtworks(series.id).length} WORKS</small>
@@ -36,7 +37,7 @@ export function MarbleSeriesPage({ seriesId }) {
   const navigationType = useNavigationType();
   const series = getSeriesData(seriesId);
   const artworks = getSeriesArtworks(seriesId);
-  if (!series) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Series not available</h1><MotionLink to="/" kind="portal">Return to the marble homepage</MotionLink></main>;
+  if (!series) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Series not available</h1><MotionLink to="/" kind="portal">Return to home</MotionLink></main>;
   if (mobile && !artworks.length) return <MobileMarbleEmptySeries series={series} />;
   if (mobile) return <MobileMarbleHomepage key={seriesId} artworkIds={artworks.map((work) => work.id)} collectionId={seriesId} />;
   return <DesktopMarblePassage
@@ -91,7 +92,7 @@ function MarbleArtworkRecord({ id }) {
     import(`../data/artworks/${id}.json`).then((module) => { if (!cancelled) setRecord(module.default); }).catch(() => { if (!cancelled) setError(true); });
     return () => { cancelled = true; };
   }, [artwork?.source, id]);
-  if (!artwork || !isPublicArtwork(id)) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Work not available</h1><MotionLink to="/" kind="portal">Return to the marble homepage</MotionLink></main>;
+  if (!artwork || !isPublicArtwork(id)) return <main id="main-content" className="landscape-homepage marble-archive marble-missing"><h1>Work not available</h1><MotionLink to="/" kind="portal">Return to home</MotionLink></main>;
   const series = getSeriesData(artwork.seriesId);
   const navigation = getSeriesNavigation(id);
   const fromHome = location.state?.fromLandscape;
@@ -104,11 +105,11 @@ function MarbleArtworkRecord({ id }) {
   const inCart = includesArtwork(artwork.id);
   const primaryLabel = unavailable ? 'ENQUIRE' : inCart ? 'VIEW CART' : 'ADD TO CART';
   return <main id="main-content" className="landscape-homepage marble-archive marble-record">
-    <MarbleNavigation seriesId={series.id} />
+    {mobile ? <MobileArchiveHeader /> : <MarbleNavigation seriesId={series.id} />}
     <div className="marble-record-layout">
       <div className="marble-record-visual"><ArtworkMediaGallery artwork={artwork} items={mediaItems} mobile={mobile} /></div>
       <article className="marble-record-copy">
-        <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="focus" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOMEPAGE' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>
+        <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="focus" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOME' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>
         <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p>
         <h1 className="marble-record-series-title"><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></h1>
         <p className="marble-record-series marble-record-artwork-id" lang={id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(id)}</p>
@@ -122,6 +123,10 @@ function MarbleArtworkRecord({ id }) {
           if (!inCart) addArtwork(artwork.id);
           openCart();
         }}>{primaryLabel}</button>{primaryLabel !== 'ENQUIRE' && <button onClick={(event) => { inquiryTrigger.current = event.currentTarget; setIntent('Other'); }}>ENQUIRE</button>}</div>
+        {mobile && series.summary && <section className="marble-record-series-summary" aria-labelledby="record-series-summary-title">
+          <h2 id="record-series-summary-title" className="marble-eyebrow">ABOUT THE SERIES</h2>
+          <p>{series.summary}</p>
+        </section>}
         {!record && artwork.source !== 'sanity' && !error && <p role="status">Loading catalogue record…</p>}
         {error && <p role="alert">The catalogue record could not be loaded. Please refresh to try again.</p>}
         {record && <div className="marble-public-record"><CatalogueRecord metadata={record.catalogue} />

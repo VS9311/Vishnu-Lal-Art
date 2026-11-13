@@ -205,8 +205,8 @@ export default function StudioPolicyPage({ page }) {
 
   return <main id="main-content" className="studio-policy-page">
     <header className="studio-policy-header">
-      <MotionLink className="studio-policy-brand" to="/" kind="portal">VISHNU LAL <span>THE ARCHIVE</span></MotionLink>
-      <MotionLink className="studio-policy-return" to="/" kind="portal">RETURN TO ARCHIVE →</MotionLink>
+      <MotionLink className="studio-policy-brand" to="/" kind="portal">VISHNU LAL </MotionLink>
+      <MotionLink className="studio-policy-return" to="/" kind="portal">RETURN TO HOME →</MotionLink>
     </header>
 
     <article className="studio-policy-document">

@@ -31,8 +31,8 @@ export default function ArtistPage() {
 
   return <main ref={page} id="main-content" className="artist-page">
     <header className="artist-header">
-      <MotionLink className="artist-brand" to="/" kind="portal">VISHNU LAL<span>THE ARCHIVE</span></MotionLink>
-      <nav aria-label="Artist page navigation"><a href="#artist-statement">STATEMENT</a><a href="#artist-film">FILM</a><MotionLink to="/" kind="portal">RETURN TO ARCHIVE ↗</MotionLink></nav>
+      <MotionLink className="artist-brand" to="/" kind="portal">VISHNU LAL</MotionLink>
+      <nav aria-label="Artist page navigation"><a href="#artist-statement">STATEMENT</a><a href="#artist-film">FILM</a><MotionLink to="/" kind="portal">RETURN TO HOME ↗</MotionLink></nav>
     </header>
     <section id="artist-top" className="artist-hero" aria-labelledby="artist-title">
       <div className="artist-hero-copy">
@@ -58,7 +58,7 @@ export default function ArtistPage() {
     </section>
     <footer id="artist-access" className="artist-footer">
       <div><p className="artist-label">THE STUDIO</p><p>For acquisitions, exhibitions and conversations about the work.</p><a className="artist-contact" href={`mailto:${profile.email}`}>{profile.email} ↗</a></div>
-      <MotionLink className="artist-text-link" to="/" kind="portal">EXPLORE THE ARCHIVE →</MotionLink>
+      <MotionLink className="artist-text-link" to="/" kind="portal">EXPLORE THE WORKS →</MotionLink>
     </footer>
   </main>;
 }

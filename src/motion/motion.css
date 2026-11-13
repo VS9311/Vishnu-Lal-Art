@@ -15,6 +15,7 @@
 
 .app-container,
 .route-motion-stage { min-height: 100svh; background: #ebe8e1; }
+.app-container { overflow-x: clip; }
 
 .route-motion-stage { transform-origin: center center; }
 .route-motion-stage[data-motion-phase='leaving'] { pointer-events: none; }
