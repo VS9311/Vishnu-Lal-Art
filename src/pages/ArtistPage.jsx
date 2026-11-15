@@ -55,14 +55,17 @@ export default function ArtistPage() {
       <div className="artist-hero-copy">
         <p className="artist-label">THE ARTIST / KERALA, INDIA</p>
         <h1 id="artist-title">Vishnu Lal<span aria-hidden="true">.</span></h1>
-        {mobile && <ArtistStudioFilm mobile />}
-        <p className="artist-intro">{profile.introduction}</p>
-        <p className="artist-mentor">{profile.mentorship}</p>
-        <a className="artist-text-link" href="#artist-statement">ON THE PRACTICE ↓</a>
+        <ArtistStudioFilm mobile={mobile} />
       </div>
-      <figure className="artist-portrait"><ArtistPhoto name="portrait" alt="Vishnu Lal seated in his studio, looking towards the light." priority /><figcaption>VISHNU LAL · IN THE STUDIO</figcaption></figure>
+      <div className="artist-biography">
+        <div className="artist-biography-copy">
+          <p className="artist-intro">{profile.introduction}</p>
+          <p className="artist-mentor">{profile.mentorship}</p>
+          <a className="artist-text-link" href="#artist-statement">ON THE PRACTICE ↓</a>
+        </div>
+        <figure className="artist-portrait"><ArtistPhoto name="portrait" alt="Vishnu Lal seated in his studio, looking towards the light." priority /><figcaption>VISHNU LAL · IN THE STUDIO</figcaption></figure>
+      </div>
     </section>
-    {!mobile && <ArtistStudioFilm />}
     <section id="artist-statement" className="artist-statement" aria-labelledby="statement-title">
       <div className="artist-statement-heading" data-reveal><p className="artist-label">ARTIST STATEMENT</p><h2 id="statement-title">The hand moves<br />before the mind names.</h2></div>
       <div className="artist-statement-grid">{profile.statement.map((paragraph) => <section key={paragraph.title} className="artist-statement-part" data-reveal><h3>{paragraph.title}</h3><p>{paragraph.body}</p></section>)}</div>

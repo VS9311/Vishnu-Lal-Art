@@ -8,6 +8,7 @@ import MobileMarbleHomepage from '../components/landscape/MobileMarbleHomepage';
 import { getArtworkSummary } from '../lib/artwork';
 import { getHomepageArtworkIds } from '../lib/homepageSelection';
 import './LandscapeHomepage.css';
+import { useRouteMotion } from '../motion/routeMotionContext';
 
 const WORLD = { width: 3344, height: 1882 };
 const STATE_KEY = 'vishnu-lal-archive:homepage-2';
@@ -83,6 +84,7 @@ export default function LandscapeHomepage() {
 }
 
 function DesktopLandscapeHomepage({ artworkIds }) {
+  const { moveTo } = useRouteMotion();
   const sceneRef = useRef(null);
   const worldRef = useRef(null);
   const artworkRefs = useRef(new Map());
@@ -221,6 +223,15 @@ function DesktopLandscapeHomepage({ artworkIds }) {
     setActiveArtworkId(id);
   }, [focusPhase, selectedId]);
 
+  const activateArtwork = useCallback((id) => {
+    if (selectedId === id && focusPhase === FOCUS_PHASE.focused) {
+      saveState(id);
+      moveTo(`/artwork/${id}`, { kind: 'focus', state: { fromLandscape: true } });
+      return;
+    }
+    selectArtwork(id);
+  }, [focusPhase, selectedId, saveState, moveTo, selectArtwork]);
+
   const closeFocus = useCallback((restoreFocus = false) => {
     if (!selectedId || focusPhase !== FOCUS_PHASE.focused) return;
     if (restoreFocus && selectedId) artworkRefs.current.get(selectedId)?.querySelector('button')?.focus();
@@ -298,7 +309,7 @@ function DesktopLandscapeHomepage({ artworkIds }) {
                 placement={placementById.get(artwork.id)}
                 selected={selectedId === artwork.id}
                 registerNode={registerNode}
-                onSelect={selectArtwork}
+                onSelect={activateArtwork}
               />
             ))}
           </div>

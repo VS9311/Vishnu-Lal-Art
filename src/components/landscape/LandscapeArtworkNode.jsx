@@ -20,7 +20,7 @@ export default function LandscapeArtworkNode({ artwork, placement, selected, reg
         '--mobile-width': `${placement.mobileWidth}px`,
       }}
     >
-      <button type="button" onClick={() => onSelect(artwork.id)} aria-pressed={selected}>
+      <button type="button" onClick={() => onSelect(artwork.id)} aria-pressed={selected} aria-label={`${selected ? 'Open artwork record for' : 'Focus artwork'} ${formatArtworkDisplayId(artwork.id)}`}>
         <span className="landscape-artwork-sheet">
           <ResponsiveArtworkImage
             artwork={artwork}
@@ -33,7 +33,7 @@ export default function LandscapeArtworkNode({ artwork, placement, selected, reg
         <span className="landscape-hover-note">
           <strong>{formatArtworkDisplayId(artwork.id)}</strong>
           <span>{seriesLabel}</span>
-          <em>VIEW FIELD NOTE</em>
+          <em>{selected ? 'OPEN ARTWORK RECORD' : 'VIEW FIELD NOTE'}</em>
         </span>
       </button>
     </article>
