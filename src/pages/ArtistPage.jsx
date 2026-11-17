@@ -17,10 +17,10 @@ function ArtistStudioFilm({ mobile = false }) {
   </section>;
 }
 
-function ArtistPhoto({ name, alt, priority = false }) {
+function ArtistPhoto({ name, alt, height, priority = false }) {
   return <img src={`/artist/${name}-1600.webp`}
     srcSet={`/artist/${name}-800.webp 800w, /artist/${name}-1600.webp 1600w`}
-    sizes="(max-width: 760px) 92vw, 46vw" width="1600" height={name === 'portrait' ? '2400' : '1067'}
+    sizes="(max-width: 760px) 92vw, 46vw" width="1600" height={height ?? (name === 'portrait' ? '2400' : '1067')}
     alt={alt} loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'} decoding="async" />;
 }
 
@@ -68,7 +68,7 @@ export default function ArtistPage() {
     </section>
     <section id="artist-statement" className="artist-statement" aria-labelledby="statement-title">
       <div className="artist-statement-heading" data-reveal><p className="artist-label">ARTIST STATEMENT</p><h2 id="statement-title">The hand moves<br />before the mind names.</h2></div>
-      <div className="artist-statement-grid">{profile.statement.map((paragraph) => <section key={paragraph.title} className="artist-statement-part" data-reveal><h3>{paragraph.title}</h3><p>{paragraph.body}</p></section>)}</div>
+      <div className="artist-statement-grid">{profile.statement.map((section) => <section key={section.title} className="artist-statement-part" data-reveal><h3>{section.title}</h3>{section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.image && <figure className="artist-statement-image"><ArtistPhoto {...section.image} /></figure>}</section>)}</div>
     </section>
     <section className="artist-studio" aria-label="Inside the studio" data-reveal>
       <figure><ArtistPhoto name="studio" alt="Vishnu Lal considering a large drawing on the wall of his studio." /></figure>

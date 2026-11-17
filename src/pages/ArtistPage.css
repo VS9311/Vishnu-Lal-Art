@@ -34,6 +34,9 @@
 .artist-statement-part { border-top: 1px solid var(--artist-line); padding-top: 18px; }
 .artist-statement-part h3 { text-transform: uppercase; color: var(--artist-muted); margin-bottom: 12px; }
 .artist-statement-part p { max-width: 570px; font: 400 clamp(18px, 1.35vw, 21px)/1.6 var(--font-serif); }
+.artist-statement-part p + p { margin-top: 1em; }
+.artist-page .artist-statement-image { width: min(100%, 320px); margin: 24px auto 0; }
+.artist-page .artist-statement-image img { height: auto; }
 .artist-studio { max-width: 1280px; margin: 0 auto 70px; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 90px); align-items: center; }
 .artist-studio figure { aspect-ratio: 3/2; overflow: hidden; }
 .artist-studio-copy blockquote { font: 400 clamp(30px, 3.5vw, 50px)/1.07 var(--font-serif); letter-spacing: -.02em; margin: 24px 0; }
@@ -50,6 +53,9 @@
 .artist-page [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity 650ms ease, transform 650ms cubic-bezier(.22, 1, .36, 1); }
 .artist-page [data-reveal].is-visible { opacity: 1; transform: none; }
 @media (min-width: 761px) {
+  .artist-statement-part:has(.artist-statement-image) { display: flex; flex-direction: column; }
+  .artist-page .artist-statement-image { position: relative; flex: 1; min-height: 0; width: 100%; margin: 32px 0 0; }
+  .artist-page .artist-statement-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
   .artist-hero { grid-template-columns: 1fr; gap: 48px; }
   .artist-hero .artist-film { width: 100%; margin: 0; padding: 0; border-top: 0; }
   .artist-hero .artist-film h2 { font-size: 38px; }
