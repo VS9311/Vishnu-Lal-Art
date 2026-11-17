@@ -123,7 +123,7 @@ function MarbleArtworkRecord({ id }) {
           if (!inCart) addArtwork(artwork.id);
           openCart();
         }}>{primaryLabel}</button>{primaryLabel !== 'ENQUIRE' && <button onClick={(event) => { inquiryTrigger.current = event.currentTarget; setIntent('Other'); }}>ENQUIRE</button>}</div>
-        {mobile && series.summary && <section className="marble-record-series-summary" aria-labelledby="record-series-summary-title">
+        {series.summary && <section className="marble-record-series-summary" aria-labelledby="record-series-summary-title">
           <h2 id="record-series-summary-title" className="marble-eyebrow">ABOUT THE SERIES</h2>
           <p>{series.summary}</p>
         </section>}

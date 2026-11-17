@@ -1,6 +1,7 @@
 import { MotionLink } from '../../motion/RouteMotion';
 import { getSeriesData } from '../../lib/artwork';
 import { formatArtworkDisplayId } from '../../lib/artworkDisplay';
+import { formatCataloguePrice, getCataloguePrice } from '../../lib/cataloguePricing';
 
 export default function LandscapeRecordPanel({ artwork, isOpen, position, total, onClose, onMove, onOpenRecord }) {
   const series = artwork ? getSeriesData(artwork.seriesId) : null;
@@ -21,6 +22,7 @@ export default function LandscapeRecordPanel({ artwork, isOpen, position, total,
         <span>{series?.label}</span>
         <strong lang={artwork.id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(artwork.id)}</strong>
       </div>
+      <p className="landscape-record-price">{artwork.status === 'soldOut' ? 'SOLD OUT' : `${formatCataloguePrice(artwork.priceUsd || getCataloguePrice(artwork.id))} USD`}</p>
       <p className="landscape-record-position">SELECTED OBJECT {String(position).padStart(2, '0')} / {String(total).padStart(2, '0')}</p>
       <div className="landscape-record-actions">
         <MotionLink to={`/artwork/${artwork.id}`} kind="focus" state={{ fromLandscape: true }} onClick={onOpenRecord}>
