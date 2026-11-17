@@ -18,8 +18,8 @@ assert.equal(minimal.presentations.bedroom.template.frameTone, 'dark');
 
 assert.deepEqual(
   getArtworkMediaSequence(minimal).map((item) => item.kind),
-  ['marble', 'living-room', 'workspace', 'interior', 'bedroom', 'canonical'],
-  'Desktop must move from the approved marble world through four interiors to the canonical artwork reveal.',
+  ['canonical', 'living-room', 'workspace', 'interior', 'bedroom', 'marble'],
+  'Desktop must begin with the full artwork, retain the four interiors, and end with marble.',
 );
 
 assert.equal(clampMediaIndex(1, 1), 0, 'A shorter responsive sequence must synchronously clamp the previous slide index.');
@@ -47,7 +47,7 @@ const complete = buildArtworkMedia(artwork, {
 
 assert.deepEqual(
   getArtworkMediaSequence(complete).map((item) => item.kind),
-  ['marble', 'living-room', 'workspace', 'interior', 'bedroom', 'canonical'],
+  ['canonical', 'living-room', 'workspace', 'interior', 'bedroom', 'marble'],
   'Configured real media must retain the six-slide desktop order.',
 );
 

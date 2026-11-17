@@ -95,12 +95,12 @@ export function getArtworkMediaSequence(media, mobile = false) {
   ].filter(Boolean);
 
   return [
-    media.marblePresentation,
+    media.canonical,
     media.presentations.livingRoom,
     media.presentations.workspace,
     media.presentations.interior,
     media.presentations.bedroom,
-    media.canonical,
+    media.marblePresentation,
   ].filter(Boolean);
 }
 
