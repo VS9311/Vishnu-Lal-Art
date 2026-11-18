@@ -35,7 +35,7 @@
 .artist-statement-part h3 { text-transform: uppercase; color: var(--artist-muted); margin-bottom: 12px; }
 .artist-statement-part p { max-width: 570px; font: 400 clamp(18px, 1.35vw, 21px)/1.6 var(--font-serif); }
 .artist-statement-part p + p { margin-top: 1em; }
-.artist-page .artist-statement-image { width: min(100%, 320px); margin: 24px auto 0; }
+.artist-page .artist-statement-image { width: 100%; margin: 24px auto 0; }
 .artist-page .artist-statement-image img { height: auto; }
 .artist-studio { max-width: 1280px; margin: 0 auto 70px; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 90px); align-items: center; }
 .artist-studio figure { aspect-ratio: 3/2; overflow: hidden; }

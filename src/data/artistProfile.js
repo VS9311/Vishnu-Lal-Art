@@ -20,7 +20,7 @@ export const artistProfile = {
       body: [
         "This openness extends to the act of making itself. Through automatism, I allow the hand to move without being entirely governed by conscious intention. A mark can precede its explanation; an image can take shape without having been conceived in advance. Chance, impulse and the unconscious become participants in the process. What emerges is not necessarily the execution of an idea, but the discovery of something that could not have been fully anticipated."
       ],
-      image: { name: 'automatism-detail', height: 2400, alt: 'Detail of a drawn face, with dark textured marks around the eyes and head.' },
+      image: { name: 'automatism-surface', height: 1067, alt: 'Close-up of sweeping dark marks and textured lines on an artwork’s surface.' },
     },
     {
       title: "Kari & Anantham Lines",
