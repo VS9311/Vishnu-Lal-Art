@@ -87,7 +87,7 @@
 .marble-commerce-summary div { display: grid; gap: 7px; }
 .marble-commerce-summary span, .marble-specifications dt { color: #7a7165; font: 9px/1.5 var(--font-mono); letter-spacing: .1em; }
 .marble-commerce-summary strong { font: 18px/1.35 var(--font-serif); font-weight: 400; }
-.marble-commerce-summary .marble-price { font: 400 15px/1.45 var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: .055em; }
+.marble-commerce-summary .marble-price { font: 600 21px/1.45 var(--font-price); font-variant-numeric: lining-nums tabular-nums; letter-spacing: .015em; }
 .marble-specifications { margin: 0; padding: 18px 0; border-bottom: 1px solid #cec6b9; display: grid; gap: 12px; }
 .marble-specifications div { display: grid; grid-template-columns: minmax(90px,.65fr) 1.35fr; gap: 20px; }
 .marble-specifications dd { margin: 0; font: 14px/1.5 var(--font-serif); }
@@ -125,7 +125,10 @@
 .archive-cart-items li > div span, .archive-cart-total span { color: #756d61; font: 9px/1.4 var(--font-mono); letter-spacing: .08em; }
 .archive-cart-items li > button, .archive-cart-clear, .archive-cart-back { min-height: 40px; padding: 7px; border: 0; background: none; color: #72695d; cursor: pointer; font: 8px/1.4 var(--font-mono); letter-spacing: .08em; }
 .archive-cart-total { padding: 24px 0; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #c9c1b4; }
-.archive-cart-total strong { font: 26px/1.2 var(--font-serif); font-weight: 400; }
+.archive-cart-total strong { font: 600 36.4px/1.4 var(--font-price); font-variant-numeric: lining-nums tabular-nums; }
+.archive-cart-items li > div .archive-price, .archive-cart-dialog .archive-price { font-family: var(--font-price); font-weight: 600; font-variant-numeric: lining-nums tabular-nums; letter-spacing: .015em; }
+.archive-cart-dialog .archive-price { font-size: 22.4px; }
+.archive-cart-items li > div .archive-price { font-size: 12.6px; }
 .archive-cart-primary { width: 100%; min-height: 52px; margin-top: 24px; padding: 14px; border: 1px solid #3e3b34; background: #3e3b34; color: #f5f1e8; cursor: pointer; font: 9px/1.5 var(--font-mono); letter-spacing: .09em; }
 .archive-cart-clear { width: 100%; margin-top: 8px; }
 .archive-cart-empty { padding: 28px 0; border-block: 1px solid #c9c1b4; color: #756d61; }

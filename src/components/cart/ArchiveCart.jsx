@@ -49,7 +49,7 @@ export default function ArchiveCart() {
         {items.length ? <>
           <ul className="archive-cart-items">{items.map((artwork) => <li key={artwork.id}>
             <MotionLink to={`/artwork/${artwork.id}`} kind="focus" onClick={close} className="archive-cart-thumb"><ResponsiveArtworkImage artwork={artwork} sizes="80px" /></MotionLink>
-            <div><MotionLink to={`/artwork/${artwork.id}`} kind="focus" onClick={close}>{formatArtworkDisplayId(artwork.id)}</MotionLink><span>{formatCataloguePrice(getCataloguePrice(artwork.id))}</span></div>
+            <div><MotionLink to={`/artwork/${artwork.id}`} kind="focus" onClick={close}>{formatArtworkDisplayId(artwork.id)}</MotionLink><span className="archive-price">{formatCataloguePrice(getCataloguePrice(artwork.id))}</span></div>
             <button type="button" onClick={() => removeArtwork(artwork.id)}>REMOVE</button>
           </li>)}</ul>
           <div className="archive-cart-total"><span>TOTAL</span><strong>{formatCataloguePrice(total)}</strong></div>
@@ -61,7 +61,7 @@ export default function ArchiveCart() {
         <button className="archive-cart-back" type="button" onClick={() => setStep('cart')}>← BACK TO CART</button>
         <p className="marble-eyebrow">PURCHASE REQUEST</p>
         <h2 id="archive-cart-title">Checkout.</h2>
-        <p>{items.length} {items.length === 1 ? 'work' : 'works'} · {formatCataloguePrice(total)}</p>
+        <p>{items.length} {items.length === 1 ? 'work' : 'works'} · <span className="archive-price">{formatCataloguePrice(total)}</span></p>
         <div className="archive-cart-form">
           <label>NAME<input name="name" autoComplete="name" required /></label>
           <label>EMAIL<input name="email" type="email" autoComplete="email" required /></label>
