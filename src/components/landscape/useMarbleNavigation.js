@@ -14,7 +14,6 @@ export default function useMarbleNavigation(initialIndex, artworks) {
   const generation = useRef(0);
   const locked = useRef(true);
   const pendingMoves = useRef([]);
-  const activeMove = useRef(null);
   const pumping = useRef(false);
   const [continuous, setContinuous] = useState(false);
   const [error, setError] = useState('');
@@ -70,8 +69,8 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       const startTime = document.timeline.currentTime;
       const running = snapshot.slots.filter(s => targets[s.key] && targets[s.key] !== s.anchor).map(s =>
         nodes.current[`${snapshot.scene}:${s.key}`].animate(adjacentKeyframes(s.anchor, targets[s.key], width, height), {
-          duration: reduced ? 0 : selection.duration ?? (pendingMoves.current.length ? 240 : 460),
-          easing: selection.easing ?? (pendingMoves.current.length ? 'linear' : MARBLE_EASING), fill: 'forwards',
+          duration: reduced ? 0 : pendingMoves.current.length ? 240 : 460,
+          easing: pendingMoves.current.length ? 'linear' : MARBLE_EASING, fill: 'forwards',
         }));
       if (startTime !== null) running.forEach(a => { a.startTime = startTime; });
       animations.current = running;
@@ -87,9 +86,6 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       animations.current = [];
       committed = true;
       locked.current = false;
-      if (selection.haptic && !reduced) {
-        try { navigator.vibrate?.(8); } catch { /* Optional device feedback. */ }
-      }
       // Decode ahead during idle, never in the visible movement. A failed preload
       // is retried (and reported if still unavailable) by the next request.
       void decodeSlots(slots).catch(() => {});
@@ -145,66 +141,26 @@ export default function useMarbleNavigation(initialIndex, artworks) {
       } else publish({ ...before, phase: 'PREPARE' });
       await decodeSlots(prepared);
       guard();
-      if (selection.interrupted) {
-        flushSync(() => publish(before));
-        locked.current = false;
-        return;
-      }
       publish({ ...live.current, phase: 'MOVE' });
       await animateAdjacent(movementTargets(live.current.slots, plan));
     } catch {
       if (token !== generation.current) return;
       animations.current.forEach(a => a.cancel());
       animations.current = [];
-      if (selection.interrupted) {
-        flushSync(() => publish(before));
-        locked.current = false;
-        return;
-      }
       publish({ ...live.current, phase: 'ERROR', recoveryIndex: committed ? plan.target : before.index });
       setError('An artwork could not load or movement was interrupted. Retry to continue.');
       pendingMoves.current = [];
     }
   };
-  const stopGlide = () => {
-    const active = activeMove.current;
-    const gliding = active?.glide || pendingMoves.current.some(step => step.glide);
-    if (!gliding) return false;
-    pendingMoves.current = pendingMoves.current.filter(step => !step.glide);
-    if (active?.glide) {
-      const progress = animations.current[0]?.effect.getComputedTiming().progress ?? 0;
-      // Settle on the nearer artwork. A braking tap never opens its record.
-      if (progress >= .5) animations.current.forEach(animation => animation.finish());
-      else {
-        active.interrupted = true;
-        animations.current.forEach(animation => animation.cancel());
-      }
-    }
-    return true;
-  };
-  const move = async (direction, steps = 1, haptic = false) => {
+  const move = async direction => {
     if (['BOOT', 'ERROR'].includes(live.current.phase)) return;
     const step = Math.sign(direction);
-    if (!step || steps < 1 || artworks.length < 2) return;
-    stopGlide();
+    if (!step) return;
     // Keep accepting gestures while the persistent artwork objects are moving.
     // Reversing cancels a waiting step before adding travel in the other direction.
-    for (let i = 0; i < steps; i++) {
-      // Divide one decelerating trajectory at each artwork. Matching the speed
-      // on both sides of every handoff avoids a new burst on the final step.
-      const startSpeed = Math.sqrt(steps - i);
-      const endSpeed = Math.sqrt(steps - i - 1);
-      const speedSum = startSpeed + endSpeed;
-      if (pendingMoves.current.at(-1)?.direction === -step) pendingMoves.current.pop();
-      else pendingMoves.current.push({
-        direction: step, haptic, glide: steps > 1,
-        duration: steps > 1 ? 460 / speedSum : undefined,
-        easing: steps > 1
-          ? `cubic-bezier(0.333333, ${2 * startSpeed / speedSum / 3}, 0.666667, ${1 - 2 * endSpeed / speedSum / 3})`
-          : undefined,
-      });
-    }
-    if (live.current.phase === 'MOVE' && !activeMove.current?.glide) {
+    if (pendingMoves.current.at(-1) === -step) pendingMoves.current.pop();
+    else pendingMoves.current.push(step);
+    if (live.current.phase === 'MOVE') {
       animations.current.forEach(animation => animation.updatePlaybackRate(3));
     }
     if (pumping.current || locked.current) return;
@@ -213,11 +169,9 @@ export default function useMarbleNavigation(initialIndex, artworks) {
     const token = generation.current;
     try {
       while (pendingMoves.current.length && token === generation.current && live.current.phase !== 'ERROR') {
-        activeMove.current = pendingMoves.current.shift();
-        await request(activeMove.current);
+        await request({ direction: pendingMoves.current.shift() });
       }
     } finally {
-      activeMove.current = null;
       pumping.current = false;
       if (token === generation.current) setContinuous(false);
     }
@@ -242,5 +196,5 @@ export default function useMarbleNavigation(initialIndex, artworks) {
   return { state, index: state.index, busy: continuous || state.phase !== 'IDLE', error, retry,
     bindSlot: (key, node) => { if (node) nodes.current[key] = node; },
     bindScene: (key, node) => { if (node) scenes.current[key] = node; },
-    move, stopGlide, select: target => void request({ target }) };
+    move: direction => void move(direction), select: target => void request({ target }) };
 }

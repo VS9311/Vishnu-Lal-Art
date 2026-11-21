@@ -45,7 +45,7 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
     const selected = artworks.findIndex((artwork) => artwork.id === location.state?.artworkId);
     return selected >= 0 ? { index: selected } : restoreState(navigationType === 'POP' || location.state?.restoreLandscape, artworks.length, stateKey);
   });
-  const { state: navigation, index, busy, move, stopGlide, bindSlot, bindScene, error, retry } = useMarbleNavigation(initial.index, artworks);
+  const { state: navigation, index, busy, move, bindSlot, bindScene, error, retry } = useMarbleNavigation(initial.index, artworks);
   const { moveTo } = useRouteMotion();
   const pointer = useRef(null);
   const didSwipe = useRef(false);
@@ -60,54 +60,20 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
-  const trackPointer = (event) => {
+  const recognizeSwipe = (event) => {
     const start = pointer.current;
     if (!start || start.id !== event.pointerId) return;
     const dx = event.clientX - start.x;
     const dy = event.clientY - start.y;
-    if (Math.abs(dx) >= 10 || Math.abs(dy) >= 10) didSwipe.current = true;
     // Yield early to vertical intent so scrolling cannot become a late swipe.
-    if (!start.horizontal && Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) {
+    if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) {
       pointer.current = null;
       return;
     }
-    const samples = start.samples;
-    samples.push({ x: event.clientX, time: event.timeStamp });
-    // Retain one sample before the window so sparse touch events still work.
-    while (samples.length > 2 && samples[1].time <= event.timeStamp - 100) samples.shift();
     if (Math.abs(dx) >= 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
-      start.horizontal = true;
-    }
-  };
-
-  const releasePointer = (event) => {
-    trackPointer(event);
-    const start = pointer.current;
-    if (!start || start.id !== event.pointerId) return;
-    pointer.current = null;
-    const dx = event.clientX - start.x;
-    if (start.horizontal && Math.abs(dx) >= 45) {
-      const [first, next] = start.samples;
-      const windowStart = Math.max(first.time, event.timeStamp - 100);
-      const fraction = (windowStart - first.time) / Math.max(1, next.time - first.time);
-      const fromX = first.x + fraction * (next.x - first.x);
-      const speed = (event.clientX - fromX) * Math.sign(dx) / Math.max(1, event.timeStamp - windowStart);
-      const touch = event.pointerType === 'touch';
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      // Speed is in CSS pixels per millisecond. Short strokes limit travel even
-      // at high speed, and a small collection never laps its starting artwork.
-      const steps = !reduced ? Math.min(
-        1 + [.75, 1.35, 2.1].filter(threshold => speed >= threshold).length,
-        1 + Math.floor(Math.abs(dx) / 55), artworks.length - 1,
-      ) : 1;
-      move(dx < 0 ? 1 : -1, steps, touch && !reduced);
-      return;
-    }
-    if (!didSwipe.current && event.pointerType === 'touch' && Math.abs(dx) < 10 && Math.abs(event.clientY - start.y) < 10) {
-      // Mobile browsers may suppress the compatibility click after a rapid swipe.
-      event.preventDefault();
-      touchTapUntil.current = performance.now() + 500;
-      event.target.closest('button')?.click();
+      pointer.current = null;
+      didSwipe.current = true;
+      move(dx < 0 ? 1 : -1);
     }
   };
 
@@ -120,17 +86,30 @@ export default function MobileMarbleHomepage({ artworkIds, collectionId }) {
         <div className={`mobile-marble-stage${busy ? ' is-moving' : ''}${['BOOT', 'ERROR'].includes(navigation.phase) ? ' is-unready' : ''}`} data-navigation-state={navigation.phase} data-navigation-phase={navigation.phase} aria-label="Swipe left or right to browse artworks" aria-busy={busy}
           onPointerDown={(event) => {
             if (['BOOT', 'ERROR'].includes(navigation.phase) || !event.isPrimary || event.button !== 0) return;
-            didSwipe.current = stopGlide();
-            pointer.current = { x: event.clientX, y: event.clientY, id: event.pointerId, samples: [{ x: event.clientX, time: event.timeStamp }] };
+            didSwipe.current = false;
+            pointer.current = { x: event.clientX, y: event.clientY, id: event.pointerId };
             // Capture on the pressed button so an ordinary tap still activates it.
             const captureTarget = event.target.closest('button') || event.currentTarget;
             captureTarget.setPointerCapture(event.pointerId);
           }}
-          onPointerMove={trackPointer}
-          onPointerUp={releasePointer}
-          onPointerCancel={(event) => { if (pointer.current?.id === event.pointerId) pointer.current = null; }}
+          onPointerMove={recognizeSwipe}
+          onPointerUp={(event) => {
+            recognizeSwipe(event);
+            const tap = pointer.current?.id === event.pointerId
+              && Math.abs(event.clientX - pointer.current.x) < 10
+              && Math.abs(event.clientY - pointer.current.y) < 10;
+            pointer.current = null;
+            if (tap && event.pointerType === 'touch') {
+              // Handle taps after a gesture explicitly: mobile browsers may suppress
+              // the compatibility click following a rapid sequence of touch swipes.
+              event.preventDefault();
+              touchTapUntil.current = performance.now() + 500;
+              event.target.closest('button')?.click();
+            }
+          }}
+          onPointerCancel={() => { pointer.current = null; }}
           onClickCapture={(event) => {
-            if (event.detail > 0 && (didSwipe.current || (event.nativeEvent.isTrusted && performance.now() < touchTapUntil.current))) {
+            if (didSwipe.current || (event.nativeEvent.isTrusted && event.detail > 0 && performance.now() < touchTapUntil.current)) {
               event.preventDefault(); event.stopPropagation(); didSwipe.current = false;
             }
           }}
