@@ -43,12 +43,13 @@ try {
   assert.ok(!email.subject.includes(base.requestId));
   assert.ok(!email.text.includes('COLLECTOR’S NOTE'));
   assert.match(email.html, /SELECTED ARTWORKS/);
-  const escapedMessage = buildPurchaseEmail({ ...base, name: '<script>bad</script>', notes: '<img src=x onerror=alert(1)>', address: 'Line one\nLine two' }, [{ artworkId: 'THUNDU-075', seriesTitle: 'Aalolam', priceUsd: 3900 }], true);
+  const escapedMessage = buildPurchaseEmail({ ...base, name: '<script>bad</script>', notes: '<img src=x onerror=alert(1)>', address: 'Line one\nLine two' }, [{ artworkId: 'THUNDU-075', seriesTitle: 'Aalolam', priceUsd: 3900 }]);
   assert.ok(!escapedMessage.html.includes('<script>'));
   assert.ok(!escapedMessage.html.includes('<img'));
   assert.match(escapedMessage.html, /&lt;script&gt;/);
   assert.match(escapedMessage.html, /Line one<br>Line two/);
-  assert.match(escapedMessage.text, /Preview submission/);
+  assert.ok(!escapedMessage.text.includes('Preview submission'));
+  assert.ok(!escapedMessage.html.includes('testing only'));
   assert.ok(!buildPurchaseEmail(base, [{ artworkId: 'THUNDU-075', priceUsd: 3900 }]).text.includes('Preview submission'));
   const phoneResponse = await onRequestPost({ request: request({ ...base, email: '', phone: '+91 0000000000' }), env });
   assert.equal((await phoneResponse.json()).confirmationSent, null);

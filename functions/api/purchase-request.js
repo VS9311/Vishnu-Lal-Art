@@ -1,13 +1,12 @@
 const STUDIO_EMAIL = 'studio@vishnulalartist.com';
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 
-export function buildPurchaseEmail(data, artworks, preview = false, audience = 'studio') {
+export function buildPurchaseEmail(data, artworks, audience = 'studio') {
   const collector = audience === 'collector';
   const escape = (value) => String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
   const price = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
   const total = price(artworks.reduce((sum, work) => sum + Number(work.priceUsd), 0));
   const reference = `VL-${data.requestId.slice(0, 8).toUpperCase()}`;
-  const previewNote = 'Preview submission — for testing only. Please do not process as an order.';
   const note = 'The studio will confirm availability, delivery charges and acquisition terms before payment. This enquiry does not reserve an artwork or confirm an order.';
   const title = collector ? 'Thank you for your interest.' : 'Artwork acquisition enquiry';
   const introduction = collector
@@ -16,7 +15,7 @@ export function buildPurchaseEmail(data, artworks, preview = false, audience = '
   const detailsHeading = collector ? 'YOUR DETAILS' : 'COLLECTOR DETAILS';
   const notesHeading = collector ? 'YOUR NOTE' : 'COLLECTOR’S NOTE';
   const text = [
-    'VISHNU LAL STUDIO', title, ...(preview ? [previewNote] : []),
+    'VISHNU LAL STUDIO', title,
     ...(collector ? [`Dear ${data.name},`] : []), introduction,
     detailsHeading, `Name: ${data.name}`, ...(data.email ? [`Email: ${data.email}`] : []), ...(data.phone ? [`Phone: ${data.phone}`] : []),
     'SELECTED ARTWORKS', ...artworks.map((work) => `${work.artworkId}${work.seriesTitle ? ` · ${work.seriesTitle}` : ''}: ${price(work.priceUsd)} USD`),
@@ -29,7 +28,6 @@ export function buildPurchaseEmail(data, artworks, preview = false, audience = '
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#eeeae3;color:#34312c"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:auto;background:#faf8f3"><tr><td style="padding:32px 24px;font:16px/1.65 Georgia,serif">
     <p style="margin:0 0 26px;font:14px Georgia,serif;letter-spacing:3px">VISHNU LAL STUDIO</p>
     <h1 style="margin:0 0 16px;font:400 30px/1.2 Georgia,serif">${title}</h1>
-    ${preview ? `<p style="padding:12px;background:#eeeae3;font:12px/1.5 Arial,sans-serif">${previewNote}</p>` : ''}
     ${collector ? `<p>Dear ${escape(data.name)},</p>` : ''}<p>${escape(introduction)}</p>
     ${heading(detailsHeading)}<p>${escape(data.name)}${data.email ? `<br>${escape(data.email)}` : ''}${data.phone ? `<br>${escape(data.phone)}` : ''}</p>
     ${heading('SELECTED ARTWORKS')}<table width="100%" cellpadding="0" cellspacing="0" style="font:15px/1.5 Georgia,serif">${artworks.map((work) => `<tr><td style="padding:14px 0;border-top:1px solid #d8d0c4"><a href="https://www.vishnulalartist.com/artwork/${encodeURIComponent(work.artworkId)}" style="color:#34312c">${escape(work.artworkId)}</a>${work.seriesTitle ? `<br><span style="font-size:13px;color:#72695c">${escape(work.seriesTitle)}</span>` : ''}</td><td style="padding:14px 0 14px 12px;text-align:right;border-top:1px solid #d8d0c4">${price(work.priceUsd)} USD</td></tr>`).join('')}<tr><td style="padding-top:16px;border-top:1px solid #d8d0c4">Artwork total</td><td style="padding-top:16px;text-align:right;border-top:1px solid #d8d0c4"><strong>${total} USD</strong></td></tr></table>
@@ -99,9 +97,7 @@ export async function onRequestPost({ request, env }) {
     if (!Array.isArray(catalogue)) throw new Error('catalogue');
     const artworks = data.artworkIds.map((id) => catalogue.find((work) => work.artworkId === id));
     if (artworks.some((work) => !work || work.status !== 'published' || !(Number(work.priceUsd) > 0))) return json({ error: 'Artwork availability has changed. Please refresh your cart.' }, 409);
-    const hostname = new URL(request.url).hostname;
-    const preview = hostname.endsWith('.pages.dev') && hostname !== 'vishnu-lal-art.pages.dev';
-    const message = buildPurchaseEmail(data, artworks, preview);
+    const message = buildPurchaseEmail(data, artworks);
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST', signal: AbortSignal.timeout(10000),
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `purchase-${data.requestId}` },
@@ -115,7 +111,7 @@ export async function onRequestPost({ request, env }) {
         const confirmation = await fetch('https://api.resend.com/emails', {
           method: 'POST', signal: AbortSignal.timeout(10000),
           headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `purchase-${data.requestId}-collector` },
-          body: JSON.stringify({ from: env.PURCHASE_FROM_EMAIL, to: [data.email], reply_to: STUDIO_EMAIL, ...buildPurchaseEmail(data, artworks, preview, 'collector') }),
+          body: JSON.stringify({ from: env.PURCHASE_FROM_EMAIL, to: [data.email], reply_to: STUDIO_EMAIL, ...buildPurchaseEmail(data, artworks, 'collector') }),
         });
         const receipt = await confirmation.json();
         confirmationSent = confirmation.ok && Boolean(receipt.id);
