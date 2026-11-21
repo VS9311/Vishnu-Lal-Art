@@ -15,6 +15,7 @@ export default function ArchiveCart() {
   const [step, setStep] = useState('cart');
   const [sending, setSending] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [confirmationSent, setConfirmationSent] = useState(null);
   const submission = useRef(null);
   const items = useMemo(() => artworkIds.map(getArtworkSummary).filter(Boolean), [artworkIds]);
   const total = items.reduce((sum, artwork) => sum + getCataloguePrice(artwork.id), 0);
@@ -56,6 +57,7 @@ export default function ArchiveCart() {
       });
       const result = await response.json().catch(() => null);
       if (!response.ok || result?.sent !== true) throw new Error('Your request has not been sent. Please try again, or contact studio@vishnulalartist.com.');
+      setConfirmationSent(result.confirmationSent ?? null);
       setStep('complete');
     } catch (error) {
       setSubmitError(error.message === 'Failed to fetch' ? 'Your request has not been sent. Please check your connection and try again.' : error.message);
@@ -119,6 +121,8 @@ export default function ArchiveCart() {
         <p className="marble-eyebrow">PURCHASE REQUEST</p>
         <h2 id="archive-cart-title">Request sent.</h2>
         <p>Your request has been submitted to studio@vishnulalartist.com. The studio will contact you to confirm availability and delivery. Your selected works remain in the cart.</p>
+        {confirmationSent === true && <p className="archive-cart-note">A confirmation email is on its way to the address you provided.</p>}
+        {confirmationSent === false && <p className="archive-cart-note">Your request reached the studio, but the confirmation email could not be sent. The studio will still contact you using the details you provided.</p>}
         <button className="archive-cart-primary" type="button" onClick={close}>RETURN TO HOME</button>
       </div>}
     </dialog>

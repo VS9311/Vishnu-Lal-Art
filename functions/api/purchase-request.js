@@ -1,36 +1,45 @@
 const STUDIO_EMAIL = 'studio@vishnulalartist.com';
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 
-export function buildPurchaseEmail(data, artworks, preview = false) {
+export function buildPurchaseEmail(data, artworks, preview = false, audience = 'studio') {
+  const collector = audience === 'collector';
   const escape = (value) => String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
   const price = (value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
   const total = price(artworks.reduce((sum, work) => sum + Number(work.priceUsd), 0));
   const reference = `VL-${data.requestId.slice(0, 8).toUpperCase()}`;
   const previewNote = 'Preview submission — for testing only. Please do not process as an order.';
   const note = 'The studio will confirm availability, delivery charges and acquisition terms before payment. This enquiry does not reserve an artwork or confirm an order.';
+  const title = collector ? 'Thank you for your interest.' : 'Artwork acquisition enquiry';
+  const introduction = collector
+    ? 'Thank you for your interest in the work of Vishnu Lal. We have received your artwork enquiry, and the studio will be in touch using the contact details you provided.'
+    : `${data.name} has expressed interest in acquiring the following original artwork${artworks.length === 1 ? '' : 's'}.`;
+  const detailsHeading = collector ? 'YOUR DETAILS' : 'COLLECTOR DETAILS';
+  const notesHeading = collector ? 'YOUR NOTE' : 'COLLECTOR’S NOTE';
   const text = [
-    'VISHNU LAL STUDIO', 'Artwork acquisition enquiry', ...(preview ? [previewNote] : []),
-    `${data.name} has expressed interest in acquiring the following original artwork${artworks.length === 1 ? '' : 's'}.`,
-    'COLLECTOR DETAILS', `Name: ${data.name}`, ...(data.email ? [`Email: ${data.email}`] : []), ...(data.phone ? [`Phone: ${data.phone}`] : []),
+    'VISHNU LAL STUDIO', title, ...(preview ? [previewNote] : []),
+    ...(collector ? [`Dear ${data.name},`] : []), introduction,
+    detailsHeading, `Name: ${data.name}`, ...(data.email ? [`Email: ${data.email}`] : []), ...(data.phone ? [`Phone: ${data.phone}`] : []),
     'SELECTED ARTWORKS', ...artworks.map((work) => `${work.artworkId}${work.seriesTitle ? ` · ${work.seriesTitle}` : ''}: ${price(work.priceUsd)} USD`),
     `Artwork total: ${total} USD`, 'DELIVERY DETAILS', `Country: ${data.country}`, data.address,
-    ...(data.notes ? ['COLLECTOR’S NOTE', data.notes] : []),
+    ...(data.notes ? [notesHeading, data.notes] : []),
+    ...(collector ? ['If you have any questions in the meantime, simply reply to this email.', 'Warm regards,\nVishnu Lal Studio'] : []),
     note, 'Website policies acknowledged by the enquirer.', `Reference: ${reference}`, 'Vishnu Lal Studio · studio@vishnulalartist.com · www.vishnulalartist.com',
   ].join('\n\n');
   const heading = (title) => `<h2 style="margin:30px 0 12px;font:600 11px Arial,sans-serif;letter-spacing:2px;color:#72695c">${title}</h2>`;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#eeeae3;color:#34312c"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:auto;background:#faf8f3"><tr><td style="padding:32px 24px;font:16px/1.65 Georgia,serif">
     <p style="margin:0 0 26px;font:14px Georgia,serif;letter-spacing:3px">VISHNU LAL STUDIO</p>
-    <h1 style="margin:0 0 16px;font:400 30px/1.2 Georgia,serif">Artwork acquisition enquiry</h1>
+    <h1 style="margin:0 0 16px;font:400 30px/1.2 Georgia,serif">${title}</h1>
     ${preview ? `<p style="padding:12px;background:#eeeae3;font:12px/1.5 Arial,sans-serif">${previewNote}</p>` : ''}
-    <p>${escape(data.name)} has expressed interest in acquiring the following original artwork${artworks.length === 1 ? '' : 's'}.</p>
-    ${heading('COLLECTOR DETAILS')}<p>${escape(data.name)}${data.email ? `<br>${escape(data.email)}` : ''}${data.phone ? `<br>${escape(data.phone)}` : ''}</p>
+    ${collector ? `<p>Dear ${escape(data.name)},</p>` : ''}<p>${escape(introduction)}</p>
+    ${heading(detailsHeading)}<p>${escape(data.name)}${data.email ? `<br>${escape(data.email)}` : ''}${data.phone ? `<br>${escape(data.phone)}` : ''}</p>
     ${heading('SELECTED ARTWORKS')}<table width="100%" cellpadding="0" cellspacing="0" style="font:15px/1.5 Georgia,serif">${artworks.map((work) => `<tr><td style="padding:14px 0;border-top:1px solid #d8d0c4"><a href="https://www.vishnulalartist.com/artwork/${encodeURIComponent(work.artworkId)}" style="color:#34312c">${escape(work.artworkId)}</a>${work.seriesTitle ? `<br><span style="font-size:13px;color:#72695c">${escape(work.seriesTitle)}</span>` : ''}</td><td style="padding:14px 0 14px 12px;text-align:right;border-top:1px solid #d8d0c4">${price(work.priceUsd)} USD</td></tr>`).join('')}<tr><td style="padding-top:16px;border-top:1px solid #d8d0c4">Artwork total</td><td style="padding-top:16px;text-align:right;border-top:1px solid #d8d0c4"><strong>${total} USD</strong></td></tr></table>
     ${heading('DELIVERY DETAILS')}<p>${escape(data.country)}<br>${escape(data.address).replace(/\n/g, '<br>')}</p>
-    ${data.notes ? `${heading('COLLECTOR’S NOTE')}<p>${escape(data.notes).replace(/\n/g, '<br>')}</p>` : ''}
+    ${data.notes ? `${heading(notesHeading)}<p>${escape(data.notes).replace(/\n/g, '<br>')}</p>` : ''}
+    ${collector ? '<p style="margin-top:28px">If you have any questions in the meantime, simply reply to this email.</p><p>Warm regards,<br>Vishnu Lal Studio</p>' : ''}
     <p style="margin-top:30px;padding-top:20px;border-top:1px solid #d8d0c4;font:12px/1.65 Arial,sans-serif;color:#72695c">${note}<br><br>Website policies acknowledged by the enquirer.<br>Reference: ${reference}</p>
     <p style="font:12px/1.65 Arial,sans-serif;color:#72695c">Vishnu Lal Studio<br><a style="color:inherit" href="mailto:studio@vishnulalartist.com">studio@vishnulalartist.com</a><br><a style="color:inherit" href="https://www.vishnulalartist.com">www.vishnulalartist.com</a></p>
     </td></tr></table></td></tr></table></body></html>`;
-  return { subject: 'Artwork acquisition enquiry | Vishnu Lal Studio', text, html };
+  return { subject: collector ? 'Your artwork enquiry | Vishnu Lal Studio' : 'Artwork acquisition enquiry | Vishnu Lal Studio', text, html };
 }
 
 export function validatePurchaseRequest(input) {
@@ -100,7 +109,20 @@ export async function onRequestPost({ request, env }) {
     });
     const result = await response.json();
     if (!response.ok || !result.id) throw new Error('delivery');
-    return json({ sent: true, requestId: data.requestId });
+    let confirmationSent = null;
+    if (data.email) {
+      try {
+        const confirmation = await fetch('https://api.resend.com/emails', {
+          method: 'POST', signal: AbortSignal.timeout(10000),
+          headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `purchase-${data.requestId}-collector` },
+          body: JSON.stringify({ from: env.PURCHASE_FROM_EMAIL, to: [data.email], reply_to: STUDIO_EMAIL, ...buildPurchaseEmail(data, artworks, preview, 'collector') }),
+        });
+        const receipt = await confirmation.json();
+        confirmationSent = confirmation.ok && Boolean(receipt.id);
+      } catch { confirmationSent = false; }
+      if (!confirmationSent) console.error(JSON.stringify({ event: 'purchase_confirmation_failed', requestId: data.requestId }));
+    }
+    return json({ sent: true, confirmationSent, requestId: data.requestId });
   } catch {
     console.error(JSON.stringify({ event: 'purchase_request_failed', requestId: data.requestId }));
     return json({ error: 'Unable to deliver your request. Please try again.' }, 502);

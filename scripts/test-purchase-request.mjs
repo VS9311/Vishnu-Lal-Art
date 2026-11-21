@@ -17,14 +17,25 @@ const originalFetch = globalThis.fetch;
 const env = { RESEND_API_KEY: 'test-key-not-real', PURCHASE_FROM_EMAIL: 'Test <test@example.com>' };
 try {
   let email;
+  const sentMessages = [];
   globalThis.fetch = async (url, options) => {
     if (String(url).startsWith('https://2gtua40d.api.sanity.io/')) return Response.json({ result: [{ artworkId: 'THUNDU-075', priceUsd: 3900, status: 'published' }] });
     assert.equal(url, 'https://api.resend.com/emails');
     email = JSON.parse(options.body);
-    assert.equal(options.headers['Idempotency-Key'], `purchase-${base.requestId}`);
+    sentMessages.push(email);
+    assert.equal(options.headers['Idempotency-Key'], `purchase-${base.requestId}${email.subject.startsWith('Your artwork') ? '-collector' : ''}`);
     return Response.json({ id: 'fake-message-id' });
   };
-  assert.deepEqual(await (await onRequestPost({ request: request(), env })).json(), { sent: true, requestId: base.requestId });
+  assert.deepEqual(await (await onRequestPost({ request: request(), env })).json(), { sent: true, confirmationSent: true, requestId: base.requestId });
+  assert.equal(sentMessages.length, 2);
+  const collectorEmail = sentMessages[1];
+  assert.deepEqual(collectorEmail.to, [base.email]);
+  assert.equal(collectorEmail.reply_to, 'studio@vishnulalartist.com');
+  assert.equal(collectorEmail.subject, 'Your artwork enquiry | Vishnu Lal Studio');
+  assert.match(collectorEmail.text, /Dear Test Collector/);
+  assert.match(collectorEmail.html, /Thank you for your interest/);
+  assert.match(collectorEmail.text, /does not reserve an artwork or confirm an order/);
+  email = sentMessages[0];
   assert.deepEqual(email.to, ['studio@vishnulalartist.com']);
   assert.equal(email.reply_to, base.email);
   assert.match(email.text, /THUNDU-075: \$3,900 USD/);
@@ -39,8 +50,17 @@ try {
   assert.match(escapedMessage.html, /Line one<br>Line two/);
   assert.match(escapedMessage.text, /Preview submission/);
   assert.ok(!buildPurchaseEmail(base, [{ artworkId: 'THUNDU-075', priceUsd: 3900 }]).text.includes('Preview submission'));
-  await onRequestPost({ request: request({ ...base, email: '', phone: '+91 0000000000' }), env });
+  const phoneResponse = await onRequestPost({ request: request({ ...base, email: '', phone: '+91 0000000000' }), env });
+  assert.equal((await phoneResponse.json()).confirmationSent, null);
+  assert.equal(sentMessages.length, 3);
   assert.equal(email.reply_to, undefined);
+  globalThis.fetch = async (url, options) => {
+    if (String(url).includes('api.sanity.io')) return Response.json({ result: [{ artworkId: 'THUNDU-075', priceUsd: 3900, status: 'published' }] });
+    return JSON.parse(options.body).subject.startsWith('Your artwork') ? Response.json({ error: 'Unavailable' }, { status: 503 }) : Response.json({ id: 'studio-message' });
+  };
+  const partial = await onRequestPost({ request: request(), env });
+  assert.equal(partial.status, 200);
+  assert.deepEqual(await partial.json(), { sent: true, confirmationSent: false, requestId: base.requestId });
   globalThis.fetch = async () => Response.json({ result: [{ artworkId: 'THUNDU-075', priceUsd: 3900, status: 'soldOut' }] });
   assert.equal((await onRequestPost({ request: request(), env })).status, 409);
   globalThis.fetch = async (url) => String(url).includes('api.sanity.io')

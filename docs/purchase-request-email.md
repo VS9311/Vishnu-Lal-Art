@@ -1,6 +1,6 @@
 # Purchase request email setup
 
-The cart submits to `/api/purchase-request`, a Cloudflare Pages Function. It sends only to `studio@vishnulalartist.com`. Browser code never receives the email API key. Prices and publication status are checked against the published Sanity catalogue before sending. This does not take payment or reserve artwork.
+The cart submits to `/api/purchase-request`, a Cloudflare Pages Function. The studio notification goes to `studio@vishnulalartist.com`. Once accepted, a separate branded acknowledgement goes to the collector if an email address was supplied; replies to that acknowledgement go to the studio. Phone-only submissions remain supported. Browser code never receives the email API key. Prices and publication status are checked against the published Sanity catalogue before sending. This does not take payment or reserve artwork.
 
 ## Activation
 
@@ -22,3 +22,4 @@ Plain Vite serves the frontend only. Its checkout deliberately reports that the 
 - Missing configuration, catalogue failures and email-provider errors do not show a success screen.
 - Requests have an idempotency identifier so retrying the same submission does not send duplicate emails.
 - A successful response means the email service accepted the message. Delivery to the inbox must be verified during activation.
+- Studio and collector messages use separate idempotency keys. If the collector acknowledgement fails after the studio notification succeeds, the request remains successful and the website explains that the acknowledgement could not be sent.
