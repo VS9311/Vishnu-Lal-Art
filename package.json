@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npm run validate && vite build",
     "lint": "oxlint",
-    "validate": "node scripts/validate-archive.mjs && node scripts/test-relief-layout.mjs && node scripts/test-artwork-media.mjs && node scripts/test-commerce.mjs && node scripts/test-purchase-request.mjs && node scripts/test-motion-system.mjs && node scripts/test-sanity-adapter.mjs",
+    "validate": "node scripts/validate-archive.mjs && node scripts/test-relief-layout.mjs && node scripts/test-artwork-media.mjs && node scripts/test-commerce.mjs && node scripts/test-purchase-request.mjs && node scripts/test-artwork-enquiry.mjs && node scripts/test-motion-system.mjs && node scripts/test-sanity-adapter.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
