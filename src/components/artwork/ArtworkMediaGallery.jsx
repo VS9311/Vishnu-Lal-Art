@@ -213,12 +213,12 @@ export default function ArtworkMediaGallery({ artwork, items, mobile }) {
     </div>}
 
     <div className="artwork-media-controls">
-      <div className="artwork-media-caption"><strong>{items[safeActive].label}</strong><span>{count}</span></div>
-      {items.length > 1 && <>
-        <div className="artwork-media-tabs" aria-label="Choose media">
+      {!mobile && <div className="artwork-media-caption"><strong>{items[safeActive].label}</strong><span>{count}</span></div>}
+      {items.length > 1 && (mobile ? <div className="artwork-media-dots" role="group" aria-label="Choose artwork presentation">
+        {items.map((item, index) => <button type="button" key={item.id} aria-label={`${item.label}, ${index + 1} of ${items.length}`} aria-current={safeActive === index ? 'true' : undefined} onClick={() => select(index)}><span aria-hidden="true" /></button>)}
+      </div> : <div className="artwork-media-tabs" aria-label="Choose media">
           {items.map((item, index) => <button type="button" key={item.id} disabled={Boolean(transition)} aria-current={safeActive === index ? 'true' : undefined} onClick={() => select(index)}>{item.label}</button>)}
-        </div>
-      </>}
+        </div>)}
     </div>
 
   </section>;

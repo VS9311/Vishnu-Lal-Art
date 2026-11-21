@@ -13,6 +13,9 @@ export default function ArchiveCart() {
   const trigger = useRef(null);
   const { artworkIds, removeArtwork, clearCart, isOpen, openCart, closeCart } = useCart();
   const [step, setStep] = useState('cart');
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const submission = useRef(null);
   const items = useMemo(() => artworkIds.map(getArtworkSummary).filter(Boolean), [artworkIds]);
   const total = items.reduce((sum, artwork) => sum + getCataloguePrice(artwork.id), 0);
   const inArchive = location.pathname === '/' || location.pathname.startsWith('/artwork/') || location.pathname.startsWith('/series-');
@@ -29,6 +32,36 @@ export default function ArchiveCart() {
   const close = () => {
     closeCart();
     requestAnimationFrame(() => trigger.current?.focus());
+  };
+
+  const submitRequest = async (event) => {
+    event.preventDefault();
+    if (sending) return;
+    const form = event.currentTarget;
+    const fields = Object.fromEntries(new FormData(form));
+    if (!fields.email.trim() && !fields.phone.trim()) {
+      form.elements.email.setCustomValidity('Please provide either an email address or a phone number.');
+      form.elements.email.reportValidity();
+      return;
+    }
+    const payload = { ...fields, artworkIds: items.map((artwork) => artwork.id) };
+    const fingerprint = JSON.stringify(payload);
+    if (submission.current?.fingerprint !== fingerprint) submission.current = { fingerprint, id: crypto.randomUUID() };
+    setSubmitError('');
+    setSending(true);
+    try {
+      const response = await fetch('/api/purchase-request', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, requestId: submission.current.id }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || result?.sent !== true) throw new Error('Your request has not been sent. Please try again, or contact studio@vishnulalartist.com.');
+      setStep('complete');
+    } catch (error) {
+      setSubmitError(error.message === 'Failed to fetch' ? 'Your request has not been sent. Please check your connection and try again.' : error.message);
+    } finally {
+      setSending(false);
+    }
   };
 
   if (!inArchive) return null;
@@ -57,30 +90,35 @@ export default function ArchiveCart() {
           <button className="archive-cart-clear" type="button" onClick={clearCart}>CLEAR CART</button>
         </> : <p className="archive-cart-empty">Your cart is empty. Open an artwork record to add a work.</p>}
       </div>}
-      {step === 'checkout' && <form onSubmit={(event) => { event.preventDefault(); setStep('complete'); }}>
+      {step === 'checkout' && <form onSubmit={submitRequest} onInput={(event) => {
+        event.currentTarget.elements.email.setCustomValidity('');
+      }} aria-busy={sending}>
         <button className="archive-cart-back" type="button" onClick={() => setStep('cart')}>← BACK TO CART</button>
         <p className="marble-eyebrow">PURCHASE REQUEST</p>
         <h2 id="archive-cart-title">Checkout.</h2>
         <p>{items.length} {items.length === 1 ? 'work' : 'works'} · <span className="archive-price">{formatCataloguePrice(total)}</span></p>
         <div className="archive-cart-form">
           <label>NAME<input name="name" autoComplete="name" required /></label>
-          <label>EMAIL<input name="email" type="email" autoComplete="email" required /></label>
-          <label>PHONE<input name="phone" type="tel" autoComplete="tel" required /></label>
+          <label>EMAIL<input name="email" type="email" autoComplete="email" /></label>
+          <label>PHONE<input name="phone" type="tel" autoComplete="tel" /></label>
+          <p className="archive-cart-wide archive-cart-note">Provide either an email address or phone number so the studio can reply.</p>
           <label>COUNTRY<input name="country" autoComplete="country-name" required /></label>
           <label className="archive-cart-wide">DELIVERY ADDRESS<textarea name="address" rows="3" autoComplete="street-address" required /></label>
           <label className="archive-cart-wide">NOTES <span>(optional)</span><textarea name="notes" rows="3" /></label>
         </div>
+        <input name="website" className="archive-cart-honeypot" tabIndex={-1} autoComplete="off" aria-hidden="true" />
         <label className="archive-cart-consent">
           <input name="policy-consent" type="checkbox" required />
           <span>By continuing, I agree to the <a href="/terms" target="_blank" rel="noreferrer">Terms &amp; Conditions</a> and acknowledge the <a href="/refund-cancellation" target="_blank" rel="noreferrer">Refund / Cancellation</a>, <a href="/shipping-delivery" target="_blank" rel="noreferrer">Shipping &amp; Delivery</a>, and <a href="/privacy" target="_blank" rel="noreferrer">Privacy</a> policies.</span>
         </label>
-        <button className="archive-cart-primary" type="submit">SUBMIT PURCHASE REQUEST</button>
-        <p className="archive-cart-note">Submitting this request does not reserve an artwork or create an accepted order. Availability, delivery charges, and acquisition terms will be confirmed before payment. No payment is taken in this preview; secure Razorpay payment will be connected after merchant activation.</p>
+        <button className="archive-cart-primary" type="submit" disabled={sending}>{sending ? 'SENDING…' : 'SUBMIT PURCHASE REQUEST'}</button>
+        {submitError && <p className="archive-cart-note" role="alert">{submitError} <a href="mailto:studio@vishnulalartist.com">Email the studio</a></p>}
+        <p className="archive-cart-note">Submitting this request does not reserve an artwork or create an accepted order. Availability, delivery charges, and acquisition terms will be confirmed before payment. No payment is taken when you send this request.</p>
       </form>}
       {step === 'complete' && <div role="status">
         <p className="marble-eyebrow">PURCHASE REQUEST</p>
-        <h2 id="archive-cart-title">Request prepared.</h2>
-        <p>Your selected works remain in the cart on this device. Secure delivery will be connected before the shop goes live.</p>
+        <h2 id="archive-cart-title">Request sent.</h2>
+        <p>Your request has been submitted to studio@vishnulalartist.com. The studio will contact you to confirm availability and delivery. Your selected works remain in the cart.</p>
         <button className="archive-cart-primary" type="button" onClick={close}>RETURN TO HOME</button>
       </div>}
     </dialog>

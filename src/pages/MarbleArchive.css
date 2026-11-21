@@ -134,6 +134,8 @@
 .archive-cart-empty { padding: 28px 0; border-block: 1px solid #c9c1b4; color: #756d61; }
 .archive-cart-back { margin: 8px 0 22px; padding-left: 0; }
 .archive-cart-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; }
+.archive-cart-honeypot { display: none; }
+.archive-cart-primary:disabled { opacity: .6; cursor: wait; }
 .archive-cart-form label { display: grid; gap: 7px; color: #756d61; font: 9px/1.5 var(--font-mono); letter-spacing: .08em; }
 .archive-cart-form label span { color: #91887c; }
 .archive-cart-form input, .archive-cart-form textarea { width: 100%; min-height: 44px; padding: 10px 11px; border: 1px solid #afa697; background: #faf8f366; color: #34312c; font: 15px/1.5 var(--font-serif); resize: vertical; }
@@ -182,9 +184,15 @@
   .artwork-media-canonical-sheet .artwork-media-canonical-image { max-height: calc(min(70svh,660px) - 52px); box-shadow: none; }
   .artwork-media-interior-sheet .landscape-artwork-image { max-width: min(calc(var(--a1-base-width) * 1.2), 52cqw); max-height: min(calc(var(--a1-base-height) * 1.2), 38cqh); }
   .artwork-media-interior-sheet .landscape-artwork-image.is-landscape-image { max-width: min(calc(var(--a1-base-width) * 1.392), 58cqw); max-height: min(calc(var(--a1-base-height) * 1.32), 38cqh); }
-  .artwork-media-controls { position: relative; inset: auto; padding: 14px 7% 20px; display: block; }
-  .artwork-media-tabs { margin-top: 10px; flex-wrap: nowrap; overflow-x: auto; }
+  .artwork-media-controls { position: relative; inset: auto; padding: 0 7% 4px; display: flex; justify-content: center; }
+  .artwork-media-dots { display: flex; justify-content: center; }
+  .artwork-media-dots button { width: 24px; height: 44px; padding: 0; display: grid; place-items: center; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .artwork-media-dots button span { width: 6px; height: 6px; border-radius: 999px; background: #c4bdb1; transition: width 260ms cubic-bezier(.22,.72,.22,1), background-color 260ms ease; }
+  .artwork-media-dots button[aria-current] span { width: 22px; background: #34312c; }
   .marble-record-copy { padding: 24px 7% 40px; max-width: 600px; margin: 0 auto; position: relative; }
+  .marble-record-copy > .marble-commerce-summary { margin-top: 0; padding-top: 0; border-top: 0; }
+  .marble-record-copy > .marble-acquisition { margin-top: 20px; }
+  .marble-record-identity { margin-top: 32px; padding-top: 24px; border-top: 1px solid #cec6b9; }
   .marble-back-link { margin-bottom: 28px; }
   .marble-record-copy h1 { font-size: 38px; }
   .archive-cart-trigger { top: 18px; right: 7%; }
@@ -200,4 +208,7 @@
   .marble-enquiry-grid { grid-template-columns: 1fr; gap: 14px; }
   .marble-enquiry-wide { grid-column: auto; }
   .marble-contact-dialog fieldset { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .artwork-media-dots button span { transition: none; }
 }

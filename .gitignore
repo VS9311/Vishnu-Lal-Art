@@ -12,6 +12,8 @@ archive-masters
 dist
 dist-ssr
 *.local
+.dev.vars
+.dev.vars.*
 
 # Local design review output and machine-specific QA helpers
 Review-Screenshots/

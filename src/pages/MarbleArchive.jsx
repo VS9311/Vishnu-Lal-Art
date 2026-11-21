@@ -104,25 +104,29 @@ function MarbleArtworkRecord({ id }) {
   const unavailable = artwork.status === 'soldOut' || ['ACQUIRED', 'NOT_CURRENTLY_AVAILABLE'].includes(status);
   const inCart = includesArtwork(artwork.id);
   const primaryLabel = unavailable ? 'ENQUIRE' : inCart ? 'VIEW CART' : 'ADD TO CART';
+  const backLink = <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="focus" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOME' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>;
+  const artworkHeading = <>
+    <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p>
+    <h1 className="marble-record-series-title"><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></h1>
+    <p className="marble-record-series marble-record-artwork-id" lang={id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(id)}</p>
+  </>;
   return <main id="main-content" className="landscape-homepage marble-archive marble-record">
     {mobile ? <MobileArchiveHeader /> : <MarbleNavigation seriesId={series.id} />}
     <div className="marble-record-layout">
       <div className="marble-record-visual"><ArtworkMediaGallery artwork={artwork} items={mediaItems} mobile={mobile} /></div>
       <article className="marble-record-copy">
-        <MotionLink className="marble-back-link" to={fromHome ? '/' : `/${series.id}`} kind="focus" state={fromHome ? { restoreLandscape: true } : { artworkId: id }}>← {fromHome ? 'BACK TO HOME' : `BACK TO ${series.label.toUpperCase()}`}</MotionLink>
-        <p className="marble-eyebrow">{series.label} · {navigation.currentIndex} / {navigation.totalWorks}</p>
-        <h1 className="marble-record-series-title"><span lang="ml">{series.malayalamName}</span><span>{series.romanizedName}</span></h1>
-        <p className="marble-record-series marble-record-artwork-id" lang={id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(id)}</p>
+        {!mobile && <>{backLink}{artworkHeading}</>}
         <div className="marble-commerce-summary">
           {!unavailable && <div><span>PRICE</span><strong className="marble-price">{formattedPrice}</strong></div>}
           {unavailable && <div className="marble-commerce-status"><strong>SOLD OUT</strong></div>}
         </div>
-        <ArtworkSpecifications record={record} />
+        {!mobile && <ArtworkSpecifications record={record} />}
         <div className="marble-acquisition"><button onClick={(event) => {
           if (unavailable) { inquiryTrigger.current = event.currentTarget; setIntent('Other'); return; }
           if (!inCart) addArtwork(artwork.id);
           openCart();
         }}>{primaryLabel}</button>{primaryLabel !== 'ENQUIRE' && <button onClick={(event) => { inquiryTrigger.current = event.currentTarget; setIntent('Other'); }}>ENQUIRE</button>}</div>
+        {mobile && <div className="marble-record-identity">{artworkHeading}<ArtworkSpecifications record={record} /></div>}
         {series.summary && <section className="marble-record-series-summary" aria-labelledby="record-series-summary-title">
           <h2 id="record-series-summary-title" className="marble-eyebrow">ABOUT THE SERIES</h2>
           <p>{series.summary}</p>
