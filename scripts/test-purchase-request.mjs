@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { onRequestPost, validatePurchaseRequest } from '../functions/api/purchase-request.js';
+import { buildPurchaseEmail, onRequestPost, validatePurchaseRequest } from '../functions/api/purchase-request.js';
 
 const base = { name: 'Test Collector', email: 'collector@example.com', phone: '', country: 'India', address: 'Test delivery address', notes: '', website: '', 'policy-consent': 'on', artworkIds: ['THUNDU-075'], requestId: '12345678-1234-4234-8234-123456789012' };
 assert.equal(validatePurchaseRequest(base).notes, '');
@@ -28,7 +28,17 @@ try {
   assert.deepEqual(email.to, ['studio@vishnulalartist.com']);
   assert.equal(email.reply_to, base.email);
   assert.match(email.text, /THUNDU-075: \$3,900 USD/);
-  assert.match(email.text, /Notes: None/);
+  assert.equal(email.subject, 'Artwork acquisition enquiry | Vishnu Lal Studio');
+  assert.ok(!email.subject.includes(base.requestId));
+  assert.ok(!email.text.includes('COLLECTOR’S NOTE'));
+  assert.match(email.html, /SELECTED ARTWORKS/);
+  const escapedMessage = buildPurchaseEmail({ ...base, name: '<script>bad</script>', notes: '<img src=x onerror=alert(1)>', address: 'Line one\nLine two' }, [{ artworkId: 'THUNDU-075', seriesTitle: 'Aalolam', priceUsd: 3900 }], true);
+  assert.ok(!escapedMessage.html.includes('<script>'));
+  assert.ok(!escapedMessage.html.includes('<img'));
+  assert.match(escapedMessage.html, /&lt;script&gt;/);
+  assert.match(escapedMessage.html, /Line one<br>Line two/);
+  assert.match(escapedMessage.text, /Preview submission/);
+  assert.ok(!buildPurchaseEmail(base, [{ artworkId: 'THUNDU-075', priceUsd: 3900 }]).text.includes('Preview submission'));
   await onRequestPost({ request: request({ ...base, email: '', phone: '+91 0000000000' }), env });
   assert.equal(email.reply_to, undefined);
   globalThis.fetch = async () => Response.json({ result: [{ artworkId: 'THUNDU-075', priceUsd: 3900, status: 'soldOut' }] });
