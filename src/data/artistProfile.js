@@ -42,7 +42,7 @@ export const artistProfile = {
       body: [
         "How we encounter the world is inseparable from how we understand it. What appears before us is not necessarily the entirety of what exists. Our perception is shaped by what we recognise and the meanings we assign, yet there remains the possibility of encountering something without immediately seeking to define it.",
         "Perhaps this is why I question the expectation that art must always be explained. If a work does not originate in a conscious thought, why must it be approached through conscious reasoning? Must every mark carry an intention that can be articulated? Must everything encountered be named, interpreted and resolved? There should be room for an experience that does not immediately become an explanation.",
-        "The viewer reserves all rights of interpretation. A work may evoke something entirely different in each person, or resist interpretation altogether. Neither response diminishes its existence.",
+        "I wish for nothing to stand between the work and the person encountering it, not even my presence as its maker. That these particular eyes should meet these particular marks, at this particular moment in time, is in itself significant. The encounter belongs to a moment that cannot be repeated. Perhaps what matters is not what the viewer takes away from the work, but that, for a moment, the two are no longer entirely separate.",
         "I do not seek to establish what art is, or to offer a final account of what it can mean. My practice remains an ongoing enquiry, shaped by the freedom to make, the discipline to continue and the willingness to leave things unresolved."
       ],
     },

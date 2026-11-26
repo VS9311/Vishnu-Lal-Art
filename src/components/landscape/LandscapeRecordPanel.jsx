@@ -19,8 +19,8 @@ export default function LandscapeRecordPanel({ artwork, isOpen, position, total,
         <small>{series?.romanizedName}</small>
       </h1>
       <div className="landscape-record-fragment">
-        <span>{series?.label}</span>
-        <strong lang={artwork.id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(artwork.id)}</strong>
+        <span lang={artwork.id.toUpperCase().startsWith('THUNDU-') ? 'ml' : undefined}>{formatArtworkDisplayId(artwork.id)}</span>
+        <strong>{series?.label}</strong>
       </div>
       <p className="landscape-record-price">{artwork.status === 'soldOut' ? 'SOLD OUT' : `${formatCataloguePrice(artwork.priceUsd || getCataloguePrice(artwork.id))} USD`}</p>
       <p className="landscape-record-position">SELECTED OBJECT {String(position).padStart(2, '0')} / {String(total).padStart(2, '0')}</p>

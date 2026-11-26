@@ -1,5 +1,5 @@
 import { MotionLink } from '../../motion/RouteMotion';
-import { getAllSeries, getSeriesArtworks } from '../../lib/artwork';
+import { getAllSeries } from '../../lib/artwork';
 
 export default function LandscapeIndex({ activeArtworkId }) {
   return (
@@ -10,10 +10,9 @@ export default function LandscapeIndex({ activeArtworkId }) {
       </div>
 
       {getAllSeries().map((series) => <MotionLink key={series.id} to={`/${series.id}`} kind="portal">
-        <span>{series.label.toUpperCase()}</span>
-        <strong lang="ml">{series.malayalamName}</strong>
-        <em>{series.romanizedName.toUpperCase()}</em>
-        <small>{getSeriesArtworks(series.id).length} WORKS</small>
+        <span>{series.romanizedName.toUpperCase()}</span>
+        <strong>{series.label.toUpperCase()}</strong>
+        <em lang="ml">{series.malayalamName}</em>
       </MotionLink>)}
 
       <MotionLink className="landscape-index-artist" to="/artist" kind="portal">
