@@ -72,7 +72,7 @@ export default function ArtistPage() {
     </section>
     <section className="artist-studio" aria-label="Inside the studio" data-reveal>
       <figure><ArtistPhoto name="studio" alt="Vishnu Lal considering a large drawing on the wall of his studio." /></figure>
-      <div className="artist-studio-copy"><p className="artist-label">THE ENCOUNTER / HERE &amp; NOW</p><blockquote>“That these marks should meet your eyes, here and now, is enough.”</blockquote><p className="artist-studio-caption">An encounter that cannot be repeated.</p></div>
+      <div className="artist-studio-copy"><p className="artist-label">THE ENCOUNTER / HERE &amp; NOW</p><blockquote>“That these marks should meet you, here and now.”</blockquote><p className="artist-studio-caption">An encounter that cannot be repeated.</p></div>
     </section>
     <footer id="artist-access" className="artist-footer">
       <div><p className="artist-label">THE STUDIO</p><p>For acquisitions, exhibitions and conversations about the work.</p><a className="artist-contact" href={`mailto:${profile.email}`}>{profile.email} ↗</a></div>
